@@ -31,10 +31,6 @@ const router = createBrowserRouter([
       </RedirectIfAuth>
     ),
   },
-  {
-    path: "/dev",
-    element: <Header />,
-  },
 ]);
 
 export default router;

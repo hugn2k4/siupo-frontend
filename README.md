@@ -114,9 +114,9 @@ hotfix/payment-error
 #### 1. Bắt đầu tính năng mới
 
 ```bash
-# Checkout nhánh develop
-git checkout develop
-git pull origin develop
+# Checkout nhánh dev
+git checkout dev
+git pull origin dev
 
 # Tạo nhánh feature mới
 git checkout -b feature/ten-tinh-nang
@@ -144,20 +144,20 @@ test: thêm unit test cho utils
 # Push nhánh lên remote
 git push origin feature/ten-tinh-nang
 
-# Tạo Pull Request từ feature -> develop
+# Tạo Pull Request từ feature -> dev
 # Review code → Merge → Xóa nhánh feature
 ```
 
 #### 4. Sync với nhánh chính
 
 ```bash
-# Cập nhật develop thường xuyên
-git checkout develop
-git pull origin develop
+# Cập nhật devp thường xuyên
+git checkout dev
+git pull origin dev
 
 # Rebase feature branch (nếu cần)
 git checkout feature/ten-tinh-nang
-git rebase develop
+git rebase dev
 ```
 
 ### Các lệnh Git hữu ích
@@ -173,9 +173,9 @@ git rebase develop
 
 ### Quy tắc làm việc nhóm
 
-1. **Không push trực tiếp lên main/develop**
+1. **Không push trực tiếp lên main/dev**
 2. **Luôn tạo Pull Request để review code**
 3. **Commit thường xuyên với message rõ ràng**
-4. **Pull develop trước khi tạo feature branch mới**
+4. **Pull dev trước khi tạo feature branch mới**
 5. **Xóa feature branch sau khi merge**
 6. **Kiểm tra conflict trước khi merge**

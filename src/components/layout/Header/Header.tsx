@@ -12,14 +12,13 @@ const Header = () => {
         <Container maxWidth="xl">
           <Toolbar
             disableGutters
-            sx={{ display: "flex", justifyContent: "space-between" }}
+            sx={{ display: "flex", justifyContent: "space-around" }}
           >
             <Logo />
             <Navbar />
             <Actions />
           </Toolbar>
         </Container>
-
       </AppBar>
     </>
   );

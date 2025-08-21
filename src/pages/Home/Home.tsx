@@ -9,14 +9,12 @@ function Home() {
         sx={{
           textAlign: "center",
           py: 8,
-          background: "url('/hero-bg.jpg') center/cover no-repeat",
+          background:
+            "url('https://dnsg.1cdn.vn/thumbs/1200x630/2024/02/02/458-202402021011163.jpg') center/cover no-repeat",
           borderRadius: 3,
           color: "white",
         }}
       >
-        <Typography variant="h3" fontWeight="bold" gutterBottom>
-          Chào mừng đến với Nhà hàng 🍽️
-        </Typography>
         <Typography variant="h6" gutterBottom>
           Thưởng thức ẩm thực tuyệt hảo cùng không gian sang trọng
         </Typography>

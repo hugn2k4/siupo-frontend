@@ -1,6 +1,6 @@
-import Navbar from "./Header/Navbar";
 import Footer from "./Footer";
 import { Container } from "@mui/material";
+import Header from "./Header/Header";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
-      <Navbar />
+      <Header />
       <Container sx={{ mt: 4, minHeight: "70vh" }}>{children}</Container>
       <Footer />
     </>

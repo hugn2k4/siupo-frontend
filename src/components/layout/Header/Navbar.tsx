@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   const navItems = [
-    { label: "Home", path: "/dev" },
-    { label: "Menu", path: "/dev" },
-    { label: "Blog", path: "/dev" },
-    { label: "Pages", path: "/dev" },
-    { label: "Shop", path: "/dev" },
-    { label: "Contact", path: "/dev" },
+    { label: "Home", path: "/" },
+    { label: "Menu", path: "/" },
+    { label: "Blog", path: "/" },
+    { label: "Pages", path: "/" },
+    { label: "Shop", path: "/" },
+    { label: "Contact", path: "/" },
   ];
 
   return (

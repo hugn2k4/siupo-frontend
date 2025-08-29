@@ -1,5 +1,5 @@
 import Footer from "./Footer";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import Header from "./Header/Header";
 
 interface LayoutProps {
@@ -8,11 +8,17 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <>
+    <Box
+      sx={{
+        minHeight: "100dvh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Header />
-      <Container sx={{ mt: 4, minHeight: "70vh" }}>{children}</Container>
+      <Container sx={{ mt: 4, flex: 1 }}>{children}</Container>
       <Footer />
-    </>
+    </Box>
   );
 };
 

@@ -4,6 +4,7 @@ import Container from "@mui/material/Container";
 import Logo from "./Logo";
 import Navbar from "./Navbar";
 import Actions from "./Actions";
+import { Box } from "@mui/material";
 
 const Header = () => {
   return (
@@ -15,8 +16,13 @@ const Header = () => {
             sx={{ display: "flex", justifyContent: "space-around" }}
           >
             <Logo />
-            <Navbar />
-            <Actions />
+            <Box sx={{ order: { xs: 2, md: 3 } }}>
+              <Actions />
+            </Box>
+
+            <Box sx={{ order: { xs: 3, md: 2 } }}>
+              <Navbar />
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>

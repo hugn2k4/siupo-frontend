@@ -3,7 +3,7 @@ import App from "./App";
 import Home from "./pages/Home/Home";
 import AuthPage from "./pages/Auth/Auth";
 import RedirectIfAuth from "./components/common/RedirectIfAuth";
-import Header from "./components/layout/Header/Header";
+import NotFound from "./pages/NotFound/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     children: [
       { path: "", element: <Home /> },
       { path: "home", element: <Home /> },
-      
+      { path: "*", element: <NotFound /> },
     ],
   },
   {

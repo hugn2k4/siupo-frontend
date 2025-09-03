@@ -1,12 +1,18 @@
 import Footer from "./Footer";
-import { Box, Container } from "@mui/material";
+import { Box} from "@mui/material";
 import Header from "./Header/Header";
+import ROUTES_META from "../../config/routesMeta";
+import { useLocation } from "react-router-dom";
+import PageHeader from "./PageHeader";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const location = useLocation();
+  const pathname = location.pathname;
+  const meta = ROUTES_META[pathname];
   return (
     <Box
       sx={{
@@ -16,7 +22,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       }}
     >
       <Header />
-      <Container sx={{ mt: 4, flex: 1 }}>{children}</Container>
+      {meta && (
+        <PageHeader
+          title={meta.title}
+          breadcrumb={meta.breadcrumb}
+          backgroundImage={meta.backgroundImage}
+        />
+      )}
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        {children}
+      </Box>
+
       <Footer />
     </Box>
   );

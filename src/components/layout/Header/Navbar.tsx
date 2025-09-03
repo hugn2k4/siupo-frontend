@@ -10,18 +10,10 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
+import menu from "../../../config/menuConfig";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
-
-  const navItems = [
-    { label: "Home", path: "/" },
-    { label: "Menu", path: "/" },
-    { label: "Blog", path: "/" },
-    { label: "Pages", path: "/" },
-    { label: "Shop", path: "/" },
-    { label: "Contact", path: "/" },
-  ];
 
   return (
     <>
@@ -32,7 +24,7 @@ function Navbar() {
           gap: 2,
         }}
       >
-        {navItems.map((item) => (
+        {menu.map((item) => (
           <Link
             key={item.path}
             to={item.path}
@@ -63,7 +55,7 @@ function Navbar() {
           onClick={() => setOpen(false)}
         >
           <List>
-            {navItems.map((item) => (
+            {menu.map((item) => (
               <ListItem key={item.path} disablePadding>
                 <ListItemButton component={Link} to={item.path}>
                   <ListItemText primary={item.label} />

@@ -1,27 +1,27 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
 import { Box, Button, Typography } from "@mui/material";
-import ImageHero from "../../assets/images/image_hero.png";
-import SparkleIcon from "../../assets/icons/sparkle.svg";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import ShiningStarsIcon from "../../assets/icons/shining_stars.svg";
+import SparkleIcon from "../../assets/icons/sparkle.svg";
+import ImageHero from "../../assets/images/image_hero.png";
 
 const Hero = () => {
   const [hoveredPlace, setHoveredPlace] = useState(false);
   return (
-    <section className="w-full h-screen">
+    <section className="w-full h-screen flex flex-col">
       {/* Flex container */}
-      <Box className="flex h-full gap-2">
+      <Box className="flex h-full">
         {/* Left side: Text content full height */}
         <Box
           sx={{
-            flex: 1,
-            height: "70vh",
+            flex: "0 0 50%",
+            height: "100vh",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "flex-start",
             paddingLeft: { xs: 2, md: 8, lg: 16 },
-            paddingRight: 2,
+            paddingRight: { xs: 2, md: 4 },
           }}
           component={motion.div}
           initial={{ opacity: 0, x: -100 }}
@@ -93,12 +93,11 @@ const Hero = () => {
           </Typography>
 
           <Typography sx={{ mb: 4, maxWidth: 650 }}>
-            Discover a variety of healthy and delicious meals crafted to nourish
-            your body and delight your taste buds. From fresh salads to
-            wholesome bowls, every dish is made with love and quality
-            ingredients, helping you enjoy a balanced and flavorful lifestyle.
+            Discover a variety of healthy and delicious meals crafted to nourish your body and delight your taste buds.
+            From fresh salads to wholesome bowls, every dish is made with love and quality ingredients, helping you
+            enjoy a balanced and flavorful lifestyle.
           </Typography>
-          <Box className="flex space-x-4 gap-4">
+          <Box className="flex space-x-4 gap-4 pb-20">
             <Button
               variant="outlined"
               sx={{
@@ -137,25 +136,65 @@ const Hero = () => {
         {/* Right side: Image */}
         <Box
           sx={{
-            flex: 1,
+            flex: "0 0 50%",
+            height: "100vh",
             display: "flex",
             justifyContent: "flex-end",
-            alignItems: "flex-start",
+            alignItems: "center",
+            padding: 0,
+            position: "relative",
           }}
           component={motion.div}
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <Box className="h-full flex items-start">
-            <Box
-              component="img"
-              src={ImageHero}
-              alt="Hero"
-              sx={{ width: "100%", height: "auto" }}
-            />
-          </Box>
+          <Box
+            component="img"
+            src={ImageHero}
+            alt="Hero"
+            sx={{
+              position: "absolute",
+              right: 0,
+              top: 0,
+              width: "100%",
+              height: "auto",
+              objectFit: "contain",
+            }}
+          />
         </Box>
+      </Box>
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 1,
+          left: 0,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography
+          sx={{
+            fontWeight: 300,
+            fontSize: "0.9rem",
+            letterSpacing: 2,
+            color: "var(--color-gray2)",
+          }}
+        >
+          Scrolldown
+        </Typography>
+
+        <Box
+          sx={{
+            width: "1px",
+            height: "60px",
+            bgcolor: "var(--color-gray3)",
+            mt: 1,
+          }}
+        />
       </Box>
     </section>
   );

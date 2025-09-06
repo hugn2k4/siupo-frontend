@@ -83,6 +83,50 @@ src/
 2. Kiểm tra `tsconfig.json` và `tsconfig.app.json`
 
 ## 🌿 Quy trình làm việc với Git
+## 🚦 Quy tắc commit chuẩn (Conventional Commit)
+
+Dự án sử dụng Husky + commitlint để kiểm tra message khi commit. Nếu sai chuẩn, commit sẽ bị chặn.
+
+### Cấu trúc commit message
+
+```
+<type>(scope?): mô tả ngắn gọn
+```
+
+#### Các loại commit phổ biến:
+
+- **feat**: Thêm mới tính năng
+- **fix**: Sửa lỗi
+- **docs**: Cập nhật tài liệu
+- **style**: Chỉnh sửa format/code style, không thay đổi logic
+- **refactor**: Cải thiện cấu trúc code, không thêm tính năng
+- **test**: Thêm/sửa test
+- **chore**: Cập nhật cấu hình, tool, không ảnh hưởng code chính
+
+#### Ví dụ commit đúng chuẩn:
+
+```
+feat(auth): thêm xác thực bằng Google
+fix(home): sửa lỗi load dữ liệu khi reload
+docs: cập nhật README
+style: format lại code
+refactor: tối ưu component Header
+test: thêm unit test cho utils
+chore: nâng cấp phiên bản eslint
+```
+
+Nếu commit sai chuẩn, bạn sẽ nhận được thông báo lỗi và phải sửa lại message cho đúng mới commit được.
+
+### Quy trình commit chuẩn:
+
+1. Thực hiện thay đổi code
+2. Chạy lệnh:
+	```bash
+	git add .
+	git commit -m "feat: thêm chức năng đăng nhập"
+	```
+3. Nếu message đúng chuẩn, commit thành công. Nếu sai, sửa lại cho đúng.
+4. Push lên remote và tạo Pull Request như bình thường.
 
 ### Cấu trúc nhánh
 

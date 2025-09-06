@@ -1,21 +1,13 @@
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  Stack,
-} from "@mui/material";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import YouTubeIcon from "@mui/icons-material/YouTube";
+import MailOutlineOutlinedIcon from "@mui/icons-material/MailOutlineOutlined";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
-import MailOutlineOutlinedIcon from "@mui/icons-material/MailOutlineOutlined";
 import QueryBuilderOutlinedIcon from "@mui/icons-material/QueryBuilderOutlined";
-import menu from "../../config/menuConfig";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import { Box, Button, IconButton, Link as MuiLink, Stack, TextField, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Link as MuiLink } from "@mui/material";
+import menu from "../../config/menuConfig";
 
 import img1 from "../../assets/gallery/image1.png";
 import img2 from "../../assets/gallery/image2.png";
@@ -58,9 +50,7 @@ const Footer = () => {
               </Box>
               ill You Need Our Support ?
             </Typography>
-            <Typography>
-              Don’t wait make a smart & logical quote here. It’s pretty easy.
-            </Typography>
+            <Typography>Don’t wait make a smart & logical quote here. It’s pretty easy.</Typography>
           </Box>
 
           {/* Input + Button */}
@@ -97,10 +87,7 @@ const Footer = () => {
         </Box>
 
         {/* Line cùng độ rộng */}
-        <Box
-          className="border-t border-primary "
-          sx={{ width: "100%", maxWidth: 1250, mx: "auto", p: 4 }}
-        />
+        <Box className="border-t border-primary " sx={{ width: "100%", maxWidth: 1250, mx: "auto", p: 4 }} />
       </Box>
 
       <Box
@@ -127,9 +114,7 @@ const Footer = () => {
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
             Siubo{" "}
           </Typography>
-          <Typography variant="subtitle2">
-            Subscribe our newsletter and get discount 25%off
-          </Typography>
+          <Typography variant="subtitle2">Subscribe our newsletter and get discount 25%off</Typography>
           <Stack direction="row" spacing={1}>
             <IconButton aria-label="facebook">
               <FacebookOutlinedIcon sx={{ color: "#1877F2", fontSize: 24 }} />
@@ -160,9 +145,7 @@ const Footer = () => {
           </Stack>
           <Stack direction="row" spacing={1} alignItems="center">
             <PlaceOutlinedIcon />
-            <Typography variant="body2">
-              1 Vo Van Ngan Street, Thu Duc City, Ho Chi Minh City
-            </Typography>
+            <Typography variant="body2">1 Vo Van Ngan Street, Thu Duc City, Ho Chi Minh City</Typography>
           </Stack>
           <Stack direction="row" spacing={1} alignItems="center">
             <MailOutlineOutlinedIcon />
@@ -170,9 +153,7 @@ const Footer = () => {
           </Stack>
           <Stack direction="row" spacing={1} alignItems="center">
             <QueryBuilderOutlinedIcon />
-            <Typography variant="body2">
-              Sun - Sat / 10:00 AM - 8:00 PM
-            </Typography>
+            <Typography variant="body2">Sun - Sat / 10:00 AM - 8:00 PM</Typography>
           </Stack>
         </Box>
 
@@ -216,9 +197,7 @@ const Footer = () => {
             Instagram Gallery
           </Typography>
 
-          <Box
-            sx={{ display: "flex", flexWrap: "wrap", gap: 1, maxWidth: 320 }}
-          >
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, maxWidth: 320 }}>
             {images.map((src, index) => (
               <Box
                 key={index}
@@ -249,9 +228,7 @@ const Footer = () => {
           gap: 2,
         }}
       >
-        <Typography variant="body2">
-          Copyright © 2025 Nhà hàng của bạn. All rights reserved.
-        </Typography>
+        <Typography variant="body2">Copyright © 2025 Nhà hàng của bạn. All rights reserved.</Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
           {["Privacy Policy", "Term of Use", "Partner"].map((text) => (

@@ -1,14 +1,6 @@
-import { useState } from "react";
-import {
-  Box,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemButton,
-} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import menu from "../../../config/menuConfig";
 
@@ -37,23 +29,14 @@ function Navbar() {
 
       {/* Mobile Menu (Hamburger) */}
       <Box sx={{ display: { xs: "flex", md: "none" } }}>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          onClick={() => setOpen(true)}
-        >
+        <IconButton size="large" edge="start" color="inherit" onClick={() => setOpen(true)}>
           <MenuIcon />
         </IconButton>
       </Box>
 
       {/* Drawer cho Mobile */}
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-          onClick={() => setOpen(false)}
-        >
+        <Box sx={{ width: 250 }} role="presentation" onClick={() => setOpen(false)}>
           <List>
             {menu.map((item) => (
               <ListItem key={item.path} disablePadding>

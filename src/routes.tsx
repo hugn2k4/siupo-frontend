@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import Home from "./pages/Home/Home";
-import AuthPage from "./pages/Auth/Auth";
 import RedirectIfAuth from "./components/common/RedirectIfAuth";
+import AuthPage from "./pages/Auth/Auth";
+import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 
 const router = createBrowserRouter([

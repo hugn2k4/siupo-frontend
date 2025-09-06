@@ -112,7 +112,7 @@ const Footer = () => {
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            Siubo{" "}
+            Siupo{" "}
           </Typography>
           <Typography variant="subtitle2">Subscribe our newsletter and get discount 25%off</Typography>
           <Stack direction="row" spacing={1}>

@@ -23,9 +23,7 @@ export default function PageHeader({
         justifyContent: "center",
         alignItems: "center",
         color: "white",
-        backgroundImage: backgroundImage
-          ? `url(${backgroundImage})`
-          : `url(${ImageBanner})`,
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${ImageBanner})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         textAlign: "center",
@@ -54,13 +52,7 @@ export default function PageHeader({
         >
           {breadcrumb.map((item, index) =>
             item.path ? (
-              <MuiLink
-                key={index}
-                component={Link}
-                to={item.path}
-                underline="hover"
-                color="inherit"
-              >
+              <MuiLink key={index} component={Link} to={item.path} underline="hover" color="inherit">
                 {item.label}
               </MuiLink>
             ) : (

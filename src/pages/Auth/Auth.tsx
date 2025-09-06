@@ -1,10 +1,10 @@
 import { Paper } from "@mui/material";
-import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import ImageBackgroundAuth from "../../assets/images/image_background_auth.png";
 import ImagePanel from "./components/ImagePanel";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
-import ImageBackgroundAuth from "../../assets/images/image_background_auth.png";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -60,10 +60,7 @@ export default function Auth() {
                   transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="w-full"
                 >
-                  <LoginForm
-                    onSwitch={() => handleSwitch(false)}
-                    isLogin={isLogin}
-                  />
+                  <LoginForm onSwitch={() => handleSwitch(false)} isLogin={isLogin} />
                 </motion.div>
               ) : (
                 <motion.div
@@ -74,10 +71,7 @@ export default function Auth() {
                   transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="w-full"
                 >
-                  <RegisterForm
-                    onSwitch={() => handleSwitch(true)}
-                    isLogin={isLogin}
-                  />
+                  <RegisterForm onSwitch={() => handleSwitch(true)} isLogin={isLogin} />
                 </motion.div>
               )}
             </AnimatePresence>

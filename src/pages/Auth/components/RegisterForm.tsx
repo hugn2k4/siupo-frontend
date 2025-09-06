@@ -9,8 +9,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 
 interface RegisterFormProps {
@@ -29,14 +29,10 @@ export default function RegisterForm({ onSwitch, isLogin }: RegisterFormProps) {
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
-  const handleMouseUpPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
@@ -128,9 +124,7 @@ export default function RegisterForm({ onSwitch, isLogin }: RegisterFormProps) {
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
-                  aria-label={
-                    showPassword ? "hide the password" : "display the password"
-                  }
+                  aria-label={showPassword ? "hide the password" : "display the password"}
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
                   onMouseUp={handleMouseUpPassword}
@@ -177,11 +171,7 @@ export default function RegisterForm({ onSwitch, isLogin }: RegisterFormProps) {
 
         <Typography variant="body2" align="center" className="mt-2">
           Bạn đã có tài khoản?{" "}
-          <Typography
-            component="span"
-            className="text-blue-600 cursor-pointer hover:underline"
-            onClick={onSwitch}
-          >
+          <Typography component="span" className="text-blue-600 cursor-pointer hover:underline" onClick={onSwitch}>
             Đăng nhập ngay
           </Typography>
         </Typography>

@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export default function NotFound() {
@@ -13,11 +13,7 @@ export default function NotFound() {
       gap={2}
       mt={4}
     >
-      <Typography
-        variant="h1"
-        sx={{ color: "var(--color-primary)" }}
-        fontWeight={700}
-      >
+      <Typography variant="h1" sx={{ color: "var(--color-primary)" }} fontWeight={700}>
         404
       </Typography>
       <Typography variant="h5" fontWeight={500} mb={2}>

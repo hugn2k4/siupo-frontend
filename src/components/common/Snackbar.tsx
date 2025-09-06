@@ -1,7 +1,7 @@
-import { Snackbar, Alert, AlertTitle } from "@mui/material";
 import type { AlertColor } from "@mui/material";
-import Slide from "@mui/material/Slide";
+import { Alert, AlertTitle, Snackbar } from "@mui/material";
 import type { SlideProps } from "@mui/material/Slide";
+import Slide from "@mui/material/Slide";
 import React from "react";
 
 export interface AppSnackbarProps {
@@ -30,12 +30,7 @@ const AppSnackbar: React.FC<AppSnackbarProps> = ({
     anchorOrigin={{ vertical: "top", horizontal: "right" }}
     TransitionComponent={SlideTransition}
   >
-    <Alert
-      onClose={onClose}
-      variant="filled"
-      severity={severity}
-      sx={{ width: "100%" }}
-    >
+    <Alert onClose={onClose} variant="filled" severity={severity} sx={{ width: "100%" }}>
       <AlertTitle>{severity.toUpperCase()}</AlertTitle>
       {message}
     </Alert>

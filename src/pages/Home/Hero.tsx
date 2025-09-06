@@ -1,9 +1,10 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import ShiningStarsIcon from "../../assets/icons/shining_stars.svg";
 import SparkleIcon from "../../assets/icons/sparkle.svg";
 import ImageHero from "../../assets/images/image_hero.png";
+import MyButton from "../../components/common/Button";
 
 const Hero = () => {
   const [hoveredPlace, setHoveredPlace] = useState(false);
@@ -102,7 +103,7 @@ const Hero = () => {
               you enjoy a balanced and flavorful lifestyle.
             </Typography>
             <Box className="flex space-x-4 gap-4 pb-20">
-              <Button
+              {/* <Button
                 variant="outlined"
                 sx={{
                   bgcolor: hoveredPlace ? "white" : "var(--color-green-primary)",
@@ -115,6 +116,7 @@ const Hero = () => {
               >
                 Show More
               </Button>
+
               <Button
                 variant="outlined"
                 sx={{
@@ -133,7 +135,17 @@ const Hero = () => {
                 onMouseLeave={() => setHoveredPlace(false)}
               >
                 Place an Order
-              </Button>
+              </Button> */}
+              <MyButton colorScheme="green" hovered={hoveredPlace} disableDefaultHover>
+                Show More
+              </MyButton>
+              <MyButton
+                colorScheme="lightGreen"
+                onMouseEnter={() => setHoveredPlace(true)}
+                onMouseLeave={() => setHoveredPlace(false)}
+              >
+                Place an Order
+              </MyButton>
             </Box>
           </Box>
         </Box>

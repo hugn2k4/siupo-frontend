@@ -15,19 +15,14 @@ const SnackbarContext = createContext<SnackbarContextProps>({
   showSnackbar: () => {},
 });
 
-export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: false,
     message: "",
     severity: "success",
   });
 
-  const showSnackbar = (
-    message: string,
-    severity: SnackbarState["severity"] = "success"
-  ) => {
+  const showSnackbar = (message: string, severity: SnackbarState["severity"] = "success") => {
     setSnackbar({ open: true, message, severity });
   };
 
@@ -36,12 +31,7 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <SnackbarContext.Provider value={{ showSnackbar }}>
       {children}
-      <AppSnackbar
-        open={snackbar.open}
-        message={snackbar.message}
-        severity={snackbar.severity}
-        onClose={handleClose}
-      />
+      <AppSnackbar open={snackbar.open} message={snackbar.message} severity={snackbar.severity} onClose={handleClose} />
     </SnackbarContext.Provider>
   );
 };

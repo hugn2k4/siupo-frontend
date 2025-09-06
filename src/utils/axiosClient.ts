@@ -1,5 +1,5 @@
-import axios from "axios";
 import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import axios from "axios";
 import { API_BASE_URL, DEFAULT_HEADERS } from "../config";
 
 const axiosClient = axios.create({

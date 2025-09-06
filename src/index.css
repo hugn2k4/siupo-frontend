@@ -1,16 +1,29 @@
-/* src/index.css */
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import url("https://fonts.googleapis.com/css2?family=Miniver&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 body {
   font-family: "Roboto", sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
-} */
- @import "tailwindcss";
+}
+@import "tailwindcss";
 
 @theme {
-  --color-primary: #FF9F0D;
+  --color-primary: #ff9f0d;
+  --color-secondary: #999966;
+
+  --color-info: #2f80ed;
+  --color-success: #27ae60;
+  --color-warning: #e2b93b;
+  --color-error: #eb5757;
+
+  --color-black1: #1e1e1e;
+  --color-black2: #1d1d1d;
+  --color-black3: #282828;
+  --color-white: #ffffff;
+
+  --color-gray1: #333333;
+  --color-gray2: #4f4f4f;
+  --color-gray3: #828282;
+  --color-gray4: #bdbdbd;
+  --color-gray5: #e0e0e0;
+
+  --color-green-primary: #195a00;
 }

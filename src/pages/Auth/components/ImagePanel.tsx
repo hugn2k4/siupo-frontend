@@ -13,11 +13,7 @@ export default function ImagePanel({ isLogin }: ImagePanel) {
       transition={{ duration: 0.6, ease: "easeInOut" }}
       className="absolute top-0 left-0 h-full w-1/2 flex items-center justify-center bg-gray-100 shadow-lg z-20"
     >
-      <img
-        src={ImagePanelAuth}
-        alt="Auth Illustration"
-        className="h-full w-full object-cover"
-      />
+      <img src={ImagePanelAuth} alt="Auth Illustration" className="h-full w-full object-cover" />
     </motion.div>
   );
 }

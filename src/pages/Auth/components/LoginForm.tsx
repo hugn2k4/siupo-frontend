@@ -11,10 +11,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { useSnackbar } from "../../../hooks/useSnackbar";
+import { useState } from "react";
 import { useNavigate } from "../../../hooks/useNavigate";
+import { useSnackbar } from "../../../hooks/useSnackbar";
 import { authService } from "../../../services/authService";
 interface LoginFormProps {
   onSwitch: () => void;
@@ -30,17 +30,12 @@ export default function LoginForm({ onSwitch, isLogin }: LoginFormProps) {
   const navigate = useNavigate();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
-  const handleMouseUpPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
-
   function validateLoginInput(username: string, password: string): boolean {
     if (!username.trim()) {
       showSnackbar("Vui lòng nhập tên đăng nhập!", "warning");
@@ -70,10 +65,7 @@ export default function LoginForm({ onSwitch, isLogin }: LoginFormProps) {
     } catch (error) {
       console.error("Login error:", error);
       const err = error as { response?: { data?: { message?: string } } };
-      showSnackbar(
-        err.response?.data?.message || "Đăng nhập thất bại!",
-        "error"
-      );
+      showSnackbar(err.response?.data?.message || "Đăng nhập thất bại!", "error");
     }
   };
   return (
@@ -114,9 +106,7 @@ export default function LoginForm({ onSwitch, isLogin }: LoginFormProps) {
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
-                  aria-label={
-                    showPassword ? "hide the password" : "display the password"
-                  }
+                  aria-label={showPassword ? "hide the password" : "display the password"}
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
                   onMouseUp={handleMouseUpPassword}
@@ -142,10 +132,7 @@ export default function LoginForm({ onSwitch, isLogin }: LoginFormProps) {
             label="Ghi nhớ đăng nhập"
           />
 
-          <Typography
-            variant="body2"
-            className="text-blue-600 cursor-pointer hover:underline mt-2"
-          >
+          <Typography variant="body2" className="text-blue-600 cursor-pointer hover:underline mt-2">
             Quên mật khẩu?
           </Typography>
         </div>
@@ -164,11 +151,7 @@ export default function LoginForm({ onSwitch, isLogin }: LoginFormProps) {
 
         <Typography variant="body2" align="center" className="mt-2">
           Chưa có tài khoản?{" "}
-          <Typography
-            component="span"
-            className="text-blue-600 cursor-pointer hover:underline"
-            onClick={onSwitch}
-          >
+          <Typography component="span" className="text-blue-600 cursor-pointer hover:underline" onClick={onSwitch}>
             Đăng ký ngay
           </Typography>
         </Typography>

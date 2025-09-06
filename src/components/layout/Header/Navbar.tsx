@@ -1,30 +1,53 @@
-import { Box } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import menu from "../../../config/menuConfig";
 
 function Navbar() {
-  const navItems = [
-    { label: "Home", path: "/" },
-    { label: "Menu", path: "/" },
-    { label: "Blog", path: "/" },
-    { label: "Pages", path: "/" },
-    { label: "Shop", path: "/" },
-    { label: "Contact", path: "/" },
-  ];
+  const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Box className="flex space-x-4">
-        {navItems.map((item) => (
+      {/* Desktop Menu */}
+      <Box
+        sx={{
+          display: { xs: "none", md: "flex" }, // Ẩn trên mobile, hiện trên tablet/desktop
+          gap: 2,
+        }}
+      >
+        {menu.map((item) => (
           <Link
             key={item.path}
             to={item.path}
-            className="text-white  hover:text-primary transition-colors duration-200 px-2 py-1"
+            className="text-white hover:text-primary transition-colors duration-200 px-2 py-1"
           >
             {item.label}
           </Link>
         ))}
-        <div className="flex "></div>
       </Box>
+
+      {/* Mobile Menu (Hamburger) */}
+      <Box sx={{ display: { xs: "flex", md: "none" } }}>
+        <IconButton size="large" edge="start" color="inherit" onClick={() => setOpen(true)}>
+          <MenuIcon />
+        </IconButton>
+      </Box>
+
+      {/* Drawer cho Mobile */}
+      <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
+        <Box sx={{ width: 250 }} role="presentation" onClick={() => setOpen(false)}>
+          <List>
+            {menu.map((item) => (
+              <ListItem key={item.path} disablePadding>
+                <ListItemButton component={Link} to={item.path}>
+                  <ListItemText primary={item.label} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
     </>
   );
 }

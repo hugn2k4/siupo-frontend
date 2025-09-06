@@ -4,7 +4,7 @@ import RedirectIfAuth from "./components/common/RedirectIfAuth";
 import AuthPage from "./pages/Auth/Auth";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
-
+import ShopDetail from "./pages/ShopDetail/ShopDetail";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -12,6 +12,7 @@ const router = createBrowserRouter([
     children: [
       { path: "", element: <Home /> },
       { path: "home", element: <Home /> },
+      { path: "shopdetail", element: <ShopDetail /> },
       { path: "*", element: <NotFound /> },
     ],
   },

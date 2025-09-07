@@ -31,7 +31,7 @@ const ProductImages: React.FC = () => {
       </div>
       
       {/* Main Image */}
-      <div className="w-96 h-96 rounded-lg overflow-hidden">
+      <div className=" rounded-lg overflow-hidden">
         <img 
           src={images[selectedImage]} 
           alt="Main product"

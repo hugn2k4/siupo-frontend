@@ -39,7 +39,7 @@ const SimilarProducts: React.FC = () => {
           <button className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">
             ‹
           </button>
-          <button className="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center hover:bg-orange-600">
+          <button className="w-10 h-10 bg-[#BC9A6C] text-white rounded-full flex items-center justify-center hover:bg-orange-600">
             ›
           </button>
         </div>

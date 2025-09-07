@@ -7,7 +7,7 @@ const ProductInfo: React.FC = () => {
   return (
     <div className="flex-1">
       <div className="mb-4">
-        <span className="bg-orange-500 text-white px-3 py-1 rounded text-sm font-medium">Sale</span>
+        <span className="bg-[#BC9A6C] text-white px-3 py-1 rounded text-sm font-medium">Sale</span>
       </div>
       
       <h1 className="text-3xl font-bold text-gray-900 mb-4">Yummy Chicken Chup</h1>
@@ -47,8 +47,8 @@ const ProductInfo: React.FC = () => {
             +
           </button>
         </div>
-        <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-medium">
-          🛒 Add to cart
+        <button className="bg-[#BC9A6C] hover:bg-orange-600 text-white px-6 py-2 rounded font-medium">
+          Add to cart
         </button>
       </div>
       

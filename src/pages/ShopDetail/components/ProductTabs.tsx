@@ -9,7 +9,7 @@ const ProductTabs: React.FC = () => {
         <button
           className={`px-6 py-3 font-medium ${
             activeTab === 'description'
-              ? 'bg-orange-500 text-white rounded-t'
+              ? 'bg-[#BC9A6C] text-white rounded-t'
               : 'text-gray-600 hover:text-gray-800'
           }`}
           onClick={() => setActiveTab('description')}
@@ -19,7 +19,7 @@ const ProductTabs: React.FC = () => {
         <button
           className={`px-6 py-3 font-medium ${
             activeTab === 'reviews'
-              ? 'bg-orange-500 text-white rounded-t'
+              ? 'bg-[#BC9A6C] text-white rounded-t'
               : 'text-gray-600 hover:text-gray-800'
           }`}
           onClick={() => setActiveTab('reviews')}

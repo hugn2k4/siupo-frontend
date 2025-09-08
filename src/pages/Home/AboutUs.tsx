@@ -2,7 +2,6 @@ import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import ImageAboutUs from "../../assets/images/image_about_us_home.png";
 import MyButton from "../../components/common/Button";
-import WatchVideoButton from "../../components/common/WatchVideoButton";
 
 function AboutUs() {
   return (
@@ -125,7 +124,7 @@ function AboutUs() {
             >
               <MyButton colorScheme="green">Show More</MyButton>
 
-              <WatchVideoButton />
+              <MyButton isWatch />
             </Box>
           </Box>
         </Box>

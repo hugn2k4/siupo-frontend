@@ -1,17 +1,31 @@
+import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
 import type { ButtonProps, SxProps, Theme } from "@mui/material";
-import { Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import type { ReactNode } from "react";
 
-interface MyButtonProps extends ButtonProps {
+interface BaseButtonProps extends ButtonProps {
   disableDefaultHover?: boolean;
   colorScheme?: "green" | "lightGreen" | "orange";
   hovered?: boolean;
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   iconOnly?: boolean;
-  to?: string;
   sx?: SxProps<Theme>;
 }
+
+interface WatchButtonProps {
+  isWatch: true;
+  colorScheme?: "green" | "orange";
+  onClick?: () => void;
+  children?: ReactNode;
+  sx?: SxProps<Theme>;
+}
+
+interface NormalButtonProps extends BaseButtonProps {
+  isWatch?: false;
+}
+
+type MyButtonProps = WatchButtonProps | NormalButtonProps;
 
 const colorMap = {
   green: {
@@ -37,7 +51,63 @@ const colorMap = {
   },
 };
 
-const MyButton = ({
+const WatchVideoButton = ({ children, onClick, colorScheme = "green" }: WatchButtonProps) => {
+  const colors = colorMap[colorScheme];
+  return (
+    <>
+      <Box
+        onClick={onClick}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          cursor: "pointer",
+          position: "relative",
+          overflow: "hidden",
+          borderRadius: 8,
+          transition: "all 0.3s ease",
+          "&:hover::before": {
+            width: "100%",
+          },
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: 0,
+            height: "100%",
+            bgcolor: "rgba(0,0,0,0.1)",
+            transition: "width 0.3s ease",
+            borderRadius: 8,
+            zIndex: 0,
+          },
+        }}
+      >
+        {/* Icon tròn bên ngoài */}
+        <Box
+          sx={{
+            bgcolor: colors.bg,
+            borderRadius: "50%",
+            height: "100%",
+            aspectRatio: "1 / 1",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <PlayArrowOutlinedIcon sx={{ color: "white" }} />
+        </Box>
+        <Typography sx={{ position: "relative", zIndex: 1, fontWeight: 500, pr: 2 }}>
+          {children || "Watch video"}
+        </Typography>
+      </Box>
+    </>
+  );
+};
+
+const DefaultButton = ({
   colorScheme = "green",
   hovered = false,
   startIcon,
@@ -47,10 +117,8 @@ const MyButton = ({
   children,
   sx,
   ...props
-}: MyButtonProps) => {
+}: NormalButtonProps) => {
   const colors = colorMap[colorScheme];
-
-  // default style
   const defaultSx: SxProps<Theme> = {
     bgcolor: hovered ? colors.hoverBg : colors.bg,
     color: hovered ? colors.hoverText : colors.text,
@@ -80,6 +148,10 @@ const MyButton = ({
       {!iconOnly && children}
     </Button>
   );
+};
+
+const MyButton = (props: MyButtonProps) => {
+  return props.isWatch ? <WatchVideoButton {...props} /> : <DefaultButton {...props} />;
 };
 
 export default MyButton;

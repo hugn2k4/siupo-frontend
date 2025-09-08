@@ -29,56 +29,87 @@ const Footer = () => {
       }}
     >
       {/* Section 1: Support + Subscribe */}
-      <Box sx={{ width: "100%", maxWidth: 1250, mx: "auto" }}>
-        {/* Nội dung */}
+      <Box sx={{ width: "100%", maxWidth: 1250, mx: "auto", px: { xs: 2, sm: 3, md: 4 } }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             justifyContent: "space-between",
-            alignItems: "center",
-            gap: 4,
-            pt: 4,
-            pb: 4,
+            alignItems: { xs: "stretch", md: "center" },
+            gap: { xs: 3, md: 4 },
+            pt: { xs: 3, md: 4 },
+            pb: { xs: 3, md: 4 },
           }}
         >
           {/* Text */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography variant="h6" fontWeight="bold">
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              textAlign: { xs: "center", md: "left" },
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold" sx={{ fontSize: { xs: "1.1rem", md: "1.25rem" } }}>
               <Box component="span" sx={{ color: "var(--color-primary)" }}>
                 St
               </Box>
               ill You Need Our Support ?
             </Typography>
-            <Typography>Don’t wait make a smart & logical quote here. It’s pretty easy.</Typography>
+            <Typography sx={{ fontSize: { xs: "0.9rem", md: "1rem" } }}>
+              Don't wait make a smart & logical quote here. It's pretty easy.
+            </Typography>
           </Box>
 
           {/* Input + Button */}
-          <Box sx={{ display: "flex", width: "100%", maxWidth: 500 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              width: "100%",
+              maxWidth: { xs: "100%", md: 500 },
+              gap: { xs: 1, sm: 0 },
+            }}
+          >
             <TextField
               variant="outlined"
               placeholder="Enter your email"
+              size="small"
               sx={{
-                flex: 2,
+                flex: { xs: 1, sm: 2 },
                 backgroundColor: "var(--color-primary)",
-                borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
-                borderTopLeftRadius: 4,
-                borderBottomLeftRadius: 4,
+                borderRadius: { xs: 1, sm: 0 },
+                borderTopRightRadius: { sm: 0 },
+                borderBottomRightRadius: { sm: 0 },
+                borderTopLeftRadius: { xs: 1, sm: 1 },
+                borderBottomLeftRadius: { xs: 1, sm: 1 },
                 "& fieldset": { border: "none" },
-                input: { color: "white", px: 2 },
+                "& input": {
+                  color: "white",
+                  px: 2,
+                  fontSize: { xs: "0.875rem", md: "1rem" },
+                },
+                py: { xs: 0.5, md: 1 },
               }}
             />
             <Button
+              size="small"
               sx={{
-                flex: 1,
+                flex: { xs: 1, sm: 1 },
                 backgroundColor: "var(--color-white)",
-                color: "black",
-                px: 3,
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
+                color: "var(--color-primary)",
+                px: { xs: 0.5, md: 1 },
+                borderRadius: { xs: 1, sm: 0 },
+                borderTopLeftRadius: { sm: 0 },
+                borderBottomLeftRadius: { sm: 0 },
+                borderTopRightRadius: { xs: 1, sm: 1 },
+                borderBottomRightRadius: { xs: 1, sm: 1 },
                 "&:hover": { backgroundColor: "#f0f0f0" },
                 whiteSpace: "nowrap",
+                fontSize: { xs: "0.875rem", md: "1rem" },
+                minHeight: { xs: 40, md: 40 },
+                textTransform: "none",
+                fontWeight: 400,
               }}
             >
               Subscribe Now
@@ -86,89 +117,114 @@ const Footer = () => {
           </Box>
         </Box>
 
-        {/* Line cùng độ rộng */}
-        <Box className="border-t border-primary " sx={{ width: "100%", maxWidth: 1250, mx: "auto", p: 4 }} />
+        {/* Divider */}
+        <Box sx={{ borderTop: "1px solid var(--color-primary)", width: "100%" }} />
       </Box>
 
+      {/* Section 2: Main Footer Content */}
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
-          gap: 2,
-          alignItems: "start",
-          justifyContent: "space-around",
-          paddingLeft: 20,
-          paddingRight: 20,
-          marginBottom: 4,
+          flexDirection: { xs: "column", sm: "row" },
+          gap: { xs: 4, sm: 2, md: 4 },
+          alignItems: { xs: "center", sm: "start" },
+          justifyContent: { xs: "center", sm: "space-around" },
+          px: { xs: 2, sm: 4, md: 20 },
+          py: { xs: 3, md: 4 },
+          mb: 4,
         }}
       >
+        {/* Company Info */}
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             gap: 2,
-            alignItems: "start",
-            maxWidth: 300,
+            alignItems: { xs: "center", sm: "start" },
+            maxWidth: { xs: "100%", sm: 300 },
+            textAlign: { xs: "center", sm: "left" },
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            Siupo{" "}
+            Siupo
           </Typography>
-          <Typography variant="subtitle2">Subscribe our newsletter and get discount 25%off</Typography>
-          <Stack direction="row" spacing={1}>
+          <Typography variant="subtitle2" sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
+            Subscribe our newsletter and get discount 25%off
+          </Typography>
+          <Stack direction="row" spacing={1} sx={{ justifyContent: { xs: "center", sm: "flex-start" } }}>
             <IconButton aria-label="facebook">
-              <FacebookOutlinedIcon sx={{ color: "#1877F2", fontSize: 24 }} />
+              <FacebookOutlinedIcon sx={{ color: "#1877F2", fontSize: { xs: 20, md: 24 } }} />
             </IconButton>
             <IconButton aria-label="instagram">
-              <InstagramIcon sx={{ color: "#E4405F", fontSize: 24 }} />
+              <InstagramIcon sx={{ color: "#E4405F", fontSize: { xs: 20, md: 24 } }} />
             </IconButton>
             <IconButton aria-label="youtube">
-              <YouTubeIcon sx={{ color: "#FF0000", fontSize: 24 }} />
+              <YouTubeIcon sx={{ color: "#FF0000", fontSize: { xs: 20, md: 24 } }} />
             </IconButton>
           </Stack>
         </Box>
 
+        {/* Contact Info */}
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             gap: 2,
-            alignItems: "start",
+            alignItems: { xs: "center", sm: "start" },
+            textAlign: { xs: "center", sm: "left" },
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
             Contact us
           </Typography>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <PhoneOutlinedIcon />
-            <Typography variant="body2">0123 456 789</Typography>
-          </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <PlaceOutlinedIcon />
-            <Typography variant="body2">1 Vo Van Ngan Street, Thu Duc City, Ho Chi Minh City</Typography>
-          </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <MailOutlineOutlinedIcon />
-            <Typography variant="body2">hcl2k4@gmail.com</Typography>
-          </Stack>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <QueryBuilderOutlinedIcon />
-            <Typography variant="body2">Sun - Sat / 10:00 AM - 8:00 PM</Typography>
+          <Stack spacing={1.5} sx={{ alignItems: { xs: "center", sm: "flex-start" } }}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <PhoneOutlinedIcon sx={{ fontSize: { xs: 18, md: 20 } }} />
+              <Typography variant="body2" sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
+                0123 456 789
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="flex-start">
+              <PlaceOutlinedIcon sx={{ fontSize: { xs: 18, md: 20 }, mt: 0.2 }} />
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: { xs: "0.875rem", md: "1rem" },
+                  maxWidth: { xs: 280, sm: "none" },
+                }}
+              >
+                1 Vo Van Ngan Street, Thu Duc City, Ho Chi Minh City
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <MailOutlineOutlinedIcon sx={{ fontSize: { xs: 18, md: 20 } }} />
+              <Typography variant="body2" sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
+                hcl2k4@gmail.com
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <QueryBuilderOutlinedIcon sx={{ fontSize: { xs: 18, md: 20 } }} />
+              <Typography variant="body2" sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
+                Sun - Sat / 10:00 AM - 8:00 PM
+              </Typography>
+            </Stack>
           </Stack>
         </Box>
 
+        {/* Navigation Links */}
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             gap: 2,
-            alignItems: "start",
+            alignItems: { xs: "center", sm: "start" },
+            textAlign: { xs: "center", sm: "left" },
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
             Links
           </Typography>
-          <Stack spacing={1}>
+          <Stack spacing={1} sx={{ alignItems: { xs: "center", sm: "flex-start" } }}>
             {menu.map((item) => (
               <MuiLink
                 key={item.path}
@@ -177,7 +233,11 @@ const Footer = () => {
                 underline="hover"
                 color="inherit"
                 variant="subtitle2"
-                sx={{ "&:hover": { color: "var(--color-primary)" } }}
+                sx={{
+                  "&:hover": { color: "var(--color-primary)" },
+                  fontSize: { xs: "0.875rem", md: "1rem" },
+                  transition: "color 0.3s ease",
+                }}
               >
                 {item.label}
               </MuiLink>
@@ -185,19 +245,27 @@ const Footer = () => {
           </Stack>
         </Box>
 
+        {/* Instagram Gallery */}
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             gap: 2,
-            alignItems: "start",
+            alignItems: { xs: "center", sm: "start" },
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold", textAlign: { xs: "center", sm: "left" } }}>
             Instagram Gallery
           </Typography>
-
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, maxWidth: 320 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "repeat(3, 1fr)", sm: "repeat(3, 1fr)" },
+              gap: 1,
+              maxWidth: { xs: 240, sm: 200, md: 320 },
+              justifyContent: "center",
+            }}
+          >
             {images.map((src, index) => (
               <Box
                 key={index}
@@ -205,10 +273,15 @@ const Footer = () => {
                 src={src}
                 alt={`Ảnh ${index + 1}`}
                 sx={{
-                  width: 100,
-                  height: 100,
+                  width: { xs: 75, sm: 65, md: 100 },
+                  height: { xs: 75, sm: 65, md: 100 },
                   objectFit: "cover",
                   borderRadius: 1,
+                  cursor: "pointer",
+                  transition: "transform 0.3s ease",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                  },
                 }}
               />
             ))}
@@ -216,21 +289,31 @@ const Footer = () => {
         </Box>
       </Box>
 
+      {/* Section 3: Footer Bottom */}
       <Box
         sx={{
           bgcolor: "var(--color-gray2)",
           color: "white",
-          py: 2,
+          py: { xs: 2, md: 3 },
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           justifyContent: "space-around",
           alignItems: "center",
-          gap: 2,
+          gap: { xs: 2, md: 0 },
+          px: { xs: 2, md: 0 },
         }}
       >
-        <Typography variant="body2">Copyright © 2025 Nhà hàng của bạn. All rights reserved.</Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            textAlign: { xs: "center", md: "left" },
+            fontSize: { xs: "0.875rem", md: "1rem" },
+          }}
+        >
+          Copyright © 2025 Nhà hàng của bạn. All rights reserved.
+        </Typography>
 
-        <Box sx={{ display: "flex", gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: { xs: 1, sm: 2 } }}>
           {["Privacy Policy", "Term of Use", "Partner"].map((text) => (
             <Typography
               key={text}
@@ -239,6 +322,10 @@ const Footer = () => {
               sx={{
                 cursor: "pointer",
                 "&:hover": { color: "var(--color-primary)" },
+                fontSize: { xs: "0.875rem", md: "1rem" },
+                textAlign: { xs: "center", md: "left" },
+                transition: "color 0.3s ease",
+                m: 0,
               }}
             >
               {text}

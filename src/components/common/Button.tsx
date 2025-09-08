@@ -66,6 +66,7 @@ const WatchVideoButton = ({ children, onClick, colorScheme = "green" }: WatchBut
           overflow: "hidden",
           borderRadius: 8,
           transition: "all 0.3s ease",
+          height: { xs: 36, sm: 42, md: 48 },
           "&:hover::before": {
             width: "100%",
           },
@@ -123,8 +124,8 @@ const DefaultButton = ({
     bgcolor: hovered ? colors.hoverBg : colors.bg,
     color: hovered ? colors.hoverText : colors.text,
     borderColor: colors.border,
-    px: 5,
-    py: 1.5,
+    px: { xs: 2, sm: 3, md: 5 },
+    py: { xs: 1, sm: 1.25, md: 1.5 },
     fontWeight: 700,
     transition: "all 0.3s ease",
     ...(iconOnly && {

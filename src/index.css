@@ -9,6 +9,8 @@ body {
   --color-primary: #ff9f0d;
   --color-secondary: #999966;
 
+  --color-green-primary: #195a00;
+
   --color-info: #2f80ed;
   --color-success: #27ae60;
   --color-warning: #e2b93b;
@@ -24,6 +26,4 @@ body {
   --color-gray3: #828282;
   --color-gray4: #bdbdbd;
   --color-gray5: #e0e0e0;
-
-  --color-green-primary: #195a00;
 }

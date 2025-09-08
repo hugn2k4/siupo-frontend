@@ -1,7 +1,8 @@
-import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import ImageAboutUs from "../../assets/images/image_about_us_home.png";
+import MyButton from "../../components/common/Button";
+import WatchVideoButton from "../../components/common/WatchVideoButton";
 
 function AboutUs() {
   return (
@@ -122,45 +123,9 @@ function AboutUs() {
               viewport={{ once: true }}
               className="flex space-x-4 gap-4 pb-20 "
             >
-              <Button
-                variant="outlined"
-                sx={{
-                  bgcolor: "var(--color-green-primary)",
-                  color: "white",
-                  borderColor: "var(--color-green-primary)",
-                  px: 5,
-                  py: 1.5,
-                  fontWeight: 700,
-                }}
-              >
-                Show More
-              </Button>
-              <Box
-                sx={{
-                  px: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1.5,
-                }}
-              >
-                <Box
-                  sx={{
-                    bgcolor: "var(--color-green-primary)",
-                    borderRadius: "50%",
-                    height: "100%",
-                    aspectRatio: "1 / 1",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                  }}
-                >
-                  <PlayArrowOutlinedIcon sx={{ color: "white" }} />
-                </Box>
+              <MyButton colorScheme="green">Show More</MyButton>
 
-                {/* Text */}
-                <Typography fontWeight={600}>Watch video</Typography>
-              </Box>
+              <WatchVideoButton />
             </Box>
           </Box>
         </Box>

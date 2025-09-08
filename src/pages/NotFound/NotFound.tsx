@@ -1,5 +1,6 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import MyButton from "../../components/common/Button";
 
 export default function NotFound() {
   return (
@@ -24,19 +25,15 @@ export default function NotFound() {
         sx={{
           whiteSpace: "pre-line",
           lineHeight: 1.6,
+          mb: 2,
         }}
       >
         Page Cannot be found! we’ll have it figured out in no time .{"\n"}
         Menwhile, cheek out these fresh ideas:
       </Typography>
-      <Button
-        variant="contained"
-        component={Link}
-        to="/"
-        sx={{ background: "var(--color-primary)", mt: 2, px: 4, py: 1.5 }}
-      >
+      <MyButton colorScheme="orange" component={Link} to="/">
         Go to home
-      </Button>
+      </MyButton>
     </Box>
   );
 }

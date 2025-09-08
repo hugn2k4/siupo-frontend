@@ -5,6 +5,7 @@ import AuthPage from "./pages/Auth/Auth";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 import ShopDetail from "./pages/ShopDetail/ShopDetail";
+import AboutUs from "./pages/AboutMe/AboutUS";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -13,6 +14,7 @@ const router = createBrowserRouter([
       { path: "", element: <Home /> },
       { path: "home", element: <Home /> },
       { path: "shopdetail", element: <ShopDetail /> },
+      { path: "aboutus", element: <AboutUs /> },
       { path: "*", element: <NotFound /> },
     ],
   },

@@ -1,29 +1,55 @@
-import { Box } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
-import Container from "@mui/material/Container";
-import Toolbar from "@mui/material/Toolbar";
+import { AppBar, Box, Container, Toolbar } from "@mui/material";
 import Actions from "./Actions";
 import Logo from "./Logo";
 import Navbar from "./Navbar";
 
 const Header = () => {
   return (
-    <>
-      <AppBar position="static" sx={{ backgroundColor: "black" }}>
-        <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{ display: "flex", justifyContent: "space-around" }}>
+    <AppBar
+      position="static"
+      component="header"
+      sx={{
+        bgcolor: "black",
+        boxShadow: "none",
+      }}
+    >
+      <Container maxWidth="xl">
+        <Toolbar
+          disableGutters
+          sx={{
+            minHeight: { xs: 64, md: 80 },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {/* Logo - always on left */}
+          <Box sx={{ flexShrink: 0 }}>
             <Logo />
-            <Box sx={{ order: { xs: 2, md: 3 } }}>
-              <Actions />
-            </Box>
+          </Box>
 
-            <Box sx={{ order: { xs: 3, md: 2 } }}>
+          {/* Desktop: Navbar center */}
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              flex: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Navbar />
+          </Box>
+
+          {/* Actions - always on right */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Actions />
+            {/* Mobile: Navbar hamburger */}
+            <Box sx={{ display: { xs: "flex", md: "none" }, ml: 1 }}>
               <Navbar />
             </Box>
-          </Toolbar>
-        </Container>
-      </AppBar>
-    </>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 };
 

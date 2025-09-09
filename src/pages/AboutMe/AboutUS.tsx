@@ -4,7 +4,6 @@ import WhyChooseUsSection from "./components/WhyChooseUsSection";
 import TeamSection from "./components/TeamSection";
 import TestimonialSection from "./components/TestimonialSection";
 import MenuSection from "./components/MenuSection";
-import NewsletterSection from "./components/NewsletterSection";
 const AboutMe = () => {
   return (
     <div className="min-h-screen">
@@ -14,7 +13,6 @@ const AboutMe = () => {
       <TeamSection />
       <TestimonialSection />
       <MenuSection />
-      <NewsletterSection />
     </div>
   );
 };

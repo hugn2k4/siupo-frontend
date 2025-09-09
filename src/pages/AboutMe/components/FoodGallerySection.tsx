@@ -13,7 +13,7 @@ const FoodGallerySection: React.FC = () => {
             </div>
           </div>
           <div>
-            <h3 className="text-[#BC9A6C] mb-2 inline-block" style={{ fontFamily: "Miniver" }}>
+            <h3 className="text-primary mb-2 inline-block" style={{ fontFamily: "Miniver" }}>
               About us _____
             </h3>
             <h2 className="text-4xl font-bold text-gray-800 mb-6">Food is an important part of a balanced Diet</h2>

@@ -1,34 +1,34 @@
-import React from 'react';
-import ProductCard from './ProductCard';
+import React from "react";
+import ProductCard from "./ProductCard";
 import similar1 from "../../../assets/images/similar1.png";
 import similar2 from "../../../assets/images/similar2.png";
 import similar3 from "../../../assets/images/similar3.png";
 
 const SimilarProducts: React.FC = () => {
   const products = [
-    { 
-      title: "Fresh Lime", 
-      price: "$38.00", 
+    {
+      title: "Fresh Lime",
+      price: "$38.00",
       originalPrice: "$45.00",
-      image: similar1 // Thay đổi đường dẫn phù hợp
+      image: similar1, // Thay đổi đường dẫn phù hợp
     },
-    { 
-      title: "Chocolate Muffin", 
+    {
+      title: "Chocolate Muffin",
       price: "$28.00",
-      image: similar2
+      image: similar2,
     },
-    { 
-      title: "Burger", 
-      price: "$21.00", 
+    {
+      title: "Burger",
+      price: "$21.00",
       originalPrice: "$45.00",
-      image: similar3
+      image: similar3,
     },
-    { 
-      title: "Fresh Lime", 
-      price: "$38.00", 
+    {
+      title: "Fresh Lime",
+      price: "$38.00",
       originalPrice: "$45.00",
-      image: similar1
-    }
+      image: similar1,
+    },
   ];
 
   return (
@@ -39,15 +39,15 @@ const SimilarProducts: React.FC = () => {
           <button className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">
             ‹
           </button>
-          <button className="w-10 h-10 bg-[#BC9A6C] text-white rounded-full flex items-center justify-center hover:bg-orange-600">
+          <button className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-orange-600">
             ›
           </button>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product, index) => (
-          <ProductCard 
+          <ProductCard
             key={index}
             title={product.title}
             price={product.price}

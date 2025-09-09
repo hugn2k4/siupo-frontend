@@ -39,12 +39,12 @@ const MenuSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        <div className="flex flex-wrap justify-center gap-8 mb-12 border-b border-gray-200">
           {menuCategories.map((category, index) => (
             <button
               key={index}
-              className={`px-6 py-2 rounded-full font-semibold transition-colors ${
-                index === 0 ? "bg-orange-500 text-white" : "bg-white text-gray-600 hover:bg-orange-100"
+              className={`pb-2 font-medium transition-colors ${
+                index === 0 ? "text-primary border-b-2 border-primary" : "text-gray-2 hover:text-primary"
               }`}
             >
               {category}

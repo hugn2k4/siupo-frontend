@@ -1,14 +1,21 @@
-import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import ImageAboutUs from "../../assets/images/image_about_us_home.png";
+import MyButton from "../../components/common/Button";
 
 function AboutUs() {
   return (
-    <section className="w-full h-screen flex flex-col relative">
+    <section className="w-full min-h-screen flex flex-col relative">
       {/* Flex container */}
-      <Box className="flex h-full">
-        {/* Left side*/}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", lg: "row" },
+          minHeight: "100vh",
+          alignItems: "center",
+        }}
+      >
+        {/* Left side - Image */}
         <Box
           component={motion.div}
           initial={{ opacity: 0, x: -100 }}
@@ -16,21 +23,23 @@ function AboutUs() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true, amount: 0.3 }}
           sx={{
-            flex: "0 0 50%",
+            flex: { xs: "none", lg: "0 0 50%" },
+            width: { xs: "100%", lg: "50%" },
+            height: { xs: "50vh", lg: "100vh" },
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: { xs: "center", lg: "flex-end" },
             alignItems: "center",
-            padding: 0,
-            position: "relative",
+            padding: { xs: 2, md: 4, lg: 0 },
+            order: { xs: 2, lg: 1 },
           }}
         >
           <Box
             component="img"
             src={ImageAboutUs}
-            alt="Hero"
+            alt="About us food showcase"
             sx={{
-              maxWidth: "90%",
-              maxHeight: "90%",
+              width: { xs: "100%", md: "80%", lg: "90%" },
+              maxHeight: { xs: "100%", lg: "90%" },
               objectFit: "contain",
             }}
           />
@@ -44,11 +53,14 @@ function AboutUs() {
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
           viewport={{ once: true, amount: 0.3 }}
           sx={{
-            flex: "0 0 50%",
-            height: "100vh",
+            flex: { xs: "none", lg: "0 0 50%" },
+            width: { xs: "100%", lg: "50%" },
+            minHeight: { xs: "50vh", lg: "100vh" },
             display: "flex",
             justifyContent: "center",
-            paddingRight: { xs: 2, md: 8, lg: 16 },
+            alignItems: "center",
+            padding: { xs: 3, md: 4, lg: 8, xl: 16 },
+            order: { xs: 1, lg: 2 },
           }}
         >
           <Box
@@ -56,7 +68,8 @@ function AboutUs() {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              maxWidth: 520,
+              maxWidth: { xs: "100%", sm: 480, md: 520 },
+              textAlign: { xs: "center", lg: "left" },
             }}
           >
             <Typography
@@ -71,6 +84,7 @@ function AboutUs() {
                 position: "relative",
                 display: "inline-block",
                 color: "var(--color-green-primary)",
+                fontSize: { xs: "1rem", md: "1.125rem" },
               }}
             >
               About us
@@ -78,7 +92,8 @@ function AboutUs() {
                 sx={{
                   position: "absolute",
                   bottom: "8px",
-                  left: "70px",
+                  left: { xs: "50%", lg: "70px" },
+                  transform: { xs: "translateX(-50%)", lg: "none" },
                   height: "1px",
                   width: "30px",
                   backgroundColor: "var(--color-green-primary)",
@@ -97,6 +112,8 @@ function AboutUs() {
                 position: "relative",
                 display: "inline-block",
                 mb: 4,
+                fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem", lg: "3rem" },
+                lineHeight: { xs: 1.3, md: 1.2 },
               }}
             >
               Food is an important part Of a balanced Diet
@@ -108,7 +125,12 @@ function AboutUs() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
               viewport={{ once: true }}
-              sx={{ mb: 4, color: "var(--color-gray2)" }}
+              sx={{
+                mb: 4,
+                color: "var(--color-gray2)",
+                fontSize: { xs: "0.875rem", md: "1rem" },
+                lineHeight: { xs: 1.6, md: 1.7 },
+              }}
             >
               Eating well is not just about feeling full — it’s about fueling your body with the right nutrients to stay
               strong and energized. A balanced diet of vegetables, grains, proteins, and healthy fats helps you enjoy
@@ -120,63 +142,22 @@ function AboutUs() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.0 }}
               viewport={{ once: true }}
-              className="flex space-x-4 gap-4 pb-20 "
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
+                justifyContent: { xs: "center", lg: "flex-start" },
+                alignItems: { xs: "center", sm: "flex-start" },
+                pb: { xs: 4, lg: 20 },
+              }}
             >
-              <Button
-                variant="outlined"
-                sx={{
-                  bgcolor: "var(--color-green-primary)",
-                  color: "white",
-                  borderColor: "var(--color-green-primary)",
-                  px: 5,
-                  py: 1.5,
-                  fontWeight: 700,
-                }}
-              >
-                Show More
-              </Button>
-              <Box
-                sx={{
-                  px: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1.5,
-                }}
-              >
-                <Box
-                  sx={{
-                    bgcolor: "var(--color-green-primary)",
-                    borderRadius: "50%",
-                    height: "100%",
-                    aspectRatio: "1 / 1",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                  }}
-                >
-                  <PlayArrowOutlinedIcon sx={{ color: "white" }} />
-                </Box>
+              <MyButton colorScheme="green">Show More</MyButton>
 
-                {/* Text */}
-                <Typography fontWeight={600}>Watch video</Typography>
-              </Box>
+              <MyButton isWatch />
             </Box>
           </Box>
         </Box>
       </Box>
-      {/* <Box
-        component="img"
-        src={ImageDecor}
-        alt="Hero"
-        sx={{
-          position: "absolute",
-          left: 0,
-          top: "80%",
-
-          objectFit: "contain",
-        }}
-      /> */}
     </section>
   );
 }

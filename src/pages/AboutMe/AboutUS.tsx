@@ -1,4 +1,3 @@
-import HeroSection from "./components/HeroSection";
 import FoodGallerySection from "./components/FoodGallerySection";
 import WhyChooseUsSection from "./components/WhyChooseUsSection";
 import TeamSection from "./components/TeamSection";
@@ -7,7 +6,6 @@ import MenuSection from "./components/MenuSection";
 const AboutMe = () => {
   return (
     <div className="min-h-screen">
-      <HeroSection />
       <FoodGallerySection />
       <WhyChooseUsSection />
       <TeamSection />

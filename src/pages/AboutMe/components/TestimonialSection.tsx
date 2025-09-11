@@ -1,12 +1,14 @@
 import AboutusClient from "../../../assets/images/AboutusClient.png";
 const TestimonialSection: React.FC = () => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white mt-60">
+      <div className="text-center mb-12">
+        <h3 className="text-primary mb-2 text-left pl-[30%]" style={{ fontFamily: "Great Vibes" }}>
+          Testimonials
+        </h3>
+        <h2 className="text-4xl font-bold text-gray-800 text-left pl-[30%] mb-4">What our client are saying</h2>
+      </div>
       <div className="max-w-4xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">What our client are saying</h2>
-        </div>
-
         <div className="text-center">
           <div className="mb-6">
             <img src={AboutusClient} alt="Client" className="w-40 h-40 object-cover rounded-full mx-auto" />

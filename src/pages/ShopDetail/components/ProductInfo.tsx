@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import StarRating from "./StarRating";
-
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import { FaYoutube, FaFacebookF, FaTwitter, FaVk, FaInstagram } from "react-icons/fa";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 const ProductInfo: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
 
   return (
     <div className="flex-1">
       <div className="mb-4">
-        <span className="bg-primary text-white px-3 py-1 rounded text-sm font-medium">Sale</span>
+        <span className="bg-primary text-white px-3 py-1 rounded text-sm font-medium">In Stock</span>
       </div>
 
       <h1 className="text-3xl font-bold text-gray-900 mb-4">Yummy Chicken Chup</h1>
@@ -24,7 +26,9 @@ const ProductInfo: React.FC = () => {
 
       <div className="flex items-center space-x-4 mb-6">
         <StarRating rating={5} />
+        <span>|</span>
         <span className="text-sm text-gray-500">5.0 Rating</span>
+        <span>|</span>
         <span className="text-sm text-gray-500">22 Review</span>
       </div>
 
@@ -40,12 +44,15 @@ const ProductInfo: React.FC = () => {
             +
           </button>
         </div>
-        <button className="bg-primary hover:bg-orange-600 text-white px-6 py-2 rounded font-medium">Add to cart</button>
+        <button className="bg-primary hover:bg-orange-600 text-white px-6 py-2 font-medium">
+          <ShoppingBagOutlinedIcon />
+          <span className="ml-2">Add to Cart</span>
+        </button>
       </div>
 
       <div className="flex items-center space-x-6 mb-6">
         <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
-          <span>♡</span>
+          <FavoriteBorderOutlinedIcon />
           <span>Add to Wishlist</span>
         </button>
         <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
@@ -65,17 +72,20 @@ const ProductInfo: React.FC = () => {
         <div className="flex items-center space-x-4">
           <span className="text-sm font-medium">Share:</span>
           <div className="flex space-x-2">
-            <div className="w-8 h-8 bg-gray-800 rounded flex items-center justify-center">
-              <span className="text-white text-xs">f</span>
+            <div className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center">
+              <FaYoutube className="text-white" size={14} />
             </div>
-            <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
-              <span className="text-white text-xs">t</span>
+            <div className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center">
+              <FaFacebookF className="text-white" size={14} />
             </div>
-            <div className="w-8 h-8 bg-red-500 rounded flex items-center justify-center">
-              <span className="text-white text-xs">@</span>
+            <div className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center">
+              <FaTwitter className="text-white" size={14} />
             </div>
-            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-              <span className="text-white text-xs">in</span>
+            <div className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center">
+              <FaVk className="text-white" size={14} />
+            </div>
+            <div className="w-6 h-6 bg-gray-700 rounded-full flex items-center justify-center">
+              <FaInstagram className="text-white" size={14} />
             </div>
           </div>
         </div>

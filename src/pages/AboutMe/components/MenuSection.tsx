@@ -26,6 +26,30 @@ const MenuSection: React.FC = () => {
       price: "$16",
       calories: "560 CAL",
     },
+    {
+      name: "Alder Grilled Chinook Salmon",
+      description: "Toasted French bread topped with romano, cheddar",
+      price: "$16",
+      calories: "560 CAL",
+    },
+    {
+      name: "Alder Grilled Chinook Salmon",
+      description: "Toasted French bread topped with romano, cheddar",
+      price: "$16",
+      calories: "560 CAL",
+    },
+    {
+      name: "Alder Grilled Chinook Salmon",
+      description: "Toasted French bread topped with romano, cheddar",
+      price: "$16",
+      calories: "560 CAL",
+    },
+    {
+      name: "Alder Grilled Chinook Salmon",
+      description: "Toasted French bread topped with romano, cheddar",
+      price: "$16",
+      calories: "560 CAL",
+    },
   ];
 
   return (
@@ -56,17 +80,17 @@ const MenuSection: React.FC = () => {
           {menuItems.map((item, index) => (
             <div key={index} className="flex justify-between items-start border-b border-gray-200 pb-6">
               <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{item.name}</h3>
+                <button className="text-xl font-semibold text-gray-800 mb-2 hover:text-primary">{item.name}</button>
                 <p className="text-gray-600 mb-2">{item.description}</p>
-                <span className="text-orange-500 font-semibold">{item.calories}</span>
+                <span className="text-gray-800 font-semibold">{item.calories}</span>
               </div>
-              <div className="text-2xl font-bold text-orange-500 ml-4">{item.price}</div>
+              <div className="text-2xl font-bold text-primary ml-4">{item.price}</div>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-12">
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-semibold transition-colors">
+          <button className="bg-white text-primary border border-primary px-8 py-3 font-semibold transition-colors hover:bg-primary hover:text-white">
             View More Menu
           </button>
         </div>

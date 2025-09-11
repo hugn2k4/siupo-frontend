@@ -36,10 +36,10 @@ const SimilarProducts: React.FC = () => {
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold text-gray-900">Similar Products</h2>
         <div className="flex space-x-2">
-          <button className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300">
+          <button className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-primary">
             ‹
           </button>
-          <button className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-orange-600">
+          <button className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hover:bg-primary">
             ›
           </button>
         </div>

@@ -4,13 +4,16 @@ import RedirectIfAuth from "./components/common/RedirectIfAuth";
 import AuthPage from "./pages/Auth/Auth";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
-
+import ShopDetail from "./pages/ShopDetail/ShopDetail";
+import AboutUs from "./pages/AboutUs/AboutUS";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
       { path: "", element: <Home /> },
+      { path: "shopdetail", element: <ShopDetail /> },
+      { path: "about", element: <AboutUs /> },
       { path: "*", element: <NotFound /> },
     ],
   },

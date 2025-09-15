@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 
 const ProductList = () => {
-  const [sortBy, setSortBy] = useState("");
-  const [showCount, setShowCount] = useState("default");
+  const [sortBy, setSortBy] = useState("newest"); // Khởi tạo giá trị mặc định
+  const [showCount, setShowCount] = useState("default"); // Khởi tạo giá trị mặc định
   const [currentPage, setCurrentPage] = useState(2);
 
   // Mock data với ít nhất 15 sản phẩm, thêm giá giảm
@@ -117,8 +117,7 @@ const ProductList = () => {
   ];
 
   const totalPages = 5;
-  setSortBy("newest");
-  setShowCount("default");
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -195,7 +194,7 @@ const ProductList = () => {
     <Box
       component={motion.div}
       initial={{ opacity: 0, x: -100 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true, amount: 0.3 }}
       sx={{
@@ -211,6 +210,7 @@ const ProductList = () => {
             <InputLabel sx={{ display: "none" }}>Sort By</InputLabel>
             <Select
               value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)} // Thêm onChange để cập nhật sortBy
               sx={{
                 height: 35,
                 borderColor: "grey.500",
@@ -250,6 +250,7 @@ const ProductList = () => {
             <InputLabel sx={{ display: "none" }}>Show</InputLabel>
             <Select
               value={showCount}
+              onChange={(e) => setShowCount(e.target.value)} // Thêm onChange để cập nhật showCount
               sx={{
                 height: 35,
                 borderColor: "grey.500",

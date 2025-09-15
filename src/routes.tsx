@@ -5,6 +5,7 @@ import AuthPage from "./pages/Auth/Auth";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 import ShopDetail from "./pages/ShopDetail/ShopDetail";
+import OurShop from "./pages/Shop/Shop";
 import AboutUs from "./pages/AboutUs/AboutUS";
 const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
       { path: "", element: <Home /> },
       { path: "shopdetail", element: <ShopDetail /> },
       { path: "about", element: <AboutUs /> },
+      { path: "ourshop", element: <OurShop /> },
       { path: "*", element: <NotFound /> },
     ],
   },

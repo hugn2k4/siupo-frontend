@@ -3,7 +3,7 @@ const menu = [
   { path: "/menu", label: "Menu " },
   { path: "/about", label: "About" },
   { path: "/blog", label: "Blog" },
-  { path: "/shop", label: "Shop" },
+  { path: "/ourshop", label: "Shop" },
   { path: "/contact", label: "Contact" },
 ];
 

@@ -1,12 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import RedirectIfAuth from "./components/common/RedirectIfAuth";
-import AuthPage from "./pages/Auth/Auth";
+import AboutUs from "./pages/AboutUs/AboutUS";
+import SignInPage from "./pages/Auth/SignInPage";
+import SignUpPage from "./pages/Auth/SignUpPage";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
-import ShopDetail from "./pages/ShopDetail/ShopDetail";
 import OurShop from "./pages/Shop/Shop";
-import AboutUs from "./pages/AboutUs/AboutUS";
+import ShopDetail from "./pages/ShopDetail/ShopDetail";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -17,23 +17,9 @@ const router = createBrowserRouter([
       { path: "about", element: <AboutUs /> },
       { path: "ourshop", element: <OurShop /> },
       { path: "*", element: <NotFound /> },
+      { path: "signin", element: <SignInPage /> },
+      { path: "signup", element: <SignUpPage /> },
     ],
-  },
-  {
-    path: "/login",
-    element: (
-      <RedirectIfAuth>
-        <AuthPage />
-      </RedirectIfAuth>
-    ),
-  },
-  {
-    path: "/register",
-    element: (
-      <RedirectIfAuth>
-        <AuthPage />
-      </RedirectIfAuth>
-    ),
   },
 ]);
 

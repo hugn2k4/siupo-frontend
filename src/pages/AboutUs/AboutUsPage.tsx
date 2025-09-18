@@ -3,7 +3,7 @@ import WhyChooseUsSection from "./components/WhyChooseUsSection";
 import TeamSection from "./components/TeamSection";
 import TestimonialSection from "./components/TestimonialSection";
 import MenuSection from "./components/MenuSection";
-const AboutMe = () => {
+const AboutUsPage = () => {
   return (
     <div className="min-h-screen">
       <FoodGallerySection />
@@ -14,4 +14,4 @@ const AboutMe = () => {
     </div>
   );
 };
-export default AboutMe;
+export default AboutUsPage;

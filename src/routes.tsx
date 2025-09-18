@@ -7,6 +7,7 @@ import HomePage from "./pages/Home/HomePage";
 import NotFoundPage from "./pages/NotFound/NotFoundPage";
 import OurShopPage from "./pages/Shop/OurShopPage";
 import ShopDetailPage from "./pages/ShopDetail/ShopDetailPage";
+
 const router = createBrowserRouter([
   {
     path: "/",

@@ -1,11 +1,11 @@
 import { Box, Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import ShiningStarsIcon from "../../../assets/icons/shining_stars.svg";
+import SparkleIcon from "../../../assets/icons/sparkle.svg";
+import ImageHero from "../../../assets/images/image_hero.png";
+import ImageHeroMobile from "../../../assets/images/image_hero_mobile.png";
 import MyButton from "../../../components/common/Button";
-import ShiningStarsIcon from "../../assets/icons/shining_stars.svg";
-import SparkleIcon from "../../assets/icons/sparkle.svg";
-import ImageHero from "../../assets/images/image_hero.png";
-import ImageHeroMobile from "../../assets/images/image_hero_mobile.png";
 
 const Hero = () => {
   const [hoveredPlace, setHoveredPlace] = useState(false);

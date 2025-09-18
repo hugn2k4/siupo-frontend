@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 interface BaseButtonProps extends ButtonProps {
   disableDefaultHover?: boolean;
-  colorScheme?: "green" | "lightGreen" | "orange";
+  colorScheme?: "green" | "lightGreen" | "orange" | "grey";
   hovered?: boolean;
   startIcon?: ReactNode;
   endIcon?: ReactNode;
@@ -48,6 +48,13 @@ const colorMap = {
     hoverBg: "white",
     hoverText: "var(--color-primary)",
     border: "var(--color-primary)",
+  },
+  grey: {
+    bg: "white",
+    text: "#333",
+    hoverBg: "#f5f5f5",
+    hoverText: "#333",
+    border: "#e0e0e0",
   },
 };
 
@@ -128,6 +135,16 @@ const DefaultButton = ({
     py: { xs: 1, sm: 1.25, md: 1.5 },
     fontWeight: 700,
     transition: "all 0.3s ease",
+    "& .MuiButton-startIcon": {
+      margin: 0,
+      position: "absolute",
+      left: 16, // icon sát trái (có chút padding an toàn)
+    },
+    "& .MuiButton-endIcon": {
+      margin: 0,
+      position: "absolute",
+      right: 16, // nếu có endIcon thì sát phải
+    },
     ...(iconOnly && {
       minWidth: "auto",
       px: 1.5,

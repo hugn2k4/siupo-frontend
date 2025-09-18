@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import MyButton from "../../components/common/Button";
 
-export default function NotFound() {
+export default function NotFoundPage() {
   return (
     <Box
       sx={{

@@ -1,8 +1,8 @@
-import ProductList from "./ProductList";
-import FilterSidebar from "./FilterSidebar";
+import ProductList from "./components/ProductList";
+import FilterSidebar from "./components/FilterSidebar";
 import { Box } from "@mui/material";
 
-function Shop() {
+function ShopPage() {
   return (
     <Box
       sx={{
@@ -27,4 +27,4 @@ function Shop() {
   );
 }
 
-export default Shop;
+export default ShopPage;

@@ -6,7 +6,7 @@ import ImagePanel from "./components/ImagePanel";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 
-export default function Auth() {
+export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
 

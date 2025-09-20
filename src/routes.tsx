@@ -6,13 +6,17 @@ import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 import ShopDetail from "./pages/ShopDetail/ShopDetail";
 import AboutUs from "./pages/AboutUs/AboutUS";
+import ShoppingCart from "./pages/ShoppingCart/shoppingCart";
+import CheckoutPage from "./pages/CheckOut/CheckoutPage";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
       { path: "", element: <Home /> },
+      { path: "cart", element: <ShoppingCart /> },
       { path: "shopdetail", element: <ShopDetail /> },
+      { path: "checkout", element: <CheckoutPage /> },
       { path: "about", element: <AboutUs /> },
       { path: "*", element: <NotFound /> },
     ],

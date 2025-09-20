@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
-import ImageAboutUs from "../../assets/images/image_about_us_home.png";
-import MyButton from "../../components/common/Button";
+import MyButton from "../../../components/common/Button";
+import ImageAboutUs from "../../../assets/images/image_about_us_home.png";
 
 function AboutUs() {
   return (

@@ -24,10 +24,21 @@ const ROUTES_META: Record<string, RouteMeta> = {
   "/checkout": {
     title: "Checkout",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Checkout" }],
+  "/ourshop": {
+    title: "Our Shop",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop" }],
   },
   "/404": {
     title: "404 Error",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "404" }],
+  },
+  "/signin": {
+    title: "Sign In",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Sign In" }],
+  },
+  "/signup": {
+    title: "Sign Up",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Sign Up" }],
   },
 };
 

@@ -1,8 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import RedirectIfAuth from "./components/common/RedirectIfAuth";
-import AuthPage from "./pages/Auth/Auth";
-import Home from "./pages/Home/Home";
 import ShoppingCartPage from "./pages/ShoppingCart/shoppingCart";
 import CheckoutPage from "./pages/CheckOut/CheckoutPage";
 import AboutUsPage from "./pages/AboutUs/AboutUsPage";
@@ -18,7 +15,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { path: "", element: <Home /> },
       { path: "cart", element: <ShoppingCartPage /> },
       { path: "checkout", element: <CheckoutPage /> },
       { path: "", element: <HomePage /> },

@@ -24,6 +24,7 @@ const ROUTES_META: Record<string, RouteMeta> = {
   "/checkout": {
     title: "Checkout",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Checkout" }],
+  },
   "/ourshop": {
     title: "Our Shop",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop" }],

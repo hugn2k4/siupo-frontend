@@ -1,5 +1,6 @@
 import React from "react";
 import ProductCard from "./ProductCard";
+
 import similar1 from "../../../assets/images/Similar1.png";
 import similar2 from "../../../assets/images/Similar2.png";
 import similar3 from "../../../assets/images/Similar3.png";

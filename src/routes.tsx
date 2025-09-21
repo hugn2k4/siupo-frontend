@@ -1,43 +1,35 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import RedirectIfAuth from "./components/common/RedirectIfAuth";
-import AuthPage from "./pages/Auth/Auth";
-import Home from "./pages/Home/Home";
-import NotFound from "./pages/NotFound/NotFound";
-import ShopDetail from "./pages/ShopDetail/ShopDetail";
+
+import ShoppingCartPage from "./pages/ShoppingCart/shoppingCart";
+import CheckoutPage from "./pages/CheckOut/CheckoutPage";
+import AboutUsPage from "./pages/AboutUs/AboutUsPage";
+import SignInPage from "./pages/Auth/SignInPage";
+import SignUpPage from "./pages/Auth/SignUpPage";
+import HomePage from "./pages/Home/HomePage";
+import NotFoundPage from "./pages/NotFound/NotFoundPage";
+import OurShopPage from "./pages/Shop/OurShopPage";
+import ShopDetailPage from "./pages/ShopDetail/ShopDetailPage";
 import ChefPage from "./pages/Chef/ChefPage";
-import OurShop from "./pages/Shop/Shop";
-import AboutUs from "./pages/AboutUs/AboutUS";
 import MenuPage from "./pages/Menu/MenuPage";
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      { path: "", element: <Home /> },
+      { path: "cart", element: <ShoppingCartPage /> },
+      { path: "checkout", element: <CheckoutPage /> },
+      { path: "", element: <HomePage /> },
       { path: "menu", element: <MenuPage /> },
-      { path: "shopdetail", element: <ShopDetail /> },
-      { path: "about", element: <AboutUs /> },
-      { path: "ourshop", element: <OurShop /> },
       { path: "chef", element: <ChefPage /> },
-      { path: "*", element: <NotFound /> },
+      { path: "shopdetail", element: <ShopDetailPage /> },
+      { path: "about", element: <AboutUsPage /> },
+      { path: "ourshop", element: <OurShopPage /> },
+      { path: "*", element: <NotFoundPage /> },
+      { path: "signin", element: <SignInPage /> },
+      { path: "signup", element: <SignUpPage /> },
     ],
-  },
-  {
-    path: "/login",
-    element: (
-      <RedirectIfAuth>
-        <AuthPage />
-      </RedirectIfAuth>
-    ),
-  },
-  {
-    path: "/register",
-    element: (
-      <RedirectIfAuth>
-        <AuthPage />
-      </RedirectIfAuth>
-    ),
   },
 ]);
 

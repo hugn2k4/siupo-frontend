@@ -17,6 +17,10 @@ const ROUTES_META: Record<string, RouteMeta> = {
     title: "Our Shop",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop" }],
   },
+  "/chef": {
+    title: "Our Chef",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Chef" }],
+  },
   "/404": {
     title: "404 Error",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "404" }],

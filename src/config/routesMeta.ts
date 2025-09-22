@@ -13,9 +13,25 @@ const ROUTES_META: Record<string, RouteMeta> = {
     title: "About Us",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "About" }],
   },
+  "/shopdetail": {
+    title: "Shop Detail",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop Detail" }],
+  },
+  "/cart": {
+    title: "Shoping Cart",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shoping Cart" }],
+  },
+  "/checkout": {
+    title: "Checkout",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Checkout" }],
+  },
   "/ourshop": {
     title: "Our Shop",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop" }],
+  },
+  "/chef": {
+    title: "Our Chef",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Chef" }],
   },
   "/404": {
     title: "404 Error",

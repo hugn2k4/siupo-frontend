@@ -2,7 +2,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { useNavigate } from "../../../hooks/useNavigate";
+import { useNavigate } from "react-router-dom";
 
 function Actions() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ function Actions() {
       </Tooltip>
 
       <Tooltip title="Tài khoản" arrow>
-        <IconButton aria-label="Tài khoản" onClick={() => navigate("/login")} sx={iconButtonSx}>
+        <IconButton aria-label="Tài khoản" onClick={() => navigate("/signin")} sx={iconButtonSx}>
           <PersonOutlineOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
         </IconButton>
       </Tooltip>

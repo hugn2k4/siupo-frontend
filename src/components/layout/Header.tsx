@@ -1,7 +1,7 @@
 import { AppBar, Box, Container, Toolbar } from "@mui/material";
-import Actions from "./Actions";
-import Logo from "./Logo";
-import Navbar from "./Navbar";
+import Actions from "./components/Actions";
+import Logo from "./components/Logo";
+import Navbar from "./components/Navbar";
 
 const Header = () => {
   return (

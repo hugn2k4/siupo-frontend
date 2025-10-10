@@ -1,37 +1,57 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useCallback, useState } from "react";
 import AppSnackbar from "../components/common/Snackbar";
 
-interface SnackbarState {
-  open: boolean;
+type Severity = "success" | "error" | "info" | "warning";
+
+interface SnackbarItem {
+  id: string;
   message: string;
-  severity: "success" | "error" | "info" | "warning";
+  severity: Severity;
+  autoHideDuration?: number;
 }
 
 interface SnackbarContextProps {
-  showSnackbar: (message: string, severity?: SnackbarState["severity"]) => void;
+  showSnackbar: (message: string, severity?: Severity, autoHideDuration?: number) => string;
+  closeSnackbar: (id: string) => void;
 }
 
 const SnackbarContext = createContext<SnackbarContextProps>({
-  showSnackbar: () => {},
+  showSnackbar: () => "",
+  closeSnackbar: () => {},
 });
 
 export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [snackbar, setSnackbar] = useState<SnackbarState>({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+  const [queue, setQueue] = useState<SnackbarItem[]>([]);
 
-  const showSnackbar = (message: string, severity: SnackbarState["severity"] = "success") => {
-    setSnackbar({ open: true, message, severity });
+  const showSnackbar = useCallback((message: string, severity: Severity = "success", autoHideDuration = 3000) => {
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    setQueue((q) => [...q, { id, message, severity, autoHideDuration }]);
+    return id;
+  }, []);
+
+  const closeSnackbar = useCallback((id: string) => {
+    setQueue((q) => q.filter((n) => n.id !== id));
+  }, []);
+
+  const handleClose = (id: string) => () => {
+    closeSnackbar(id);
   };
 
-  const handleClose = () => setSnackbar((prev) => ({ ...prev, open: false }));
-
   return (
-    <SnackbarContext.Provider value={{ showSnackbar }}>
+    <SnackbarContext.Provider value={{ showSnackbar, closeSnackbar }}>
       {children}
-      <AppSnackbar open={snackbar.open} message={snackbar.message} severity={snackbar.severity} onClose={handleClose} />
+      {/* render stacked snackbars in order: top = index 0 */}
+      {queue.map((item, index) => (
+        <AppSnackbar
+          key={item.id}
+          open={true}
+          message={item.message}
+          severity={item.severity}
+          autoHideDuration={item.autoHideDuration}
+          onClose={handleClose(item.id)}
+          stackIndex={index}
+        />
+      ))}
     </SnackbarContext.Provider>
   );
 };

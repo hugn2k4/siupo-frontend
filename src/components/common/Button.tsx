@@ -1,6 +1,6 @@
 import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
 import type { ButtonProps, SxProps, Theme } from "@mui/material";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import type { ReactNode } from "react";
 
 interface BaseButtonProps extends ButtonProps {
@@ -11,6 +11,7 @@ interface BaseButtonProps extends ButtonProps {
   endIcon?: ReactNode;
   iconOnly?: boolean;
   sx?: SxProps<Theme>;
+  isLoading?: boolean;
 }
 
 interface WatchButtonProps {
@@ -123,6 +124,7 @@ const DefaultButton = ({
   iconOnly = false,
   disableDefaultHover = false,
   children,
+  isLoading = false,
   sx,
   ...props
 }: NormalButtonProps) => {
@@ -163,7 +165,31 @@ const DefaultButton = ({
 
   return (
     <Button variant="outlined" startIcon={startIcon} endIcon={endIcon} sx={{ ...defaultSx, ...sx }} {...props}>
-      {!iconOnly && children}
+      {isLoading && (
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CircularProgress size={22} sx={{ color: colors.text }} />
+        </Box>
+      )}
+
+      <Box
+        sx={{
+          visibility: isLoading ? "hidden" : "visible",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {!iconOnly && children}
+      </Box>
     </Button>
   );
 };

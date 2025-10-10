@@ -1,13 +1,28 @@
-import type { LoginRequest, LoginResponse } from "../types/auth";
-import type { User } from "../types/user";
+import type { LoginRequest, RegisterRequest } from "../types/requests/auth.request";
+import type { ApiResponse } from "../types/responses/api.response";
+import type { LoginResponse } from "../types/responses/auth.response";
 import axiosClient from "../utils/axiosClient";
 
 const authApi = {
-  login: (data: LoginRequest): Promise<LoginResponse> => axiosClient.post("/auth/login", data),
+  login: (data: LoginRequest): Promise<LoginResponse> =>
+    axiosClient.post("/auth/login", data).then((response) => response.data),
 
-  register: (user: User): Promise<string> => axiosClient.post("/auth/register", user),
+  register: (data: RegisterRequest): Promise<ApiResponse> =>
+    axiosClient.post("/auth/register", data).then((response) => response.data),
 
-  logout: () => axiosClient.post("/api/logout"),
+  confirm: (data: { email: string; code: string }): Promise<ApiResponse> =>
+    axiosClient.post("/auth/confirm", data).then((response) => response.data),
+
+  resendOTp: (email: string): Promise<ApiResponse> =>
+    axiosClient
+      .post(`/auth/resend-otp`, null, {
+        params: { email },
+      })
+      .then((res) => res.data),
+
+  refreshToken: (): Promise<LoginResponse> => axiosClient.post("/auth/refresh-token").then((response) => response.data),
+
+  logout: (): Promise<ApiResponse> => axiosClient.post("/api/logout").then((response) => response.data),
 };
 
 export default authApi;

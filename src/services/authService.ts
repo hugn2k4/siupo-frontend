@@ -9,6 +9,8 @@ export const authService = {
       const accessToken = res.data.accessToken;
       if (accessToken) {
         localStorage.setItem("token", accessToken);
+        // Dispatch auth state change event after token is saved
+        window.dispatchEvent(new Event("authStateChange"));
       }
     }
     return res;
@@ -31,6 +33,8 @@ export const authService = {
 
   logout: () => {
     localStorage.removeItem("token");
+    // Dispatch auth state change event after token is removed
+    window.dispatchEvent(new Event("authStateChange"));
     return authApi.logout();
   },
 };

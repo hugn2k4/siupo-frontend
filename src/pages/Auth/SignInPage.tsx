@@ -2,7 +2,7 @@ import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Checkbox, Divider, FormControlLabel, IconButton, Link, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
 import { SnackbarContext } from "../../contexts/SnackbarContext";
 import { authService } from "../../services/authService";
@@ -18,6 +18,7 @@ type SignInFormData = {
 };
 
 export default function SignInPage() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const {
     control,
@@ -42,6 +43,7 @@ export default function SignInPage() {
       const res = await authService.login(request);
       if (res.success) {
         showSnackbar("Login successful!", "success", 3000);
+        navigate("/");
       } else {
         showSnackbar(res.message || "Login failed. Please try again.", "error", 4000);
       }

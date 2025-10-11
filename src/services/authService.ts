@@ -18,4 +18,19 @@ export const authService = {
     const res = await authApi.register(data);
     return res;
   },
+
+  confirm: async (data: { email: string; otp: string }) => {
+    const res = await authApi.confirm(data);
+    return res;
+  },
+
+  resendOTP: async (email: string) => {
+    const res = await authApi.resendOTp(email);
+    return res;
+  },
+
+  logout: () => {
+    localStorage.removeItem("token");
+    return authApi.logout();
+  },
 };

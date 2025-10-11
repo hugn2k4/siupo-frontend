@@ -10,7 +10,7 @@ const authApi = {
   register: (data: RegisterRequest): Promise<ApiResponse> =>
     axiosClient.post("/auth/register", data).then((response) => response.data),
 
-  confirm: (data: { email: string; code: string }): Promise<ApiResponse> =>
+  confirm: (data: { email: string; otp: string }): Promise<ApiResponse> =>
     axiosClient.post("/auth/confirm", data).then((response) => response.data),
 
   resendOTp: (email: string): Promise<ApiResponse> =>

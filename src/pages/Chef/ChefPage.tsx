@@ -2,18 +2,18 @@ import { Box, Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import React from "react";
 
-import chef1 from "../../assets/images/chef1.png";
-import chef2 from "../../assets/images/chef2.png";
-import chef3 from "../../assets/images/chef3.png";
-import chef4 from "../../assets/images/chef4.png";
-import chef5 from "../../assets/images/chef5.png";
-import chef6 from "../../assets/images/chef6.png";
-import chef7 from "../../assets/images/chef7.png";
-import chef8 from "../../assets/images/chef8.png";
-import chef9 from "../../assets/images/chef9.png";
-import chef10 from "../../assets/images/chef10.png";
-import chef11 from "../../assets/images/chef11.png";
-import chef12 from "../../assets/images/chef12.png";
+import chef1 from "../../assets/images/image_chef_1.png";
+import chef2 from "../../assets/images/image_chef_2.png";
+import chef3 from "../../assets/images/image_chef_3.png";
+import chef4 from "../../assets/images/image_chef_4.png";
+import chef5 from "../../assets/images/image_chef_5.png";
+import chef6 from "../../assets/images/image_chef_1.png";
+import chef7 from "../../assets/images/image_chef_1.png";
+import chef8 from "../../assets/images/image_chef_1.png";
+import chef9 from "../../assets/images/image_chef_1.png";
+import chef10 from "../../assets/images/image_chef_1.png";
+import chef11 from "../../assets/images/image_chef_1.png";
+import chef12 from "../../assets/images/image_chef_1.png";
 import ChefCard from "./ChefCard";
 
 interface Chef {

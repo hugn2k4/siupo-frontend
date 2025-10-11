@@ -1,4 +1,4 @@
-import AboutusClient from "../../../assets/images/AboutusClient.png";
+import AboutusClient from "../../../assets/images/image_about_us_client.png";
 const TestimonialSection: React.FC = () => {
   return (
     <section className="py-16 bg-white mt-60">

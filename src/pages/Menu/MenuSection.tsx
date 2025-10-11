@@ -65,7 +65,7 @@ const MenuItem: React.FC<{ item: { name: string; description: string; price: str
 const menuData = [
   {
     title: "Starter Menu",
-    image: "../../src/assets/images/salad.png",
+    image: "../../src/assets/images/image_salad.png",
     items: [
       {
         name: "Alder Grilled Chinook Salmon",
@@ -95,7 +95,7 @@ const menuData = [
   },
   {
     title: "Main Course",
-    image: "../../src/assets/images/burger.png",
+    image: "../../src/assets/images/image_burger.png",
     items: [
       {
         name: "Optic Big Breakfast Combo Menu",
@@ -125,7 +125,7 @@ const menuData = [
   },
   {
     title: "Dessert",
-    image: "../../src/assets/images/cupcake.png",
+    image: "../../src/assets/images/image_cupcake.png",
     items: [
       {
         name: "Optic Big Breakfast Combo Menu",
@@ -155,7 +155,7 @@ const menuData = [
   },
   {
     title: "Drinks",
-    image: "../../src/assets/images/cocktail.png",
+    image: "../../src/assets/images/image_cocktail.png",
     items: [
       {
         name: "Optic Big Breakfast Combo Menu",

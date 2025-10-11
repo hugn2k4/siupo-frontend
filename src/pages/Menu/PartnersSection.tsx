@@ -2,12 +2,12 @@ import { Box, Typography } from "@mui/material";
 import React from "react";
 
 const partners = [
-  { image: "../../src/assets/images/partner1.png" },
-  { image: "../../src/assets/images/partner2.png" },
-  { image: "../../src/assets/images/partner3.png" },
-  { image: "../../src/assets/images/partner4.png" },
-  { image: "../../src/assets/images/partner5.png" },
-  { image: "../../src/assets/images/partner6.png" },
+  { image: "../../src/assets/images/image_partner_1.png" },
+  { image: "../../src/assets/images/image_partner_2.png" },
+  { image: "../../src/assets/images/image_partner_3.png" },
+  { image: "../../src/assets/images/image_partner_4.png" },
+  { image: "../../src/assets/images/image_partner_5.png" },
+  { image: "../../src/assets/images/image_partner_6.png" },
 ];
 
 const PartnersSection: React.FC = () => {

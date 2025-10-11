@@ -171,7 +171,7 @@ const FilterSidebar = () => {
         }}
       >
         <img
-          src="../../src/assets/gallery/Banner.png"
+          src="../../src/assets/gallery/gallery_banner.png"
           alt="Poster Quảng Cáo"
           style={{
             width: "100%",

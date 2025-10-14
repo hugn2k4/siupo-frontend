@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 
-const ProductTabs: React.FC = () => {
+interface ProductTabsProps {
+  description: string;
+  rating: number;
+  reviewCount: number;
+}
+
+const ProductTabs: React.FC<ProductTabsProps> = ({ description, rating, reviewCount }) => {
   const [activeTab, setActiveTab] = useState("description");
 
   return (
@@ -20,25 +26,14 @@ const ProductTabs: React.FC = () => {
           }`}
           onClick={() => setActiveTab("reviews")}
         >
-          Reviews (24)
+          Reviews ({reviewCount})
         </button>
       </div>
 
       <div className="p-6 bg-gray-50">
         {activeTab === "description" && (
           <div>
-            <p className="text-gray-700 mb-6 leading-relaxed">
-              Nam tristique porta ligula, vel viverra sem eleifend nec. Nulla sed purus augue, in molestie mi. Duis
-              cursus tellus volutpat pellentesque hendrerit quis sed ligula, sit amet. Proin vitae adipiscing ipsum, vel
-              consequat eros lacinia a. Sed cursus neque a blandit convallis.
-            </p>
-
-            <p className="text-gray-700 mb-6 leading-relaxed">
-              Suspendisse rhoncus cursus mattis placerat. Mauris sed tortor vel ipsum. Curabitur ligula magna justo vel,
-              ac porttitor elit venenatis vel. Pellentesque adipiscing tellus ligula ut tellus erat. Sed vitae risus
-              quis tellus tellus in blandit eu volutpat lorem.
-            </p>
-
+            <p className="text-gray-700 mb-6 leading-relaxed">{description || "Không có mô tả."}</p>
             <div>
               <h4 className="font-bold text-gray-900 mb-4">Key Benefits</h4>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
@@ -54,7 +49,9 @@ const ProductTabs: React.FC = () => {
 
         {activeTab === "reviews" && (
           <div>
-            <p className="text-gray-700">Reviews content would go here...</p>
+            <p className="text-gray-700">
+              Đánh giá trung bình: {rating} ({reviewCount} đánh giá). Nội dung đánh giá sẽ hiển thị ở đây...
+            </p>
           </div>
         )}
       </div>

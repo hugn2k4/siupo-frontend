@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -13,19 +13,74 @@ import {
 } from "@mui/material";
 import { motion } from "framer-motion";
 import SearchIcon from "@mui/icons-material/Search";
+import categoryService from "../../../services/categoryService";
+import type { CategoryResponse } from "../../../types/responses/category.response";
 
-const FilterSidebar = () => {
-  const [selectedTag, setSelectedTag] = React.useState(null);
+interface FilterSidebarProps {
+  onFilterChange: (filters: {
+    searchName: string | null;
+    categoryIds: number[];
+    minPrice: number;
+    maxPrice: number;
+  }) => void;
+}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleTagClick = (tag: any) => {
-    setSelectedTag(selectedTag === tag ? null : tag);
+const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
+  const [searchName, setSearchName] = useState<string | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [priceRange, setPriceRange] = useState<number[]>([0, 1000000]); //hiện tại đang gán cứng giá min max
+  const [categories, setCategories] = useState<CategoryResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  // Fetch categories using categoryService
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoading(true);
+      setError(null);
+      const result = await categoryService.getCategories();
+      setCategories(result.categories);
+      if (result.error) {
+        setError(result.error);
+      }
+      setLoading(false);
+    };
+    fetchCategories();
+  }, []);
+
+  // Notify parent of filter changes
+  useEffect(() => {
+    onFilterChange({
+      searchName,
+      categoryIds: selectedCategories,
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
+    });
+  }, [searchName, selectedCategories, priceRange, onFilterChange]);
+
+  const handleSearch = () => {
+    onFilterChange({
+      searchName,
+      categoryIds: selectedCategories,
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
+    });
   };
 
-  const [priceRange, setPriceRange] = React.useState([0, 5000]);
+  const handleCategoryChange = (categoryId: number) => {
+    setSelectedCategories((prev) =>
+      prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId]
+    );
+  };
 
-  const handlePriceChange = () => {
-    setPriceRange([100, 1000]);
+  const handlePriceChange = (_event: Event, newValue: number | number[]) => {
+    setPriceRange(newValue as number[]);
+  };
+
+  const handleTagClick = (tag: string) => {
+    setSelectedTag(selectedTag === tag ? null : tag);
+    // Note: Tags are not currently mapped to backend filters
   };
 
   const latestList = [
@@ -82,21 +137,28 @@ const FilterSidebar = () => {
           variant="outlined"
           size="small"
           placeholder="Search Product"
+          value={searchName || ""}
+          onChange={(e) => setSearchName(e.target.value || null)}
+          onKeyPress={(e) => e.key === "Enter" && handleSearch()}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton edge="end" sx={{ backgroundColor: "#FF9F0D", borderRadius: 0, color: "white" }}>
+                <IconButton
+                  edge="end"
+                  sx={{ backgroundColor: "#FF9F0D", borderRadius: 0, color: "white" }}
+                  onClick={handleSearch}
+                >
                   <SearchIcon />
                 </IconButton>
               </InputAdornment>
             ),
             sx: {
-              fontSize: "0.85rem", // Giảm kích thước chữ trong ô nhập liệu
+              fontSize: "0.85rem",
             },
           }}
           sx={{
             mt: 0,
-            backgroundColor: "#FF9F0D1A", // 10% opacity (#FF9F0D with 10% alpha)
+            backgroundColor: "#FF9F0D1A",
             "& .MuiOutlinedInput-notchedOutline": {
               border: "none",
             },
@@ -105,13 +167,7 @@ const FilterSidebar = () => {
       </Box>
 
       {/* Category */}
-      <Box
-        sx={{
-          mb: 2,
-          p: 0,
-          bgcolor: "#fff",
-        }}
-      >
+      <Box sx={{ mb: 2, p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
           gutterBottom
@@ -123,36 +179,37 @@ const FilterSidebar = () => {
         >
           Category
         </Typography>
-        <FormGroup
-          sx={{
-            "& .MuiFormControlLabel-root": {
-              marginBottom: "4px", // Giữ khoảng cách dọc nhỏ giữa các checkbox
-              marginLeft: -1,
-              marginRight: 0,
-            },
-            "& .MuiFormControlLabel-label": {
-              fontSize: "0.85rem",
-              marginLeft: "2px", // Đưa nhãn sát lại checkbox
-            },
-          }}
-        >
-          <FormControlLabel
-            control={<Checkbox sx={{ transform: "scale(0.8)", padding: "2px" }} />} // Giảm padding của checkbox
-            label="Sandwiches"
-          />
-          <FormControlLabel control={<Checkbox sx={{ transform: "scale(0.8)", padding: "2px" }} />} label="Burger" />
-          <FormControlLabel
-            control={<Checkbox sx={{ transform: "scale(0.8)", padding: "2px" }} />}
-            label="Chicken Chup"
-          />
-          <FormControlLabel control={<Checkbox sx={{ transform: "scale(0.8)", padding: "2px" }} />} label="Drink" />
-          <FormControlLabel control={<Checkbox sx={{ transform: "scale(0.8)", padding: "2px" }} />} label="Pizza" />
-          <FormControlLabel control={<Checkbox sx={{ transform: "scale(0.8)", padding: "2px" }} />} label="Non Veg" />
-          <FormControlLabel
-            control={<Checkbox sx={{ transform: "scale(0.8)", padding: "2px" }} />}
-            label="Uncategorized"
-          />
-        </FormGroup>
+        {loading && <Typography>Loading categories...</Typography>}
+        {error && <Typography color="error">{error}</Typography>}
+        {!loading && !error && (
+          <FormGroup
+            sx={{
+              "& .MuiFormControlLabel-root": {
+                marginBottom: "4px",
+                marginLeft: -1,
+                marginRight: 0,
+              },
+              "& .MuiFormControlLabel-label": {
+                fontSize: "0.85rem",
+                marginLeft: "2px",
+              },
+            }}
+          >
+            {categories.map((category) => (
+              <FormControlLabel
+                key={category.id}
+                control={
+                  <Checkbox
+                    checked={selectedCategories.includes(category.id)}
+                    onChange={() => handleCategoryChange(category.id)}
+                    sx={{ transform: "scale(0.8)", padding: "2px" }}
+                  />
+                }
+                label={category.name}
+              />
+            ))}
+          </FormGroup>
+        )}
       </Box>
 
       {/* Poster Placeholder */}
@@ -160,14 +217,13 @@ const FilterSidebar = () => {
         sx={{
           mb: 2,
           borderRadius: 0,
-          p: 0, // Loại bỏ padding để hình chiếm toàn bộ không gian
+          p: 0,
           bgcolor: "#fff",
-
-          position: "relative", // Để button có thể đè lên hình
+          position: "relative",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          overflow: "hidden", // Đảm bảo hình không tràn ra ngoài
+          overflow: "hidden",
         }}
       >
         <img
@@ -176,41 +232,20 @@ const FilterSidebar = () => {
           style={{
             width: "100%",
             height: "100%",
-            objectFit: "cover", // Đảm bảo hình lấp đầy Box mà không bị méo
+            objectFit: "cover",
           }}
         />
-        {/* <Button
-          variant="contained"
-          sx={{
-            position: "absolute",
-            bottom: 10, // Cách đáy 10px
-            left: 10, // Cách trái 10px
-            bgcolor: "#f97316",
-            "&:hover": { bgcolor: "#e06b16" },
-            fontSize: "0.85rem", // Giảm kích thước chữ của button cho phù hợp
-            padding: "6px 12px", // Điều chỉnh padding để button nhỏ gọn
-          }}
-          href="#shop-now"
-        >
-          Shop Now ($)
-        </Button> */}
       </Box>
 
       {/* Filter By Price */}
-      <Box
-        sx={{
-          mb: 2,
-          p: 0,
-          bgcolor: "#fff",
-        }}
-      >
+      <Box sx={{ mb: 2, p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
           gutterBottom
           sx={{
             color: "#232323",
-            fontWeight: "bold", // Đồng bộ với các thành phần trước
-            fontSize: "14pt", // Đồng bộ kích thước chữ
+            fontWeight: "bold",
+            fontSize: "14pt",
           }}
         >
           Filter By Price
@@ -220,35 +255,35 @@ const FilterSidebar = () => {
           onChange={handlePriceChange}
           valueLabelDisplay="auto"
           min={0}
-          max={8000}
+          max={1000000}
           sx={{
-            color: "#FF9F0D", // Màu của track và thumb
+            color: "#FF9F0D",
             "& .MuiSlider-thumb": {
-              width: 12, // Kích thước nhỏ của nút kéo
+              width: 12,
               height: 12,
-              border: "3.5px solid #fff", // Viền trắng cho nút kéo
-              backgroundColor: "#FF9F0D", // Giữ màu tâm như cũ
+              border: "3.5px solid #fff",
+              backgroundColor: "#FF9F0D",
             },
             "& .MuiSlider-rail": {
-              height: 4, // Thu nhỏ thanh trượt
+              height: 4,
             },
             "& .MuiSlider-track": {
               height: 4,
             },
             "& .MuiSlider-valueLabel": {
-              fontSize: "0.75rem", // Giảm kích thước chữ nhãn giá
-              top: -2, // Đưa nhãn sát thanh trượt
-              padding: "2px 4px", // Thu nhỏ nhãn
+              fontSize: "0.75rem",
+              top: -2,
+              padding: "2px 4px",
             },
-            mb: 0, // Giảm khoảng cách giữa Slider và Typography bên dưới
+            mb: 0,
           }}
         />
         <Typography
           variant="body2"
           sx={{
-            mt: 0.5, // Giảm khoảng cách giữa Typography và Slider
+            mt: 0.5,
             color: "#666",
-            fontSize: "0.85rem", // Đồng bộ kích thước chữ
+            fontSize: "0.85rem",
           }}
         >
           Price Range: ${priceRange[0]} - ${priceRange[1]}
@@ -256,13 +291,7 @@ const FilterSidebar = () => {
       </Box>
 
       {/* Latest Products */}
-      <Box
-        sx={{
-          mb: 2,
-          p: 0,
-          bgcolor: "#fff",
-        }}
-      >
+      <Box sx={{ mb: 2, p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
           gutterBottom
@@ -332,12 +361,7 @@ const FilterSidebar = () => {
       </Box>
 
       {/* Product Tags */}
-      <Box
-        sx={{
-          p: 0,
-          bgcolor: "#fff",
-        }}
-      >
+      <Box sx={{ p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
           gutterBottom
@@ -356,17 +380,15 @@ const FilterSidebar = () => {
               variant="body2"
               sx={{
                 display: "inline-block",
-                bgcolor: selectedTag === tag ? "#fff" : "#ffffff", // Nền trắng cho tag chọn, xám nhạt cho chưa chọn
-                color: selectedTag === tag ? "#FF9F0D" : "#4F4F4F", // Chữ trắng cho tag chọn, xám đậm cho chưa chọn
-                // px: 1.5,
-                // py: 0.3,
+                bgcolor: selectedTag === tag ? "#fff" : "#ffffff",
+                color: selectedTag === tag ? "#FF9F0D" : "#4F4F4F",
                 mr: 1,
                 mb: 0.5,
-                borderBottom: selectedTag === tag ? "2px solid #FF9F0D" : "2px solid #F2F2F2", // Viền dưới cam cho tag chọn, viền mỏng cho chưa chọn
-                borderRadius: 0, // Bỏ bo góc cho tất cả tag
+                borderBottom: selectedTag === tag ? "2px solid #FF9F0D" : "2px solid #F2F2F2",
+                borderRadius: 0,
                 cursor: "pointer",
                 "&:hover": {
-                  bgcolor: selectedTag === tag ? "#e06b16" : "#ffffff", // Hiệu ứng hover cho tag chọn và chưa chọn
+                  bgcolor: selectedTag === tag ? "#e06b16" : "#ffffff",
                   color: selectedTag === tag ? "#fff" : "#4A4A4A",
                 },
               }}

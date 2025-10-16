@@ -9,7 +9,8 @@ import HomePage from "./pages/Home/HomePage";
 import NotFoundPage from "./pages/NotFound/NotFoundPage";
 import OurShopPage from "./pages/Shop/OurShopPage";
 import ShopDetailPage from "./pages/ShopDetail/ShopDetailPage";
-
+import PlaceTableForGuest from "./pages/PlaceTableForGuest/PlaceTableForGuest";
+import OrderAtTable from "./pages/OrderAtTable/OrderAtTable";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,6 +25,8 @@ const router = createBrowserRouter([
       { path: "*", element: <NotFoundPage /> },
       { path: "signin", element: <SignInPage /> },
       { path: "signup", element: <SignUpPage /> },
+      { path: "placetable", element: <PlaceTableForGuest /> },
+      { path: "orderattable", element: <OrderAtTable /> },
     ],
   },
 ]);

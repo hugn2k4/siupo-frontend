@@ -5,12 +5,15 @@ import CheckoutPage from "./pages/CheckOut/CheckoutPage";
 import AboutUsPage from "./pages/AboutUs/AboutUsPage";
 import SignInPage from "./pages/Auth/SignInPage";
 import SignUpPage from "./pages/Auth/SignUpPage";
+import ChefPage from "./pages/Chef/ChefPage";
 import HomePage from "./pages/Home/HomePage";
+import MenuPage from "./pages/Menu/MenuPage";
 import NotFoundPage from "./pages/NotFound/NotFoundPage";
 import OurShopPage from "./pages/Shop/OurShopPage";
 import ShopDetailPage from "./pages/ShopDetail/ShopDetailPage";
 import PlaceTableForGuest from "./pages/PlaceTableForGuest/PlaceTableForGuest";
 import OrderAtTable from "./pages/OrderAtTable/OrderAtTable";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,6 +22,10 @@ const router = createBrowserRouter([
       { path: "cart", element: <ShoppingCartPage /> },
       { path: "checkout", element: <CheckoutPage /> },
       { path: "", element: <HomePage /> },
+      { path: "cart", element: <ShoppingCartPage /> },
+      { path: "checkout", element: <CheckoutPage /> },
+      { path: "menu", element: <MenuPage /> },
+      { path: "chef", element: <ChefPage /> },
       { path: "shopdetail", element: <ShopDetailPage /> },
       { path: "about", element: <AboutUsPage /> },
       { path: "ourshop", element: <OurShopPage /> },

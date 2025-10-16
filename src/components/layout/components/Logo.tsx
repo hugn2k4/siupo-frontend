@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { Link } from "react-router-dom";
-import LogoImg from "../../../assets/images/logo.png";
+import LogoImg from "../../../assets/images/image_logo.png";
 
 function Logo() {
   return (

@@ -1,17 +1,16 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 
-import similar1 from "../../../assets/images/Similar1.png";
-import similar2 from "../../../assets/images/Similar2.png";
-import similar3 from "../../../assets/images/Similar3.png";
-
+import similar1 from "../../../assets/images/image_similar_1.png";
+import similar2 from "../../../assets/images/image_similar_2.png";
+import similar3 from "../../../assets/images/image_similar_3.png";
 const SimilarProducts: React.FC = () => {
   const products = [
     {
       title: "Fresh Lime",
       price: "$38.00",
       originalPrice: "$45.00",
-      image: similar1, // Thay đổi đường dẫn phù hợp
+      image: similar1,
     },
     {
       title: "Chocolate Muffin",

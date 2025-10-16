@@ -1,8 +1,8 @@
 import React from "react";
-import aboutus4 from "../../../assets/images/Aboutus4.png";
-import Student from "../../../assets/images/Student.png";
-import Person from "../../../assets/images/Person.png";
-import Coffee from "../../../assets/images/Coffee.png";
+import aboutus4 from "../../../assets/images/image_about_us_4.png";
+import Student from "../../../assets/images/image_student.png";
+import Person from "../../../assets/images/image_person.png";
+import Coffee from "../../../assets/images/image_coffee.png";
 // import AboutusClient from "../../../assets/images/AboutusClient.png";
 // Why Choose Us Section Component
 const WhyChooseUsSection: React.FC = () => {

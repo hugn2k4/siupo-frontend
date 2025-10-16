@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import Burger from "../../assets/images/image_burger.png";
 import CartItemComponent from "./components/CartItemComponent";
 import CouponSection from "./components/CouponSection";
 import OrderSummary from "./components/OrderSummary";
-import Burger from "../../assets/images/Burger.png";
 // Types
 interface CartItem {
   id: number;

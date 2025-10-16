@@ -1,72 +1,156 @@
 import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Checkbox, Divider, FormControlLabel, IconButton, Link, Typography } from "@mui/material";
-import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
+import { SnackbarContext } from "../../contexts/SnackbarContext";
+import { authService } from "../../services/authService";
+import type { LoginRequest } from "../../types/requests/auth.request";
 import AuthFormWrapper from "./components/AuthFormWrapper";
 import AuthTextField from "./components/AuthTextField";
 import SocialLoginButtons from "./components/SocialLoginButtons";
 
-export default function SignInPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "", rememberMe: false });
+type SignInFormData = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+};
 
-  const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFormData((prev) => ({ ...prev, [field]: field === "rememberMe" ? e.target.checked : e.target.value }));
+export default function SignInPage() {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { isLoading },
+  } = useForm<SignInFormData>({
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
+
+  const { showSnackbar } = useContext(SnackbarContext);
+
+  const onSubmit = async (data: SignInFormData) => {
+    const request: LoginRequest = {
+      email: data.email,
+      password: data.password,
+    };
+    try {
+      const res = await authService.login(request);
+      if (res.success) {
+        showSnackbar("Login successful!", "success", 3000);
+        navigate("/");
+      } else {
+        showSnackbar(res.message || "Login failed. Please try again.", "error", 4000);
+      }
+    } catch (error: unknown) {
+      console.error("❌ Login error:", error);
+      showSnackbar("Something went wrong. Please try again later.", "error", 4000);
+    }
+  };
 
   return (
-    <AuthFormWrapper>
-      <Typography variant="h4" component="h1" sx={{ mb: 4, fontWeight: 500, textAlign: "start" }}>
-        Sign In
-      </Typography>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <AuthFormWrapper>
+        <Typography variant="h4" component="h1" sx={{ mb: 4, fontWeight: 500, textAlign: "start" }}>
+          Sign In
+        </Typography>
+        <Controller
+          name="email"
+          control={control}
+          rules={{
+            required: "Email is required",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Invalid email format",
+            },
+          }}
+          render={({ field, fieldState }) => (
+            <AuthTextField
+              {...field}
+              label="Email"
+              type="email"
+              startIcon={<Email sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+            />
+          )}
+        />
+        <Controller
+          name="password"
+          control={control}
+          rules={{
+            required: "Password is required",
+            minLength: { value: 6, message: "Password must be at least 6 characters" },
+          }}
+          render={({ field, fieldState }) => (
+            <AuthTextField
+              {...field}
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              startIcon={<Lock sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
+              endIcon={
+                <IconButton onClick={() => setShowPassword((prev) => !prev)} size="small" edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              }
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+            />
+          )}
+        />
+        <Controller
+          name="rememberMe"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  {...field}
+                  checked={field.value}
+                  sx={{
+                    color: "var(--color-primary)",
+                    "&.Mui-checked": { color: "var(--color-primary)" },
+                  }}
+                  size="small"
+                />
+              }
+              label={<Typography variant="body2">Remember me</Typography>}
+              sx={{ mb: 3 }}
+            />
+          )}
+        />
 
-      <AuthTextField
-        label="Email"
-        type="email"
-        value={formData.email}
-        onChange={handleChange("email")}
-        startIcon={<Email sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
-      />
-      <AuthTextField
-        label="Password"
-        type={showPassword ? "text" : "password"}
-        value={formData.password}
-        onChange={handleChange("password")}
-        startIcon={<Lock sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
-        endIcon={
-          <IconButton onClick={() => setShowPassword((prev) => !prev)} size="small" edge="end">
-            {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
-        }
-      />
+        <MyButton
+          type="submit"
+          colorScheme="orange"
+          fullWidth
+          disabled={isLoading}
+          isLoading={isLoading}
+          sx={{
+            mb: 3,
+            borderRadius: 0,
+            textTransform: "none",
+          }}
+        >
+          Sign In
+        </MyButton>
 
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={formData.rememberMe}
-            onChange={handleChange("rememberMe")}
-            sx={{ color: "var(--color-primary)", "&.Mui-checked": { color: "var(--color-primary)" } }}
-            size="small"
-          />
-        }
-        label={<Typography variant="body2">Remember me</Typography>}
-        sx={{ mb: 3 }}
-      />
+        <Divider sx={{ mb: 3 }}>OR</Divider>
 
-      <MyButton type="submit" colorScheme="orange" fullWidth sx={{ mb: 3, borderRadius: 0, textTransform: "none" }}>
-        Sign In
-      </MyButton>
+        <SocialLoginButtons />
 
-      <Divider sx={{ mb: 3 }}>OR</Divider>
-
-      <SocialLoginButtons />
-
-      <Typography variant="body2" sx={{ textAlign: "center", color: "text.secondary" }}>
-        Don't have an account?{" "}
-        <Link component={RouterLink} to="/signup" sx={{ color: "var(--color-primary)", fontWeight: 600 }}>
-          Sign up
-        </Link>
-      </Typography>
-    </AuthFormWrapper>
+        <Typography variant="body2" sx={{ textAlign: "center", color: "text.secondary" }}>
+          Don&apos;t have an account?{" "}
+          <Link component={RouterLink} to="/signup" sx={{ color: "var(--color-primary)", fontWeight: 600 }}>
+            Sign up
+          </Link>
+        </Typography>
+      </AuthFormWrapper>
+    </form>
   );
 }

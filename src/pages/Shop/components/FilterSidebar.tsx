@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
-  Typography,
-  TextField,
-  InputAdornment,
-  IconButton,
   Checkbox,
-  FormGroup,
   FormControlLabel,
-  Slider,
+  FormGroup,
+  IconButton,
+  InputAdornment,
   Rating,
+  Slider,
+  TextField,
+  Typography,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import SearchIcon from "@mui/icons-material/Search";
+import { useEffect, useState } from "react";
 import categoryService from "../../../services/categoryService";
 import type { CategoryResponse } from "../../../types/responses/category.response";
 
@@ -57,7 +57,7 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
       minPrice: priceRange[0],
       maxPrice: priceRange[1],
     });
-  }, [searchName, selectedCategories, priceRange, onFilterChange]);
+  }, [searchName, selectedCategories, priceRange]);
 
   const handleSearch = () => {
     onFilterChange({

@@ -1,9 +1,9 @@
 import { Alert, Box, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import MyButton from "../../components/common/Button";
-import { authService } from "../../services/authService";
-import type { ForgotPasswordRequest } from "../../types/requests/auth.request";
+import MyButton from "../../../components/common/Button";
+import { authService } from "../../../services/authService";
+import type { ForgotPasswordRequest } from "../../../types/requests/auth.request";
 
 export default function SetNewPassword() {
   const navigate = useNavigate();

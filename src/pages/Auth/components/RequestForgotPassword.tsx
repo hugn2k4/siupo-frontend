@@ -1,8 +1,8 @@
 import { Box, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MyButton from "../../components/common/Button";
-import { authService } from "../../services/authService";
+import MyButton from "../../../components/common/Button";
+import { authService } from "../../../services/authService";
 
 export default function RequestForgotPassword() {
   const navigate = useNavigate();

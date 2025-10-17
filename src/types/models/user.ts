@@ -4,7 +4,8 @@ export interface User {
   id?: number;
   email: string;
   fullName: string;
-  dateOfBirth: string;
+  dateOfBirth?: string;
   phoneNumber: string;
-  gender: Gender;
+  gender?: Gender;
+  role?: string;
 }

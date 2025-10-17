@@ -1,5 +1,5 @@
 import authApi from "../api/authApi";
-import type { LoginRequest, RegisterRequest } from "../types/requests/auth.request";
+import type { ForgotPasswordRequest, LoginRequest, RegisterRequest } from "../types/requests/auth.request";
 
 export const authService = {
   login: async (data: LoginRequest) => {
@@ -36,5 +36,15 @@ export const authService = {
     // Dispatch auth state change event after token is removed
     window.dispatchEvent(new Event("authStateChange"));
     return authApi.logout();
+  },
+
+  requestForgotPassword: async (email: string) => {
+    const res = await authApi.requestForgotPassword(email);
+    return res;
+  },
+
+  setNewPassword: async (data: ForgotPasswordRequest) => {
+    const res = await authApi.setNewPassword(data);
+    return res;
   },
 };

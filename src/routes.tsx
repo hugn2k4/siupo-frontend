@@ -1,6 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import AboutUsPage from "./pages/AboutUs/AboutUsPage";
+import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage";
+import RequestForgotPassword from "./pages/Auth/RequestForgotPassword";
+import SetNewPassword from "./pages/Auth/SetNewPassword";
 import SignInPage from "./pages/Auth/SignInPage";
 import SignUpPage from "./pages/Auth/SignUpPage";
 import CheckoutPage from "./pages/CheckOut/CheckoutPage";
@@ -28,6 +31,14 @@ const router = createBrowserRouter([
       { path: "*", element: <NotFoundPage /> },
       { path: "signin", element: <SignInPage /> },
       { path: "signup", element: <SignUpPage /> },
+      {
+        path: "forgot-password",
+        element: <ForgotPasswordPage />,
+        children: [
+          { path: "", element: <RequestForgotPassword /> },
+          { path: "set-new-password", element: <SetNewPassword /> },
+        ],
+      },
     ],
   },
 ]);

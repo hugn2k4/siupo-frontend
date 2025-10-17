@@ -44,6 +44,18 @@ const ROUTES_META: Record<string, RouteMeta> = {
   "/shopdetail": {
     title: "Shop Detail",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Our Shop", path: "/ourshop" }, { label: "Product Detail" }],
+  "/forgot-password": {
+    title: "Forgot Password",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "SignIn", path: "/signin" }, { label: "Forgot Password" }],
+  },
+  "/forgot-password/set-new-password": {
+    title: "Set New Password",
+    breadcrumb: [
+      { label: "Home", path: "/" },
+      { label: "SignIn", path: "/signin" },
+      { label: "Forgot Password", path: "/forgot-password" },
+      { label: "Set New Password" },
+    ],
   },
 };
 

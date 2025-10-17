@@ -9,3 +9,9 @@ export interface RegisterRequest {
   phoneNumber: string;
   fullName: string;
 }
+
+export interface ForgotPasswordRequest {
+  email: string;
+  newPassword: string;
+  otp: string;
+}

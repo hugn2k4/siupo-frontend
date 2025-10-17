@@ -1,5 +1,5 @@
 import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
-import { Checkbox, Divider, FormControlLabel, IconButton, Link, Typography } from "@mui/material";
+import { Box, Checkbox, Divider, FormControlLabel, IconButton, Link, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -103,28 +103,40 @@ export default function SignInPage() {
             />
           )}
         />
-        <Controller
-          name="rememberMe"
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  {...field}
-                  checked={field.value}
-                  sx={{
-                    color: "var(--color-primary)",
-                    "&.Mui-checked": { color: "var(--color-primary)" },
-                  }}
-                  size="small"
-                />
-              }
-              label={<Typography variant="body2">Remember me</Typography>}
-              sx={{ mb: 3 }}
-            />
-          )}
-        />
-
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+          <Controller
+            name="rememberMe"
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    {...field}
+                    checked={field.value}
+                    sx={{
+                      color: "var(--color-primary)",
+                      "&.Mui-checked": { color: "var(--color-primary)" },
+                    }}
+                    size="small"
+                  />
+                }
+                label={<Typography variant="body2">Remember me</Typography>}
+              />
+            )}
+          />
+          <Typography
+            variant="body2"
+            onClick={() => navigate("/forgot-password")}
+            sx={{
+              color: "var(--color-primary)",
+              textDecoration: "underline",
+              cursor: "pointer",
+              "&:hover": { textDecorationThickness: "2px" },
+            }}
+          >
+            Forgotten password?
+          </Typography>
+        </Box>
         <MyButton
           type="submit"
           colorScheme="orange"

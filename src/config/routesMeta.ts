@@ -45,6 +45,19 @@ const ROUTES_META: Record<string, RouteMeta> = {
     title: "Sign Up",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Sign Up" }],
   },
+  "/forgot-password": {
+    title: "Forgot Password",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "SignIn", path: "/signin" }, { label: "Forgot Password" }],
+  },
+  "/forgot-password/set-new-password": {
+    title: "Set New Password",
+    breadcrumb: [
+      { label: "Home", path: "/" },
+      { label: "SignIn", path: "/signin" },
+      { label: "Forgot Password", path: "/forgot-password" },
+      { label: "Set New Password" },
+    ],
+  },
 };
 
 export default ROUTES_META;

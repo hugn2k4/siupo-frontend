@@ -13,10 +13,6 @@ const ROUTES_META: Record<string, RouteMeta> = {
     title: "About Us",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "About" }],
   },
-  "/shopdetail": {
-    title: "Shop Detail",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop Detail" }],
-  },
   "/cart": {
     title: "Shoping Cart",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Shoping Cart" }],
@@ -45,6 +41,9 @@ const ROUTES_META: Record<string, RouteMeta> = {
     title: "Sign Up",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Sign Up" }],
   },
+  "/shopdetail": {
+    title: "Shop Detail",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Our Shop", path: "/ourshop" }, { label: "Product Detail" }],
   "/forgot-password": {
     title: "Forgot Password",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "SignIn", path: "/signin" }, { label: "Forgot Password" }],

@@ -1,8 +1,30 @@
+import { useState } from "react";
 import { Box } from "@mui/material";
 import FilterSidebar from "./components/FilterSidebar";
 import ProductList from "./components/ProductList";
 
 function OurShopPage() {
+  const [filters, setFilters] = useState<{
+    searchName: string | null;
+    categoryIds: number[];
+    minPrice: number;
+    maxPrice: number;
+  }>({
+    searchName: null,
+    categoryIds: [],
+    minPrice: 0,
+    maxPrice: 8000,
+  });
+
+  const handleFilterChange = (newFilters: {
+    searchName: string | null;
+    categoryIds: number[];
+    minPrice: number;
+    maxPrice: number;
+  }) => {
+    setFilters(newFilters);
+  };
+
   return (
     <Box
       sx={{
@@ -17,11 +39,16 @@ function OurShopPage() {
         gap: 0, // Loại bỏ khoảng trống giữa các thành phần con
       }}
     >
-      <Box sx={{ margin: 0, padding: 0 }}>
-        <ProductList />
+      <Box sx={{ flex: 1, margin: 0, padding: 0 }}>
+        <ProductList
+          searchName={filters.searchName}
+          categoryIds={filters.categoryIds}
+          minPrice={filters.minPrice}
+          maxPrice={filters.maxPrice}
+        />
       </Box>
       <Box sx={{ width: "300px", margin: 0, padding: 0 }}>
-        <FilterSidebar />
+        <FilterSidebar onFilterChange={handleFilterChange} />
       </Box>
     </Box>
   );

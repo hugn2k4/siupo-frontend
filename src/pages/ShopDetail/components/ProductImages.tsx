@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import food1 from "../../../assets/images/image_food_5.png";
-import food2 from "../../../assets/images/image_food_5.png";
-import food3 from "../../../assets/images/image_food_5.png";
-import food4 from "../../../assets/images/image_food_5.png";
-const ProductImages: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState(0);
+import imageDefault from "../../../assets/gallery/gallery_burger.png";
 
-  const images = [food1, food2, food3, food4];
+interface ProductImagesProps {
+  imageUrls: string[];
+}
+
+const ProductImages: React.FC<ProductImagesProps> = ({ imageUrls }) => {
+  const [selectedImage, setSelectedImage] = useState(0);
+  const images = imageUrls.length > 0 ? imageUrls : [imageDefault];
 
   return (
     <div className="flex space-x-4">
@@ -26,7 +27,7 @@ const ProductImages: React.FC = () => {
       </div>
 
       {/* Main Image */}
-      <div className=" rounded-lg overflow-hidden">
+      <div className="rounded-lg overflow-hidden">
         <img src={images[selectedImage]} alt="Main product" className="w-full h-full object-cover" />
       </div>
     </div>

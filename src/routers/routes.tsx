@@ -18,6 +18,7 @@ import ShoppingCartPage from "../pages/ShoppingCart/shoppingCart";
 import PublicRoute from "./PublicRoute";
 import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
 import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
+
 const router = createBrowserRouter([
   {
     path: "/",

@@ -11,13 +11,12 @@ import CheckoutPage from "../pages/CheckOut/CheckoutPage";
 import ChefPage from "../pages/Chef/ChefPage";
 import HomePage from "../pages/Home/HomePage";
 import MenuPage from "../pages/Menu/MenuPage";
-import NotFoundPage from "../pages/NotFound/NotFoundPage";
+import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
+import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
 import OurShopPage from "../pages/Shop/OurShopPage";
-import ShopDetailPage from "../pages/ShopDetail/ShopDetailPage";
+import ProductDetailPage from "../pages/ProductDetail/ProductDetailPage";
 import ShoppingCartPage from "../pages/ShoppingCart/shoppingCart";
 import PublicRoute from "./PublicRoute";
-import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
-import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
 
 const router = createBrowserRouter([
   {
@@ -29,41 +28,27 @@ const router = createBrowserRouter([
       { path: "checkout", element: <CheckoutPage /> },
       { path: "menu", element: <MenuPage /> },
       { path: "chef", element: <ChefPage /> },
-      { path: "/shop/:productId", element: <ShopDetailPage /> },
       { path: "about", element: <AboutUsPage /> },
-      { path: "ourshop", element: <OurShopPage /> },
-      { path: "*", element: <NotFoundPage /> },
+      { path: "placetable", element: <PlaceTableForGuest /> },
+      { path: "orderattable", element: <OrderAtTable /> },
+      { path: "shop", element: <OurShopPage /> },
+      { path: "/shop/:productId", element: <ProductDetailPage /> },
       {
-        path: "signin",
-        element: (
-          <PublicRoute>
-            <SignInPage />
-          </PublicRoute>
-        ),
-      },
-      {
-        path: "signup",
-        element: (
-          <PublicRoute>
-            <SignUpPage />
-          </PublicRoute>
-        ),
-      },
-      {
-        path: "forgot-password",
-        element: (
-          <PublicRoute>
-            <ForgotPasswordPage />
-          </PublicRoute>
-        ),
+        element: <PublicRoute />,
         children: [
-          { path: "", element: <RequestForgotPassword /> },
-          { path: "set-new-password", element: <SetNewPassword /> },
+          { path: "signin", element: <SignInPage /> },
+          { path: "signup", element: <SignUpPage /> },
+          {
+            path: "forgot-password",
+            element: <ForgotPasswordPage />,
+            children: [
+              { path: "", element: <RequestForgotPassword /> },
+              { path: "set-new-password", element: <SetNewPassword /> },
+            ],
+          },
         ],
       },
       { path: "dev", element: <Dev /> },
-      { path: "placetable", element: <PlaceTableForGuest /> },
-      { path: "orderattable", element: <OrderAtTable /> },
     ],
   },
 ]);

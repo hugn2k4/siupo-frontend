@@ -1,16 +1,12 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useGlobal } from "../hooks/useGlobal";
 
-interface PrivateRouteProps {
-  children: React.ReactNode;
-}
-
-export default function PrivateRoute({ children }: PrivateRouteProps) {
+export default function PrivateRoute() {
   const { isLogin } = useGlobal();
 
   if (!isLogin) {
     return <Navigate to="/signin" replace />;
   }
 
-  return <>{children}</>;
+  return <Outlet />;
 }

@@ -21,7 +21,7 @@ const ROUTES_META: Record<string, RouteMeta> = {
     title: "Checkout",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Checkout" }],
   },
-  "/ourshop": {
+  "/shop": {
     title: "Our Shop",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop" }],
   },
@@ -41,10 +41,6 @@ const ROUTES_META: Record<string, RouteMeta> = {
     title: "Sign Up",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Sign Up" }],
   },
-  "/shopdetail": {
-    title: "Shop Detail",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Our Shop", path: "/ourshop" }, { label: "Product Detail" }],
-  },
   "/forgot-password": {
     title: "Forgot Password",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "SignIn", path: "/signin" }, { label: "Forgot Password" }],
@@ -57,6 +53,10 @@ const ROUTES_META: Record<string, RouteMeta> = {
       { label: "Forgot Password", path: "/forgot-password" },
       { label: "Set New Password" },
     ],
+  },
+  "/shop/:productId": {
+    title: "Product Detail",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop", path: "/shop" }, { label: "Product Detail" }],
   },
 };
 

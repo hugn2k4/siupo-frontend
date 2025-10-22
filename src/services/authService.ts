@@ -1,16 +1,18 @@
 import authApi from "../api/authApi";
-import type { LoginRequest, RegisterRequest } from "../types/requests/auth.request";
+import type { ForgotPasswordRequest, LoginRequest, RegisterRequest } from "../types/requests/auth.request";
 
 export const authService = {
   login: async (data: LoginRequest) => {
     const res = await authApi.login(data);
 
     if (res.success && res.data) {
-      const accessToken = res.data.accessToken;
+      const { accessToken, user } = res.data;
       if (accessToken) {
-        localStorage.setItem("token", accessToken);
-        // Dispatch auth state change event after token is saved
-        window.dispatchEvent(new Event("authStateChange"));
+        localStorage.setItem("accessToken", accessToken);
+      }
+      if (user) {
+        const userObj = typeof user === "string" ? JSON.parse(user) : user;
+        localStorage.setItem("user", JSON.stringify(userObj));
       }
     }
     return res;
@@ -32,9 +34,18 @@ export const authService = {
   },
 
   logout: () => {
-    localStorage.removeItem("token");
-    // Dispatch auth state change event after token is removed
-    window.dispatchEvent(new Event("authStateChange"));
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
     return authApi.logout();
+  },
+
+  requestForgotPassword: async (email: string) => {
+    const res = await authApi.requestForgotPassword(email);
+    return res;
+  },
+
+  setNewPassword: async (data: ForgotPasswordRequest) => {
+    const res = await authApi.setNewPassword(data);
+    return res;
   },
 };

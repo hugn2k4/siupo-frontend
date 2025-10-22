@@ -51,6 +51,7 @@ const Hero = () => {
               }}
             >
               <Typography
+                component="div"
                 sx={{
                   fontFamily: "Miniver",
                   mb: 1,

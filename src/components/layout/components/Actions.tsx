@@ -8,12 +8,14 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../hooks/useAuth";
+import { useGlobal } from "../../../hooks/useGlobal";
+import { useSnackbar } from "../../../hooks/useSnackbar";
 
 function Actions() {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { isAuthenticated, logout } = useAuth();
+  const { isLogin, logout } = useGlobal();
+  const { showSnackbar } = useSnackbar();
 
   const handleAccountClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -41,7 +43,11 @@ function Actions() {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    showSnackbar("Đăng xuất thành công", "success");
+    setTimeout(() => {
+      navigate("/signin");
+    }, 500);
+
     handleMenuClose();
   };
 
@@ -94,9 +100,8 @@ function Actions() {
           },
         }}
       >
-        {isAuthenticated
-          ? // Authenticated menu items
-            [
+        {isLogin
+          ? [
               <MenuItem key="profile" onClick={handleProfile}>
                 <ListItemIcon>
                   <AccountCircleOutlinedIcon fontSize="small" />
@@ -111,8 +116,7 @@ function Actions() {
                 <ListItemText>Đăng xuất</ListItemText>
               </MenuItem>,
             ]
-          : // Unauthenticated menu items
-            [
+          : [
               <MenuItem key="login" onClick={handleLogin}>
                 <ListItemIcon>
                   <LoginIcon fontSize="small" />

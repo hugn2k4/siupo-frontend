@@ -1,10 +1,11 @@
 import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
-import { Checkbox, Divider, FormControlLabel, IconButton, Link, Typography } from "@mui/material";
-import { useContext, useState } from "react";
+import { Box, Checkbox, Divider, FormControlLabel, IconButton, Link, Typography } from "@mui/material";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
-import { SnackbarContext } from "../../contexts/SnackbarContext";
+import { useGlobal } from "../../hooks/useGlobal";
+import { useSnackbar } from "../../hooks/useSnackbar";
 import { authService } from "../../services/authService";
 import type { LoginRequest } from "../../types/requests/auth.request";
 import AuthFormWrapper from "./components/AuthFormWrapper";
@@ -32,8 +33,8 @@ export default function SignInPage() {
     },
   });
 
-  const { showSnackbar } = useContext(SnackbarContext);
-
+  const { showSnackbar } = useSnackbar();
+  const { setGlobal } = useGlobal();
   const onSubmit = async (data: SignInFormData) => {
     const request: LoginRequest = {
       email: data.email,
@@ -43,6 +44,7 @@ export default function SignInPage() {
       const res = await authService.login(request);
       if (res.success) {
         showSnackbar("Login successful!", "success", 3000);
+        setGlobal({ isLogin: true, user: res.data?.user || null, accessToken: res.data?.accessToken || null });
         navigate("/");
       } else {
         showSnackbar(res.message || "Login failed. Please try again.", "error", 4000);
@@ -103,28 +105,40 @@ export default function SignInPage() {
             />
           )}
         />
-        <Controller
-          name="rememberMe"
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  {...field}
-                  checked={field.value}
-                  sx={{
-                    color: "var(--color-primary)",
-                    "&.Mui-checked": { color: "var(--color-primary)" },
-                  }}
-                  size="small"
-                />
-              }
-              label={<Typography variant="body2">Remember me</Typography>}
-              sx={{ mb: 3 }}
-            />
-          )}
-        />
-
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+          <Controller
+            name="rememberMe"
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    {...field}
+                    checked={field.value}
+                    sx={{
+                      color: "var(--color-primary)",
+                      "&.Mui-checked": { color: "var(--color-primary)" },
+                    }}
+                    size="small"
+                  />
+                }
+                label={<Typography variant="body2">Remember me</Typography>}
+              />
+            )}
+          />
+          <Typography
+            variant="body2"
+            onClick={() => navigate("/forgot-password")}
+            sx={{
+              color: "var(--color-primary)",
+              textDecoration: "underline",
+              cursor: "pointer",
+              "&:hover": { textDecorationThickness: "2px" },
+            }}
+          >
+            Forgotten password?
+          </Typography>
+        </Box>
         <MyButton
           type="submit"
           colorScheme="orange"

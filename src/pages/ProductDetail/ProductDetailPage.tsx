@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Box, CircularProgress, Alert } from "@mui/material";
+import { Alert, Box, CircularProgress } from "@mui/material";
 import { motion } from "framer-motion";
-import Breadcrumb from "./components/Breadcrumb";
-import Navigation from "./components/Navigation";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import productService from "../../services/productService";
+import type { ProductDetailResponse } from "../../types/responses/product.response";
 import ProductImages from "./components/ProductImages";
 import ProductInfo from "./components/ProductInfo";
 import ProductTabs from "./components/ProductTabs";
 import SimilarProducts from "./components/SimilarProducts";
-import productService from "../../services/productService";
-import type { ProductDetailResponse } from "../../types/responses/product.response";
 
-const ShopDetailPage: React.FC = () => {
+const ProductDetailPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<ProductDetailResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -71,11 +69,9 @@ const ShopDetailPage: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      sx={{ maxWidth: "1280px", mx: "auto", px: 2, py: 4 }}
+      sx={{ maxWidth: "1280px", mx: "auto", px: 2, py: 4, pt: 10 }}
     >
-      <Breadcrumb />
-      <Navigation />
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" }, gap: 3, mb: 3 }}>
+      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" }, gap: 5, mb: 3 }}>
         <ProductImages imageUrls={product.imageUrls} />
         <ProductInfo product={product} />
       </Box>
@@ -85,4 +81,4 @@ const ShopDetailPage: React.FC = () => {
   );
 };
 
-export default ShopDetailPage;
+export default ProductDetailPage;

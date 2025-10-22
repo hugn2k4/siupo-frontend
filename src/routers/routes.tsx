@@ -16,6 +16,8 @@ import OurShopPage from "../pages/Shop/OurShopPage";
 import ShopDetailPage from "../pages/ShopDetail/ShopDetailPage";
 import ShoppingCartPage from "../pages/ShoppingCart/shoppingCart";
 import PublicRoute from "./PublicRoute";
+import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
+import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
 
 const router = createBrowserRouter([
   {
@@ -60,6 +62,8 @@ const router = createBrowserRouter([
         ],
       },
       { path: "dev", element: <Dev /> },
+      { path: "placetable", element: <PlaceTableForGuest /> },
+      { path: "orderattable", element: <OrderAtTable /> },
     ],
   },
 ]);

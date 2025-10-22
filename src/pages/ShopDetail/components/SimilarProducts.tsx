@@ -1,9 +1,9 @@
 import React from "react";
 import ProductCard from "./ProductCard";
+
 import similar1 from "../../../assets/images/image_similar_1.png";
 import similar2 from "../../../assets/images/image_similar_2.png";
 import similar3 from "../../../assets/images/image_similar_3.png";
-
 const SimilarProducts: React.FC = () => {
   const products = [
     {

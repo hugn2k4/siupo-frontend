@@ -1,16 +1,16 @@
 import { Email, Lock, Person, Phone, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Divider, IconButton, Link, Typography } from "@mui/material";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
-import { SnackbarContext } from "../../contexts/SnackbarContext";
 import { authService } from "../../services/authService";
 import type { RegisterRequest } from "../../types/requests/auth.request";
 import AuthFormWrapper from "./components/AuthFormWrapper";
 import AuthTextField from "./components/AuthTextField";
 import OTPPopup from "./components/OTPPopup";
 import SocialLoginButtons from "./components/SocialLoginButtons";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 type SignUpFormData = {
   email: string;
@@ -21,7 +21,7 @@ type SignUpFormData = {
 };
 
 export default function SignUpPage() {
-  const { showSnackbar } = useContext(SnackbarContext);
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

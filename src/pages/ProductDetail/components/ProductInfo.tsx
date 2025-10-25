@@ -7,6 +7,10 @@ import { Avatar, Box, Button, Divider, Rating, Stack, Typography } from "@mui/ma
 import React, { useState } from "react";
 import { FaFacebookF, FaInstagram, FaTwitter, FaVk, FaYoutube } from "react-icons/fa";
 import MyButton from "../../../components/common/Button";
+import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
+import { useGlobal } from "../../../hooks/useGlobal";
+import { useSnackbar } from "../../../hooks/useSnackbar";
+import cartService from "../../../services/cartService";
 import { EProductStatus } from "../../../types/enums/product.enum";
 import type { ProductDetailResponse } from "../../../types/responses/product.response";
 
@@ -16,13 +20,51 @@ interface ProductInfoProps {
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+
+  const { isLogin } = useGlobal();
+  const { showSnackbar } = useSnackbar();
 
   const isAvailable = product?.status === EProductStatus.AVAILABLE;
   // size for quantity cells (increase to match button height visually)
   const qtySize = 48;
 
   const displayStatus = isAvailable ? "Available" : "Unavailable";
-  const displayPrice = new Intl.NumberFormat("vi-VN").format(150000) + " VND";
+  const displayPrice = new Intl.NumberFormat("vi-VN").format(product.price) + " VND";
+
+  const handleAddToCart = async () => {
+    // Check if user is logged in
+    if (!isLogin) {
+      setShowLoginDialog(true);
+      return;
+    }
+
+    try {
+      await cartService.addToCart({ productId: product.id, quantity });
+      showSnackbar("Product added to cart!", "success", 3000);
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      showSnackbar("Failed to add product to cart!", "error", 3000);
+    }
+  };
+
+  const handleAddToWishlist = () => {
+    if (!isLogin) {
+      setShowLoginDialog(true);
+      return;
+    }
+    // TODO: Implement wishlist logic
+    showSnackbar("Added to wishlist!", "success", 3000);
+  };
+
+  const handleCompare = () => {
+    if (!isLogin) {
+      setShowLoginDialog(true);
+      return;
+    }
+    // TODO: Implement compare logic
+    showSnackbar("Added to compare list!", "success", 3000);
+  };
 
   return (
     <Box sx={{ flex: 1 }}>
@@ -180,6 +222,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
           startIcon={<ShoppingBagOutlinedIcon />}
           disabled={!isAvailable}
           sx={{ textTransform: "none", borderRadius: 0, minWidth: "170px" }}
+          onClick={handleAddToCart}
         >
           Add to Cart
         </MyButton>
@@ -192,6 +235,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
           <Button
             startIcon={<FavoriteBorderOutlinedIcon />}
             variant="text"
+            onClick={handleAddToWishlist}
             sx={{
               fontWeight: 400,
               textTransform: "none",
@@ -208,6 +252,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
           <Button
             variant="text"
             startIcon={<CompareArrowsIcon />}
+            onClick={handleCompare}
             sx={{
               fontWeight: 400,
               textTransform: "none",
@@ -252,6 +297,13 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         </Stack>
       </Box>
       <Divider sx={{ borderStyle: "solid", borderColor: "divider", my: 2 }} />
+
+      {/* Login Required Dialog */}
+      <LoginRequiredDialog
+        open={showLoginDialog}
+        onClose={() => setShowLoginDialog(false)}
+        message="You need to login to add items to cart. Please sign in or create a new account."
+      />
     </Box>
   );
 };

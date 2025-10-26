@@ -50,6 +50,13 @@ const colorMap = {
     hoverText: "var(--color-primary)",
     border: "var(--color-primary)",
   },
+  lightOrange: {
+    bg: "white",
+    text: "var(--color-primary)",
+    hoverBg: "var(--color-primary)",
+    hoverText: "white",
+    border: "var(--color-primary)",
+  },
   grey: {
     bg: "white",
     text: "#333",

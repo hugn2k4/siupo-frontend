@@ -39,6 +39,8 @@ const ProductImages: React.FC<ProductImagesProps> = ({ imageUrls }) => {
       spacing={2}
       alignItems="flex-start"
       sx={{
+        mb: 2,
+        width: { xs: "100%", sm: "auto" },
         maxHeight: "100%",
         maxWidth: "100%",
         overflowX: "hidden",

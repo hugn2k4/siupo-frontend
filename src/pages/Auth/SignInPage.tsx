@@ -2,7 +2,7 @@ import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Box, Checkbox, Divider, FormControlLabel, IconButton, Link, Typography } from "@mui/material";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
 import { useGlobal } from "../../hooks/useGlobal";
 import { useSnackbar } from "../../hooks/useSnackbar";
@@ -20,6 +20,7 @@ type SignInFormData = {
 
 export default function SignInPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const {
     control,
@@ -35,6 +36,10 @@ export default function SignInPage() {
 
   const { showSnackbar } = useSnackbar();
   const { setGlobal } = useGlobal();
+
+  // Get return URL from location state (set by PrivateRoute)
+  const from = (location.state as { from?: string })?.from || "/";
+
   const onSubmit = async (data: SignInFormData) => {
     const request: LoginRequest = {
       email: data.email,
@@ -45,7 +50,9 @@ export default function SignInPage() {
       if (res.success) {
         showSnackbar("Login successful!", "success", 3000);
         setGlobal({ isLogin: true, user: res.data?.user || null, accessToken: res.data?.accessToken || null });
-        navigate("/");
+
+        // Redirect to the page user was trying to access, or home
+        navigate(from, { replace: true });
       } else {
         showSnackbar(res.message || "Login failed. Please try again.", "error", 4000);
       }

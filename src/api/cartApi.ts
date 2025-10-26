@@ -8,6 +8,12 @@ const cartApi = {
     axiosClient.post("/cart/add", data).then((response) => response.data),
 
   getCart: (): Promise<ApiResponse<CartResponse>> => axiosClient.get("/cart").then((response) => response.data),
+
+  updateItemQuantity: (itemId: string, quantity: number): Promise<ApiResponse<CartResponse>> =>
+    axiosClient.patch(`/cart/${itemId}?quantity=${quantity}`).then((response) => response.data),
+
+  removeCartItem: (itemId: string): Promise<ApiResponse> =>
+    axiosClient.delete(`/cart/${itemId}`).then((response) => response.data),
 };
 
 export default cartApi;

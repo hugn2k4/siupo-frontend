@@ -4,8 +4,11 @@ export type CartResponse = {
 };
 
 export type CartItem = {
+  id: number;
   productId: number;
   productName: string;
+  productImage: string;
   quantity: number;
   price: number;
+  rating: number;
 };

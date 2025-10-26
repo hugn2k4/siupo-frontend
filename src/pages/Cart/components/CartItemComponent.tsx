@@ -3,17 +3,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { Box, IconButton, Rating, Stack, Typography } from "@mui/material";
 import React from "react";
+import type { CartItem } from "../../../types/responses/cart.response";
 import { formatVND } from "../../../utils/format";
-
-// Types
-interface CartItem {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-  rating: number;
-}
 
 interface CartItemProps {
   item: CartItem;
@@ -37,8 +28,8 @@ const CartItemComponent: React.FC<CartItemProps> = ({ item, onQuantityChange, on
       <Stack direction="row" spacing={2} alignItems="center">
         <Box
           component="img"
-          src={item.image}
-          alt={item.name}
+          src={item.productImage}
+          alt={item.productName}
           sx={{
             width: 64,
             height: 64,
@@ -50,7 +41,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({ item, onQuantityChange, on
         />
         <Box>
           <Typography variant="body1" fontWeight={500} color="text.primary" sx={{ mb: 0.5 }}>
-            {item.name}
+            {item.productName}
           </Typography>
           <Rating name="product-rating" value={item.rating} precision={0.5} readOnly size="small" />
         </Box>

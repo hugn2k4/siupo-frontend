@@ -88,7 +88,7 @@ axiosClient.interceptors.response.use(
 
       try {
         console.log(`🔄 [${reqId}] Refreshing token...`);
-        const res = await axiosClient.post("/auth/refresh");
+        const res = await axiosClient.post("/auth/refresh-token");
         const newAccessToken = res.data?.data?.accessToken || res.data?.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
 

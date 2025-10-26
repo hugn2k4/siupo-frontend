@@ -57,7 +57,7 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
       minPrice: priceRange[0],
       maxPrice: priceRange[1],
     });
-  }, [searchName, selectedCategories, priceRange]);
+  }, [searchName, selectedCategories, priceRange, onFilterChange]);
 
   const handleSearch = () => {
     onFilterChange({

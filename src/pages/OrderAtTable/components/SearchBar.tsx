@@ -1,11 +1,11 @@
 // src/components/SearchBar.tsx
 import React from "react";
 
-interface Props {
+interface SearchBarProps {
   onSearch: (query: string) => void;
 }
 
-const SearchBar: React.FC<Props> = ({ onSearch }) => (
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => (
   <div className="px-4 py-3 bg-white shadow-sm">
     <div className="relative">
       <input

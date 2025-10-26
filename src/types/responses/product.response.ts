@@ -23,7 +23,10 @@ export interface ProductDetailResponse extends ProductResponse {
   reviewCount: number;
   tags?: string[];
 }
-
+export interface CartItem extends ProductResponse {
+  quantity: number;
+  note?: string;
+}
 export interface PageResponse<T> {
   content: T[];
   pageable: {

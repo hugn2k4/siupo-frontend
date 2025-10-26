@@ -1,11 +1,11 @@
 // src/components/Header.tsx
 import React from "react";
 
-interface Props {
+interface HeaderProps {
   tableName: string;
 }
 
-const Header: React.FC<Props> = ({ tableName }) => (
+const Header: React.FC<HeaderProps> = ({ tableName }) => (
   <header className="bg-gradient-to-r from-amber-700 to-amber-600 text-white px-4 py-4 shadow-lg sticky top-0 z-50">
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-3">

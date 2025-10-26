@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { GlobalProvider } from "./contexts/GlobalProvider.tsx";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
+import { PreOrderProvider } from "./contexts/PreOrderContext";
 import "./index.css";
 import router from "./routers/routes.tsx";
 
@@ -10,7 +11,9 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <GlobalProvider>
       <SnackbarProvider>
-        <RouterProvider router={router} />
+        <PreOrderProvider>
+          <RouterProvider router={router} />
+        </PreOrderProvider>
       </SnackbarProvider>
     </GlobalProvider>
   </StrictMode>

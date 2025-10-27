@@ -5,3 +5,10 @@ export interface ApiResponse<T = null> {
   data: T | null;
   timestamp: string;
 }
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}

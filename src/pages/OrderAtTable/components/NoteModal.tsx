@@ -1,8 +1,9 @@
+// src/components/NoteModal.tsx
 import React, { useState } from "react";
-import type { MenuItem } from "./data/menuData";
+import type { ProductResponse } from "../../../types/responses/product.response";
 
 interface NoteModalProps {
-  item: MenuItem;
+  item: ProductResponse;
   currentNote: string;
   onSave: (note: string) => void;
   onClose: () => void;

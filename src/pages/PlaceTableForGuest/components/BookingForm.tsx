@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import { bookingApi } from "../../../api/bookingApi";
+import type { CartItem } from "../../../types/responses/product.response";
 
-const BookingForm: React.FC = () => {
+interface BookingFormProps {
+  preOrderItems?: CartItem[];
+}
+
+const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
   const [formData, setFormData] = useState({
     fullname: "",
     phoneNumber: "",
@@ -15,14 +21,13 @@ const BookingForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Validation functions
   const validatePhone = (phone: string) => {
     const phoneRegex = /^(0|\+84)(3|5|7|8|9)[0-9]{8}$/;
     return phoneRegex.test(phone);
   };
 
   const validateEmail = (email: string) => {
-    if (!email.trim()) return true; // Email is optional
+    if (!email.trim()) return true;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -40,7 +45,6 @@ const BookingForm: React.FC = () => {
       return "Thời gian đặt bàn phải trong khung giờ hoạt động (8:00 - 22:00)";
     }
 
-    // Check if at least 1 hour in advance
     const minimumTime = new Date(now.getTime() + 60 * 60 * 1000);
     if (selectedTime < minimumTime) {
       return "Vui lòng đặt bàn trước ít nhất 1 giờ";
@@ -52,7 +56,6 @@ const BookingForm: React.FC = () => {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // Fullname validation
     if (!formData.fullname.trim()) {
       newErrors.fullname = "Họ tên không được để trống";
     } else if (formData.fullname.trim().length < 2) {
@@ -61,19 +64,16 @@ const BookingForm: React.FC = () => {
       newErrors.fullname = "Họ tên không được vượt quá 100 ký tự";
     }
 
-    // Phone validation
     if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = "Số điện thoại không được để trống";
     } else if (!validatePhone(formData.phoneNumber)) {
       newErrors.phoneNumber = "Số điện thoại không đúng định dạng (VD: 0901234567)";
     }
 
-    // Email validation (optional)
     if (!validateEmail(formData.email)) {
       newErrors.email = "Email không đúng định dạng";
     }
 
-    // Member count validation
     const memberCount = parseInt(formData.memberInt);
     if (!memberCount || memberCount < 1) {
       newErrors.memberInt = "Số lượng khách phải lớn hơn 0";
@@ -81,7 +81,6 @@ const BookingForm: React.FC = () => {
       newErrors.memberInt = "Số lượng khách không được vượt quá 50 người";
     }
 
-    // DateTime validation
     if (!formData.startedAt) {
       newErrors.startedAt = "Vui lòng chọn thời gian đặt bàn";
     } else {
@@ -91,12 +90,10 @@ const BookingForm: React.FC = () => {
       }
     }
 
-    // Note validation
     if (formData.note.length > 500) {
       newErrors.note = "Ghi chú không được vượt quá 500 ký tự";
     }
 
-    // Policy agreement
     if (!formData.agreePolicy) {
       newErrors.agreePolicy = "Vui lòng đồng ý với chính sách đặt bàn";
     }
@@ -107,7 +104,6 @@ const BookingForm: React.FC = () => {
 
   const handleChange = (field: string, value: string | boolean) => {
     setFormData({ ...formData, [field]: value });
-    // Clear error when user types
     if (errors[field]) {
       const newErrors = { ...errors };
       delete newErrors[field];
@@ -122,18 +118,14 @@ const BookingForm: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    // Clear previous submit error
-    if (errors.submit) {
-      const newErrors = { ...errors };
-      delete newErrors.submit;
-      setErrors(newErrors);
-    }
-
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
+    setErrors((prev) => {
+      const newErr = { ...prev };
+      delete newErr.submit;
+      return newErr;
+    });
 
     try {
       const requestData = {
@@ -143,21 +135,22 @@ const BookingForm: React.FC = () => {
         memberInt: parseInt(formData.memberInt),
         startedAt: new Date(formData.startedAt).toISOString(),
         note: formData.note.trim() || null,
+        // Thêm thông tin món đã chọn nếu có
+        preOrderItems:
+          preOrderItems.length > 0
+            ? preOrderItems.map((item) => ({
+                productId: item.id,
+                quantity: item.quantity,
+                note: item.note || null,
+                price: item.price,
+              }))
+            : null,
       };
 
-      const response = await fetch("/api/place-table-for-guest/place-table", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
+      const result = await bookingApi.placeTable(requestData);
 
-      const result = await response.json();
-
-      if (response.ok && result.success) {
+      if (result?.success) {
         setSubmitSuccess(true);
-        // Reset form
         setFormData({
           fullname: "",
           phoneNumber: "",
@@ -168,19 +161,30 @@ const BookingForm: React.FC = () => {
           agreePolicy: false,
         });
         setErrors({});
-
-        // Show success message for 5 seconds then hide
-        setTimeout(() => {
-          setSubmitSuccess(false);
-        }, 5000);
+        setTimeout(() => setSubmitSuccess(false), 5000);
       } else {
         setErrors({
-          submit: result.message || "Không thể gửi yêu cầu, vui lòng thử lại sau",
+          submit: result?.message || "Không thể gửi yêu cầu, vui lòng thử lại sau",
         });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error submitting booking:", error);
-      setErrors({ submit: "Không thể gửi yêu cầu, vui lòng thử lại sau" });
+
+      let errorMessage = "Không thể gửi yêu cầu, vui lòng thử lại sau";
+
+      if (error && typeof error === "object") {
+        // Check if it's an Axios error or similar HTTP error
+        if ("response" in error && error.response && typeof error.response === "object") {
+          const response = error.response as { data?: { message?: string } };
+          if (response.data?.message) {
+            errorMessage = response.data.message;
+          }
+        } else if ("message" in error && typeof error.message === "string") {
+          errorMessage = error.message;
+        }
+      }
+
+      setErrors({ submit: errorMessage });
     } finally {
       setIsSubmitting(false);
     }
@@ -200,6 +204,11 @@ const BookingForm: React.FC = () => {
                 <h3 className="text-lg font-semibold text-green-800 mb-1">Yêu cầu đặt bàn đã được gửi thành công!</h3>
                 <p className="text-green-700">
                   Quản lý nhà hàng sẽ liên hệ lại với bạn để xác nhận chi tiết đặt bàn trong thời gian sớm nhất.
+                  {preOrderItems.length > 0 && (
+                    <span className="block mt-1 font-semibold">
+                      Các món ăn đã chọn sẽ được chuẩn bị sẵn khi bạn đến.
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
@@ -365,6 +374,12 @@ const BookingForm: React.FC = () => {
             <p className="text-sm text-amber-800 text-center">
               <strong>Lưu ý:</strong> Sau khi gửi yêu cầu, quản lý nhà hàng sẽ liên hệ lại với bạn để xác nhận thông tin
               đặt bàn trong thời gian sớm nhất.
+              {preOrderItems.length > 0 && (
+                <span className="block mt-2 font-semibold">
+                  Các món ăn bạn đã chọn ({preOrderItems.reduce((sum, item) => sum + item.quantity, 0)} món) sẽ được
+                  chuẩn bị sẵn khi bạn đến nhà hàng.
+                </span>
+              )}
             </p>
           </div>
         </div>

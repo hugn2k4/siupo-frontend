@@ -1,5 +1,6 @@
+import { Heart, Share2, ShoppingBag } from "lucide-react";
 import React from "react";
-import { ShoppingBag, Heart, Share2 } from "lucide-react";
+import imageDefault from "../../../assets/images/image_burger.png";
 
 interface ProductCardProps {
   title: string;
@@ -8,12 +9,7 @@ interface ProductCardProps {
   image?: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({
-  title,
-  price,
-  originalPrice,
-  image = "/api/placeholder/300/200", // Ảnh mặc định nếu không có
-}) => {
+const ProductCard: React.FC<ProductCardProps> = ({ title, price, originalPrice, image = imageDefault }) => {
   return (
     <div className="relative group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       {/* Hình ảnh */}

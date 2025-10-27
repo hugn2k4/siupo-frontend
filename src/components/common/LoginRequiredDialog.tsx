@@ -1,43 +1,43 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Dialog, IconButton, Stack, Typography } from "@mui/material";
-import { useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import MyButton from "../components/common/Button";
-import { useGlobal } from "../hooks/useGlobal";
+import { useNavigate } from "react-router-dom";
+import MyButton from "./Button";
 
-export default function PrivateRoute() {
-  const { isLogin } = useGlobal();
+interface LoginRequiredDialogProps {
+  open: boolean;
+  onClose: () => void;
+  message?: string;
+  returnUrl?: string;
+}
+
+const LoginRequiredDialog: React.FC<LoginRequiredDialogProps> = ({
+  open,
+  onClose,
+  message = "You need to login to perform this action. Please sign in or create a new account.",
+  returnUrl,
+}) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [open, setOpen] = useState(!isLogin);
-
-  if (isLogin) return <Outlet />;
-
-  const handleCancel = () => {
-    setOpen(false);
-    navigate(-1); // quay về trang trước đó
-  };
 
   const handleSignIn = () => {
-    // Navigate to signin with return URL in state
     navigate("/signin", {
-      state: { from: location.pathname + location.search },
+      state: { from: returnUrl || window.location.pathname + window.location.search },
     });
+    onClose();
   };
 
   const handleSignUp = () => {
-    // Navigate to signup with return URL in state
     navigate("/signup", {
-      state: { from: location.pathname + location.search },
+      state: { from: returnUrl || window.location.pathname + window.location.search },
     });
+    onClose();
   };
 
   return (
-    <Dialog open={open} onClose={handleCancel} maxWidth="xs" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <Box sx={{ position: "relative", p: 3 }}>
         <IconButton
           aria-label="close"
-          onClick={handleCancel}
+          onClick={onClose}
           sx={{
             position: "absolute",
             right: 8,
@@ -53,7 +53,7 @@ export default function PrivateRoute() {
         </Typography>
 
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          You need to login to access this page. Please sign in or create a new account.
+          {message}
         </Typography>
 
         <Stack direction="row" spacing={2}>
@@ -67,4 +67,6 @@ export default function PrivateRoute() {
       </Box>
     </Dialog>
   );
-}
+};
+
+export default LoginRequiredDialog;

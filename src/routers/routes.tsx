@@ -7,14 +7,17 @@ import SetNewPassword from "../pages/Auth/components/SetNewPassword";
 import ForgotPasswordPage from "../pages/Auth/ForgotPasswordPage";
 import SignInPage from "../pages/Auth/SignInPage";
 import SignUpPage from "../pages/Auth/SignUpPage";
+import Cart from "../pages/Cart/Cart";
 import CheckoutPage from "../pages/CheckOut/CheckoutPage";
 import ChefPage from "../pages/Chef/ChefPage";
 import HomePage from "../pages/Home/HomePage";
 import MenuPage from "../pages/Menu/MenuPage";
 import NotFoundPage from "../pages/NotFound/NotFoundPage";
+import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
+import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
+import ProductDetailPage from "../pages/ProductDetail/ProductDetailPage";
 import OurShopPage from "../pages/Shop/OurShopPage";
-import ShopDetailPage from "../pages/ShopDetail/ShopDetailPage";
-import ShoppingCartPage from "../pages/ShoppingCart/shoppingCart";
+import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
 import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
@@ -25,41 +28,33 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "", element: <HomePage /> },
-      { path: "cart", element: <ShoppingCartPage /> },
       { path: "checkout", element: <CheckoutPage /> },
       { path: "menu", element: <MenuPage /> },
       { path: "chef", element: <ChefPage /> },
-      { path: "/shop/:productId", element: <ShopDetailPage /> },
       { path: "about", element: <AboutUsPage /> },
-      { path: "ourshop", element: <OurShopPage /> },
+      { path: "placetable", element: <PlaceTableForGuest /> },
+      { path: "orderattable", element: <OrderAtTable /> },
+      { path: "shop", element: <OurShopPage /> },
+      { path: "/shop/:productId", element: <ProductDetailPage /> },
       { path: "*", element: <NotFoundPage /> },
       {
-        path: "signin",
-        element: (
-          <PublicRoute>
-            <SignInPage />
-          </PublicRoute>
-        ),
-      },
-      {
-        path: "signup",
-        element: (
-          <PublicRoute>
-            <SignUpPage />
-          </PublicRoute>
-        ),
-      },
-      {
-        path: "forgot-password",
-        element: (
-          <PublicRoute>
-            <ForgotPasswordPage />
-          </PublicRoute>
-        ),
+        element: <PublicRoute />,
         children: [
-          { path: "", element: <RequestForgotPassword /> },
-          { path: "set-new-password", element: <SetNewPassword /> },
+          { path: "signin", element: <SignInPage /> },
+          { path: "signup", element: <SignUpPage /> },
+          {
+            path: "forgot-password",
+            element: <ForgotPasswordPage />,
+            children: [
+              { path: "", element: <RequestForgotPassword /> },
+              { path: "set-new-password", element: <SetNewPassword /> },
+            ],
+          },
         ],
+      },
+      {
+        element: <PrivateRoute />,
+        children: [{ path: "cart", element: <Cart /> }],
       },
       { path: "dev", element: <Dev /> },
       { path: "placetable", element: <PlaceTableForGuest /> },

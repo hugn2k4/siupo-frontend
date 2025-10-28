@@ -1,5 +1,5 @@
-import AboutusStaff from "../../../assets/images/AboutusStaff.png";
-import Aboutus6 from "../../../assets/images/Aboutus6.png";
+import AboutusStaff from "../../../assets/images/image_about_us_staff.png";
+import Aboutus6 from "../../../assets/images/image_about_us_6.png";
 const TeamSection: React.FC = () => {
   const teamMembers = [
     { name: "Aida Henry", role: "Kitchen Porter" },

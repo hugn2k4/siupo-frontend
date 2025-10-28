@@ -1,9 +1,9 @@
-import AboutusClient from "../../../assets/images/AboutusClient.png";
+import AboutusClient from "../../../assets/images/image_about_us_client.png";
 const TestimonialSection: React.FC = () => {
   return (
     <section className="py-16 bg-white mt-60">
       <div className="text-center mb-12">
-        <h3 className="text-primary mb-2 text-left pl-[30%]" style={{ fontFamily: "Great Vibes" }}>
+        <h3 className="text-primary mb-2 text-left pl-[30%]" style={{ fontSize: 30, fontFamily: "Great Vibes" }}>
           Testimonials
         </h3>
         <h2 className="text-4xl font-bold text-gray-800 text-left pl-[30%] mb-4">What our client are saying</h2>

@@ -2,10 +2,10 @@ import { Box, Typography } from "@mui/material";
 import React from "react";
 
 const statsData = [
-  { image: "../../src/assets/images/chef.png", number: "420", description: "Professional Chefs" },
-  { image: "../../src/assets/images/food.png", number: "320", description: "Items Of Food" },
-  { image: "../../src/assets/images/experience.png", number: "30+", description: "Years of Experience" },
-  { image: "../../src/assets/images/happy.png", number: "420", description: "Happy Customers" },
+  { image: "../../src/assets/images/image_chef.png", number: "420", description: "Professional Chefs" },
+  { image: "../../src/assets/images/image_food.png", number: "320", description: "Items Of Food" },
+  { image: "../../src/assets/images/image_experience.png", number: "30+", description: "Years of Experience" },
+  { image: "../../src/assets/images/image_happy.png", number: "420", description: "Happy Customers" },
 ];
 
 const StatsSection: React.FC = () => {
@@ -28,7 +28,7 @@ const StatsSection: React.FC = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundImage: `url(../../src/assets/images/stats-background.png)`,
+          backgroundImage: `url(../../src/assets/images/image_stats_background.png)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

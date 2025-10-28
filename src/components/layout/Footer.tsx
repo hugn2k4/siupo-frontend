@@ -9,12 +9,12 @@ import { Box, Button, IconButton, Link as MuiLink, Stack, TextField, Typography 
 import { Link } from "react-router-dom";
 import menu from "../../config/menuConfig";
 
-import img1 from "../../assets/gallery/image1.png";
-import img2 from "../../assets/gallery/image2.png";
-import img3 from "../../assets/gallery/image3.png";
-import img4 from "../../assets/gallery/image4.png";
-import img5 from "../../assets/gallery/image5.png";
-import img6 from "../../assets/gallery/image6.png";
+import img1 from "../../assets/gallery/gallery_image_1.png";
+import img2 from "../../assets/gallery/gallery_image_2.png";
+import img3 from "../../assets/gallery/gallery_image_3.png";
+import img4 from "../../assets/gallery/gallery_image_4.png";
+import img5 from "../../assets/gallery/gallery_image_5.png";
+import img6 from "../../assets/gallery/gallery_image_6.png";
 
 const images = [img1, img2, img3, img4, img5, img6];
 

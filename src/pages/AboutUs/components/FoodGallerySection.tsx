@@ -1,6 +1,6 @@
 import React from "react";
 import aboutus from "../../../assets/images/image_about_us_home.png";
-
+import MyButton from "../../../components/common/Button";
 // Food Gallery Section Component
 const FoodGallerySection: React.FC = () => {
   return (
@@ -22,16 +22,9 @@ const FoodGallerySection: React.FC = () => {
               dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
               ea commodo consequat.
             </p>
-            <div className="flex items-center space-x-4">
-              <button className="bg-[#BC9A6C] hover:bg-orange-600 text-white px-8 py-3 rounded-sm font-semibold transition-colors">
-                Show more
-              </button>
-              <button className="flex items-center space-x-2 text-orange-500 hover:text-orange-600 font-semibold">
-                <div className="w-12 h-12 bg-[#BC9A6C] rounded-full flex items-center justify-center">
-                  <span className="text-white-500">▶</span>
-                </div>
-                <span>Watch Video</span>
-              </button>
+            <div className="flex items-center space-x-4 gap-4">
+              <MyButton colorScheme="orange">Show more </MyButton>
+              <MyButton isWatch colorScheme="orange" />
             </div>
           </div>
         </div>

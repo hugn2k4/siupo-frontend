@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { bookingApi } from "../../../api/bookingApi";
 import type { CartItem } from "../../../types/responses/product.response";
+import PersonIcon from "@mui/icons-material/Person";
+import PhoneIcon from "@mui/icons-material/Phone";
+import EmailIcon from "@mui/icons-material/Email";
+import GroupIcon from "@mui/icons-material/Group";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import NoteIcon from "@mui/icons-material/Note";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 interface BookingFormProps {
   preOrderItems?: CartItem[];
@@ -38,16 +45,16 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
     const hour = selectedTime.getHours();
 
     if (selectedTime <= now) {
-      return "Thời gian đặt bàn phải là thời điểm trong tương lai";
+      return "Booking time must be in the future";
     }
 
     if (hour < 8 || hour >= 22) {
-      return "Thời gian đặt bàn phải trong khung giờ hoạt động (8:00 - 22:00)";
+      return "Booking time must be within operating hours (8:00 AM - 10:00 PM)";
     }
 
     const minimumTime = new Date(now.getTime() + 60 * 60 * 1000);
     if (selectedTime < minimumTime) {
-      return "Vui lòng đặt bàn trước ít nhất 1 giờ";
+      return "Please book at least 1 hour in advance";
     }
 
     return null;
@@ -57,32 +64,32 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.fullname.trim()) {
-      newErrors.fullname = "Họ tên không được để trống";
+      newErrors.fullname = "Full name is required";
     } else if (formData.fullname.trim().length < 2) {
-      newErrors.fullname = "Họ tên phải từ 2 ký tự trở lên";
+      newErrors.fullname = "Full name must be at least 2 characters";
     } else if (formData.fullname.trim().length > 100) {
-      newErrors.fullname = "Họ tên không được vượt quá 100 ký tự";
+      newErrors.fullname = "Full name cannot exceed 100 characters";
     }
 
     if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = "Số điện thoại không được để trống";
+      newErrors.phoneNumber = "Phone number is required";
     } else if (!validatePhone(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Số điện thoại không đúng định dạng (VD: 0901234567)";
+      newErrors.phoneNumber = "Invalid phone number format (e.g., 0901234567)";
     }
 
     if (!validateEmail(formData.email)) {
-      newErrors.email = "Email không đúng định dạng";
+      newErrors.email = "Invalid email format";
     }
 
     const memberCount = parseInt(formData.memberInt);
     if (!memberCount || memberCount < 1) {
-      newErrors.memberInt = "Số lượng khách phải lớn hơn 0";
+      newErrors.memberInt = "Number of guests must be greater than 0";
     } else if (memberCount > 50) {
-      newErrors.memberInt = "Số lượng khách không được vượt quá 50 người";
+      newErrors.memberInt = "Number of guests cannot exceed 50 people";
     }
 
     if (!formData.startedAt) {
-      newErrors.startedAt = "Vui lòng chọn thời gian đặt bàn";
+      newErrors.startedAt = "Please select booking time";
     } else {
       const dateTimeError = validateDateTime(formData.startedAt);
       if (dateTimeError) {
@@ -91,11 +98,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
     }
 
     if (formData.note.length > 500) {
-      newErrors.note = "Ghi chú không được vượt quá 500 ký tự";
+      newErrors.note = "Note cannot exceed 500 characters";
     }
 
     if (!formData.agreePolicy) {
-      newErrors.agreePolicy = "Vui lòng đồng ý với chính sách đặt bàn";
+      newErrors.agreePolicy = "Please agree to the booking policy";
     }
 
     setErrors(newErrors);
@@ -135,7 +142,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
         memberInt: parseInt(formData.memberInt),
         startedAt: new Date(formData.startedAt).toISOString(),
         note: formData.note.trim() || null,
-        // Thêm thông tin món đã chọn nếu có
         preOrderItems:
           preOrderItems.length > 0
             ? preOrderItems.map((item) => ({
@@ -164,16 +170,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
         setTimeout(() => setSubmitSuccess(false), 5000);
       } else {
         setErrors({
-          submit: result?.message || "Không thể gửi yêu cầu, vui lòng thử lại sau",
+          submit: result?.message || "Unable to submit request, please try again later",
         });
       }
     } catch (error: unknown) {
       console.error("Error submitting booking:", error);
 
-      let errorMessage = "Không thể gửi yêu cầu, vui lòng thử lại sau";
+      let errorMessage = "Unable to submit request, please try again later";
 
       if (error && typeof error === "object") {
-        // Check if it's an Axios error or similar HTTP error
         if ("response" in error && error.response && typeof error.response === "object") {
           const response = error.response as { data?: { message?: string } };
           if (response.data?.message) {
@@ -197,16 +202,14 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
         {submitSuccess && (
           <div className="mb-8 bg-green-50 border-l-4 border-green-500 p-6 rounded-lg shadow-md">
             <div className="flex items-start">
-              <svg className="h-6 w-6 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+              <CheckCircleIcon className="h-6 w-6 text-green-500 mt-0.5" />
               <div className="ml-3">
-                <h3 className="text-lg font-semibold text-green-800 mb-1">Yêu cầu đặt bàn đã được gửi thành công!</h3>
+                <h3 className="text-lg font-semibold text-green-800 mb-1">Booking request submitted successfully!</h3>
                 <p className="text-green-700">
-                  Quản lý nhà hàng sẽ liên hệ lại với bạn để xác nhận chi tiết đặt bàn trong thời gian sớm nhất.
+                  The restaurant manager will contact you to confirm booking details as soon as possible.
                   {preOrderItems.length > 0 && (
                     <span className="block mt-1 font-semibold">
-                      Các món ăn đã chọn sẽ được chuẩn bị sẵn khi bạn đến.
+                      Your selected dishes will be prepared when you arrive.
                     </span>
                   )}
                 </p>
@@ -215,8 +218,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
           </div>
         )}
 
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Thông tin đặt bàn</h2>
-        <p className="text-center text-gray-600 mb-8">Vui lòng điền đầy đủ thông tin để đặt bàn</p>
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Booking Information</h2>
+        <p className="text-center text-gray-600 mb-8">Please fill in complete information to make a reservation</p>
 
         <div className="space-y-4">
           {/* Submit Error */}
@@ -229,13 +232,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
           {/* Name */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">
-              Họ và tên <span className="text-red-500">*</span>
+              Full Name <span className="text-red-500">*</span>
             </label>
-            <div className="flex items-center border border-gray-300 rounded-md px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
-              <span className="mr-3 text-gray-500">👤</span>
+            <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+              <PersonIcon className="mr-3 text-gray-500" />
               <input
                 type="text"
-                placeholder="Nguyễn Văn A"
                 value={formData.fullname}
                 onChange={(e) => handleChange("fullname", e.target.value)}
                 className="w-full outline-none text-gray-700"
@@ -248,13 +250,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Số điện thoại <span className="text-red-500">*</span>
+                Phone Number <span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center border border-gray-300 rounded-md px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
-                <span className="mr-3 text-gray-500">📞</span>
+              <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+                <PhoneIcon className="mr-3 text-gray-500" />
                 <input
                   type="tel"
-                  placeholder="0901234567"
                   value={formData.phoneNumber}
                   onChange={(e) => handleChange("phoneNumber", e.target.value)}
                   className="w-full outline-none text-gray-700"
@@ -265,11 +266,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-              <div className="flex items-center border border-gray-300 rounded-md px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
-                <span className="mr-3 text-gray-500">✉️</span>
+              <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+                <EmailIcon className="mr-3 text-gray-500" />
                 <input
                   type="email"
-                  placeholder="example@email.com"
                   value={formData.email}
                   onChange={(e) => handleChange("email", e.target.value)}
                   className="w-full outline-none text-gray-700"
@@ -283,10 +283,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Số lượng khách <span className="text-red-500">*</span>
+                Number of Guests <span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center border border-gray-300 rounded-md px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
-                <span className="mr-3 text-gray-500">👥</span>
+              <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+                <GroupIcon className="mr-3 text-gray-500" />
                 <input
                   type="number"
                   min="1"
@@ -302,10 +302,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Thời gian đặt bàn <span className="text-red-500">*</span>
+                Booking Time <span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center border border-gray-300 rounded-md px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
-                <span className="mr-3 text-gray-500">🕐</span>
+              <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+                <AccessTimeIcon className="mr-3 text-gray-500" />
                 <input
                   type="datetime-local"
                   min={getMinDateTime()}
@@ -315,17 +315,17 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
                 />
               </div>
               {errors.startedAt && <p className="mt-1 text-sm text-red-600">{errors.startedAt}</p>}
-              <p className="mt-1 text-xs text-gray-500">Giờ hoạt động: 8:00 - 22:00</p>
+              <p className="mt-1 text-xs text-gray-500">Operating hours: 8:00 AM - 10:00 PM</p>
             </div>
           </div>
 
           {/* Note */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Ghi chú</label>
-            <div className="flex items-start border border-gray-300 rounded-md px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
-              <span className="mr-3 text-gray-500 mt-1">📝</span>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Note</label>
+            <div className="flex items-start border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+              <NoteIcon className="mr-3 text-gray-500 mt-1" />
               <textarea
-                placeholder="Yêu cầu đặc biệt (nếu có)..."
+                placeholder="Special requests (if any)..."
                 value={formData.note}
                 onChange={(e) => handleChange("note", e.target.value)}
                 rows={4}
@@ -350,7 +350,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
                 className="w-4 h-4 text-amber-500 rounded mt-1"
               />
               <label htmlFor="policy" className="ml-2 text-gray-700">
-                Tôi đồng ý với chính sách đặt bàn <span className="text-red-500">*</span>
+                I agree to the booking policy <span className="text-red-500">*</span>
               </label>
             </div>
             {errors.agreePolicy && <p className="mt-1 ml-6 text-sm text-red-600">{errors.agreePolicy}</p>}
@@ -360,24 +360,24 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`w-full font-semibold py-3 rounded-md transition ${
+            className={`w-full font-semibold py-3  transition ${
               isSubmitting
                 ? "bg-gray-400 text-gray-200 cursor-not-allowed"
                 : "bg-amber-500 hover:bg-amber-600 text-white"
             }`}
           >
-            {isSubmitting ? "Đang gửi yêu cầu..." : "Xác nhận đặt bàn"}
+            {isSubmitting ? "Submitting request..." : "Confirm Booking"}
           </button>
 
           {/* Help Text */}
           <div className="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
             <p className="text-sm text-amber-800 text-center">
-              <strong>Lưu ý:</strong> Sau khi gửi yêu cầu, quản lý nhà hàng sẽ liên hệ lại với bạn để xác nhận thông tin
-              đặt bàn trong thời gian sớm nhất.
+              <strong>Note:</strong> After submitting your request, the restaurant manager will contact you to confirm
+              booking details as soon as possible.
               {preOrderItems.length > 0 && (
                 <span className="block mt-2 font-semibold">
-                  Các món ăn bạn đã chọn ({preOrderItems.reduce((sum, item) => sum + item.quantity, 0)} món) sẽ được
-                  chuẩn bị sẵn khi bạn đến nhà hàng.
+                  Your selected dishes ({preOrderItems.reduce((sum, item) => sum + item.quantity, 0)} items) will be
+                  prepared when you arrive at the restaurant.
                 </span>
               )}
             </p>

@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ tableName }) => (
         </div>
       </div>
       <button className="bg-white text-amber-700 px-4 py-2 rounded-full font-semibold text-sm hover:bg-amber-50 transition">
-        🔔 Gọi NV
+        🔔 Call staff
       </button>
     </div>
   </header>

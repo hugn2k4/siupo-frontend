@@ -18,8 +18,8 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cartItems, onCheckout, isBook
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-amber-600 shadow-2xl p-4 z-40">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-gray-600 text-sm">Tổng ({totalItems} món)</p>
-          <p className="text-2xl font-bold text-gray-800">{totalPrice.toLocaleString("vi-VN")}đ</p>
+          <p className="text-gray-600 text-sm">Total ({totalItems} dish)</p>
+          <p className="text-2xl font-bold text-gray-800">{totalPrice.toLocaleString("vi-VN")}$</p>
         </div>
         <button
           onClick={onCheckout}
@@ -27,7 +27,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cartItems, onCheckout, isBook
         >
           {isBookingFlow ? (
             <>
-              Xác nhận
+              Confirm
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -40,7 +40,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cartItems, onCheckout, isBook
             </>
           ) : (
             <>
-              Gọi món
+              Order
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"

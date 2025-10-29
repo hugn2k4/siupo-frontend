@@ -1,6 +1,11 @@
 // src/components/PreOrderSummary.tsx
 import React from "react";
 import type { CartItem } from "../../../types/responses/product.response";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import NoteIcon from "@mui/icons-material/Note";
+import LightbulbIcon from "@mui/icons-material/Lightbulb";
 
 interface PreOrderSummaryProps {
   items: CartItem[];
@@ -15,14 +20,14 @@ const PreOrderSummary: React.FC<PreOrderSummaryProps> = ({ items, onEdit, onClea
   if (items.length === 0) return null;
 
   return (
-    <section className="py-8 px-4 bg-gradient-to-br from-amber-50 to-orange-50">
+    <section className="py-8 px-4 from-amber-50 to-orange-50">
       <div className="container mx-auto max-w-3xl">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-amber-200">
+        <div className="bg-white shadow-lg overflow-hidden border-2 border-amber-200">
           {/* Header */}
-          <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white px-6 py-4">
+          <div className="bg-primary from-amber-600 to-orange-600 text-white px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="text-3xl">🍽️</span>
+                <RestaurantIcon sx={{ fontSize: 32 }} />
                 <div>
                   <h3 className="text-xl font-bold">Món ăn đã chọn</h3>
                   <p className="text-amber-100 text-sm">
@@ -35,26 +40,14 @@ const PreOrderSummary: React.FC<PreOrderSummaryProps> = ({ items, onEdit, onClea
                   onClick={onEdit}
                   className="bg-white text-amber-600 px-4 py-2 rounded-full font-semibold text-sm hover:bg-amber-50 transition flex items-center gap-1"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
+                  <EditIcon sx={{ fontSize: 16 }} />
                   Sửa
                 </button>
                 <button
                   onClick={onClear}
-                  className="bg-red-500 text-white px-4 py-2 rounded-full font-semibold text-sm hover:bg-red-600 transition"
+                  className="bg-red-500 text-white px-4 py-2 rounded-full font-semibold text-sm hover:bg-red-600 transition flex items-center gap-1"
                 >
+                  <DeleteIcon sx={{ fontSize: 16 }} />
                   Xóa
                 </button>
               </div>
@@ -87,7 +80,7 @@ const PreOrderSummary: React.FC<PreOrderSummaryProps> = ({ items, onEdit, onClea
                   </p>
                   {item.note && (
                     <div className="flex items-start gap-1 mt-2 text-xs text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">
-                      <span>📝</span>
+                      <NoteIcon sx={{ fontSize: 14 }} />
                       <span className="flex-1">{item.note}</span>
                     </div>
                   )}
@@ -106,7 +99,7 @@ const PreOrderSummary: React.FC<PreOrderSummaryProps> = ({ items, onEdit, onClea
           {/* Footer Info */}
           <div className="bg-blue-50 border-t-2 border-blue-200 px-6 py-4">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">💡</span>
+              <LightbulbIcon sx={{ fontSize: 28 }} className="text-blue-600" />
               <div className="flex-1">
                 <h4 className="font-bold text-blue-900 mb-1">Lưu ý</h4>
                 <ul className="text-sm text-blue-800 space-y-1">

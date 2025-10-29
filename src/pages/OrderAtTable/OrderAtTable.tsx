@@ -17,7 +17,6 @@ const OrderAtTable: React.FC = () => {
   const location = useLocation();
   const { preOrderItems, setPreOrderItems } = usePreOrder();
 
-  // Kiểm tra xem có phải từ booking flow không
   const isBookingFlow = location.state?.fromBooking === true;
 
   const [cart, setCart] = useState<CartItem[]>(preOrderItems);
@@ -30,6 +29,39 @@ const OrderAtTable: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // ✅ Fetch categories một lần duy nhất khi component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Fetch tất cả products để lấy full categories (không filter)
+        const response = await productApi.searchProducts(
+          null, // Không search
+          null, // Không filter category
+          null,
+          null,
+          0,
+          1000, // Lấy nhiều để đảm bảo có đủ categories
+          "name,asc"
+        );
+
+        if (response.success && response.data) {
+          // Tạo danh sách categories từ TẤT CẢ products
+          const uniqueCategories = Array.from(
+            new Map(
+              response.data.content.map((p) => [p.categoryId, { id: p.categoryId, name: p.categoryName }])
+            ).values()
+          );
+          setCategories(uniqueCategories);
+        }
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+
+    fetchCategories();
+  }, []); // ✅ Chỉ chạy 1 lần khi mount
+
+  // ✅ Fetch products riêng, có thể filter theo category và search
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
@@ -37,7 +69,7 @@ const OrderAtTable: React.FC = () => {
 
       const response = await productApi.searchProducts(
         searchQuery || null,
-        activeCategory ? [activeCategory] : null,
+        activeCategory ? [activeCategory] : null, // ✅ Filter products, KHÔNG ảnh hưởng categories
         null,
         null,
         0,
@@ -47,19 +79,16 @@ const OrderAtTable: React.FC = () => {
 
       if (response.success && response.data) {
         setProducts(response.data.content);
-
-        const uniqueCategories = Array.from(
-          new Map(response.data.content.map((p) => [p.categoryId, { id: p.categoryId, name: p.categoryName }])).values()
-        );
-        setCategories(uniqueCategories);
+        // ✅ KHÔNG update categories ở đây nữa
       }
     } catch (err) {
       console.error("Error fetching products:", err);
-      setError("Không thể tải danh sách món ăn. Vui lòng thử lại.");
+      setError("The recipe list could not be loaded. Please try again.");
     } finally {
       setLoading(false);
     }
   }, [activeCategory, searchQuery]);
+
   // Debounce search query
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -92,12 +121,10 @@ const OrderAtTable: React.FC = () => {
 
   const handleConfirmOrder = () => {
     if (isBookingFlow) {
-      // Lưu món đã chọn vào context và quay về trang đặt bàn
       setPreOrderItems(cart);
       navigate("/placetable", { state: { hasPreOrder: true } });
     } else {
-      // Flow bình thường - gửi đơn hàng
-      alert("Đơn hàng đã được gửi đến bếp! Cảm ơn quý khách.");
+      alert("Your order has been sent to the kitchen! Thank you.");
       setCart([]);
       setShowPayment(false);
     }
@@ -118,7 +145,7 @@ const OrderAtTable: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
-      <Header tableName={isBookingFlow ? "Chọn món trước" : "Bàn A12"} />
+      <Header tableName={isBookingFlow ? "Choose your dish first" : "Table A12"} />
 
       {isBookingFlow && (
         <div className="bg-amber-50 border-b-2 border-amber-200 px-4 py-3">
@@ -137,7 +164,9 @@ const OrderAtTable: React.FC = () => {
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span className="text-sm font-semibold">Chọn món ăn trước để tiết kiệm thời gian khi đến nhà hàng</span>
+            <span className="text-sm font-semibold">
+              Choose your food in advance to save time when you get to the restaurant.
+            </span>
           </div>
         </div>
       )}
@@ -149,7 +178,7 @@ const OrderAtTable: React.FC = () => {
         {loading ? (
           <div className="col-span-full text-center py-12">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
-            <p className="text-gray-500 text-lg mt-4">Đang tải danh sách món...</p>
+            <p className="text-gray-500 text-lg mt-4">Loading list of dishes...</p>
           </div>
         ) : error ? (
           <div className="col-span-full text-center py-12">
@@ -158,7 +187,7 @@ const OrderAtTable: React.FC = () => {
               onClick={fetchProducts}
               className="bg-amber-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-amber-700 transition"
             >
-              Thử lại
+              Retry
             </button>
           </div>
         ) : (
@@ -177,7 +206,7 @@ const OrderAtTable: React.FC = () => {
 
       {!loading && !error && products.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">Không tìm thấy món ăn phù hợp</p>
+          <p className="text-gray-500 text-lg">No suitable dish found</p>
         </div>
       )}
 

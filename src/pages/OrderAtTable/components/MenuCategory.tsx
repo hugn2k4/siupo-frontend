@@ -17,7 +17,7 @@ const MenuCategory: React.FC<MenuCategoryProps> = ({ categories, activeCategory,
           activeCategory === null ? "bg-amber-600 text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
         }`}
       >
-        Tất Cả
+        ALL
       </button>
       {categories.map((category) => (
         <button

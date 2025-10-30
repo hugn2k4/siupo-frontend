@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import HeroSection from "./components/HeroSection";
-import TableList from "./components/TableList";
+// import TableList from "./components/TableList";
 import BookingForm from "./components/BookingForm";
 import PreOrderSummary from "./components/PreOrderSummary";
-import { useGlobal } from "../../hooks/useGlobal";
 import { usePreOrder } from "../../contexts/PreOrderContext";
 
 const PlaceTableForGuest: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { user } = useGlobal();
   const { preOrderItems, clearPreOrder } = usePreOrder();
-
-  console.log("User in PlaceTableForGuest:", user);
 
   useEffect(() => {
     const checkAuthStatus = () => {
@@ -63,7 +59,7 @@ const PlaceTableForGuest: React.FC = () => {
       <HeroSection />
 
       {/* Table List */}
-      <TableList />
+      {/* <TableList /> */}
 
       {/* Pre-Order Summary - Hiển thị nếu có món đã chọn */}
       {preOrderItems.length > 0 && (
@@ -79,7 +75,7 @@ const PlaceTableForGuest: React.FC = () => {
       {isLoggedIn && (
         <button
           onClick={handleAddMoreDishes}
-          className="fixed bottom-6 right-6 bg-amber-600 hover:bg-amber-700 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-amber-300 z-50 group"
+          className="fixed bottom-6 right-6 bg-primary hover:bg-amber-700 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-amber-300 z-50 group"
           aria-label="Chọn món ăn"
         >
           <div className="flex items-center gap-2">

@@ -23,7 +23,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, cartQuantity, onAdd, 
         <img src={thumbnail} alt={item.name} className="w-full h-40 object-cover" />
         {!isAvailable && (
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <span className="text-white font-bold">Hết món</span>
+            <span className="text-white font-bold">Out of stock</span>
           </div>
         )}
       </div>
@@ -31,7 +31,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, cartQuantity, onAdd, 
         <h3 className="font-bold text-gray-800 text-lg mb-1">{item.name}</h3>
         <p className="text-gray-500 text-sm mb-2 line-clamp-2">{item.description}</p>
         <div className="flex items-center justify-between">
-          <span className="text-amber-600 font-bold text-lg">{item.price.toLocaleString("vi-VN")}đ</span>
+          <span className="text-amber-600 font-bold text-lg">{item.price.toLocaleString("vi-VN")}$</span>
           {cartQuantity > 0 ? (
             <div className="flex items-center space-x-3">
               <button
@@ -54,13 +54,13 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, cartQuantity, onAdd, 
               disabled={!isAvailable}
               className="bg-amber-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-amber-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
-              Thêm
+              Add
             </button>
           )}
         </div>
         {cartQuantity > 0 && (
           <button onClick={onAddNote} className="w-full mt-2 text-amber-600 text-sm font-semibold hover:text-amber-700">
-            📝 Thêm ghi chú
+            📝 Add note
           </button>
         )}
       </div>

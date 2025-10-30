@@ -34,8 +34,6 @@ export const authService = {
   },
 
   logout: () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
     return authApi.logout();
   },
 

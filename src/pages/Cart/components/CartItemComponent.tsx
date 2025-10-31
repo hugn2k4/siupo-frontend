@@ -3,6 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { Box, IconButton, Rating, Stack, Typography } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import type { CartItem } from "../../../types/responses/cart.response";
 import { formatVND } from "../../../utils/format";
 
@@ -13,6 +14,11 @@ interface CartItemProps {
 }
 
 const CartItemComponent: React.FC<CartItemProps> = ({ item, onQuantityChange, onRemove }) => {
+  const navigate = useNavigate();
+  const goToProductDetail = () => {
+    navigate(`/shop/${item.productId}`);
+  };
+
   return (
     <Box
       sx={{
@@ -25,7 +31,13 @@ const CartItemComponent: React.FC<CartItemProps> = ({ item, onQuantityChange, on
       }}
     >
       {/* Product */}
-      <Stack direction="row" spacing={2} alignItems="center">
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        onClick={goToProductDetail}
+        sx={{ cursor: "pointer", ":hover": { textDecoration: "underline" } }}
+      >
         <Box
           component="img"
           src={item.productImage}

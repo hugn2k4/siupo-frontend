@@ -39,14 +39,14 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ selectedMethod, onMethodC
   return (
     <div className="space-y-6">
       {/* Phương thức thanh toán */}
-      <div className="bg-white p-6 shadow-sm border border-gray-400">
+      <div className="bg-white p-6 shadow-sm border border-gray-200">
         <h3 className="text-lg font-semibold mb-4">Payment Method</h3>
-        <div className="space-y-0 border border-gray-400 overflow-hidden">
+        <div className="space-y-0 border border-gray-200 overflow-hidden">
           {paymentMethods.map((method, index) => (
             <label
               key={method.id}
               className={`block cursor-pointer transition-colors hover:bg-gray-50 ${
-                index !== paymentMethods.length - 1 ? "border-b border-gray-400" : ""
+                index !== paymentMethods.length - 1 ? "border-b border-gray-200" : ""
               }`}
             >
               <div className="p-4 flex items-center gap-3">

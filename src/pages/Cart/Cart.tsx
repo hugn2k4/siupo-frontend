@@ -68,8 +68,7 @@ const Cart: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    console.log("Proceeding to checkout");
-    // Implement checkout logic here
+    navigate("/checkout");
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);

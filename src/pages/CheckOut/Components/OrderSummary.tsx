@@ -7,7 +7,7 @@ interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
   discount: number; // giả sử là số tiền USD giảm
-  tax: number;
+  vat: number;
   total: number;
   selectedPaymentMethod?: string;
   onProceedToPayment?: () => void;
@@ -18,12 +18,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   subtotal,
   shipping,
   discount,
-  tax,
+  vat,
   total,
   selectedPaymentMethod = "momo",
   onProceedToPayment,
 }) => (
-  <div className="bg-white p-6 border border-gray-400">
+  <div className="bg-white p-6 border border-gray-200">
     <h3 className="text-lg font-semibold mb-4">Your Order Detail</h3>
 
     {/* Danh sách món ăn */}
@@ -48,8 +48,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <span className="text-red-500">{discount > 0 ? `- $${discount.toLocaleString()}` : "- $0"}</span>
       </div>
       <div className="flex justify-between text-sm">
-        <span>Tax</span>
-        <span>${tax.toLocaleString()}</span>
+        <span>VAT</span>
+        <span>${vat.toLocaleString()}</span>
       </div>
       <div className="flex justify-between font-semibold text-lg pt-2 border-t border-gray-400">
         <span>Total</span>

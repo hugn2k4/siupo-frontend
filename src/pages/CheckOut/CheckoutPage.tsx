@@ -33,7 +33,7 @@ const CheckoutPage: React.FC = () => {
     subtotal: 150,
     shipping: 0,
     discount: 25,
-    tax: 54.76,
+    vat: 54.76,
     total: 432.65,
   };
 
@@ -78,7 +78,7 @@ const CheckoutPage: React.FC = () => {
                 subtotal={orderData.subtotal}
                 shipping={orderData.shipping}
                 discount={orderData.discount}
-                tax={orderData.tax}
+                vat={orderData.vat}
                 total={finalTotal}
                 selectedPaymentMethod={selectedPaymentMethod}
                 onProceedToPayment={handleProceedToPayment}

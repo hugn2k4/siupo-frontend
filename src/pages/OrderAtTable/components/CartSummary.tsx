@@ -19,7 +19,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ cartItems, onCheckout, isBook
       <div className="flex items-center justify-between mb-3">
         <div>
           <p className="text-gray-600 text-sm">Total ({totalItems} dish)</p>
-          <p className="text-2xl font-bold text-gray-800">{totalPrice.toLocaleString("vi-VN")}đ</p>
+          <p className="text-2xl font-bold text-gray-800">{totalPrice.toLocaleString("vi-VN")}$</p>
         </div>
         <button
           onClick={onCheckout}

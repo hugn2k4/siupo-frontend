@@ -1,4 +1,3 @@
-// src/components/NoteModal.tsx
 import React, { useState } from "react";
 import type { ProductResponse } from "../../../types/responses/product.response";
 

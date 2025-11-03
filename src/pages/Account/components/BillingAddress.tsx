@@ -1,49 +1,52 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Edit2, Trash2, Plus, MapPin } from "lucide-react";
-
-interface Address {
-  id: string;
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
-  isDefault: boolean;
-}
+import { getUserAddresses, addAddress, updateAddress, deleteAddress } from "../../../api/accountApi";
+import type { AddressDTO } from "../../../api/accountApi";
 
 export default function BillingAddress() {
-  const [addresses, setAddresses] = useState<Address[]>([
-    {
-      id: "1",
-      street: "4140 Parker Rd.",
-      city: "Allentown",
-      state: "New Mexico",
-      zip: "31134",
-      country: "United States",
-      isDefault: true,
-    },
-  ]);
+  const [addresses, setAddresses] = useState<AddressDTO[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [isAdding, setIsAdding] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Omit<Address, "id" | "isDefault">>({
-    street: "",
-    city: "",
-    state: "",
-    zip: "",
-    country: "United States",
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [formData, setFormData] = useState<Omit<AddressDTO, "id">>({
+    receiverName: "",
+    receiverPhone: "",
+    province: "",
+    district: "",
+    ward: "",
+    addressLine: "",
+    isDefault: false,
   });
+
+  // Load addresses từ API
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  const fetchAddresses = async () => {
+    try {
+      const addressesData = await getUserAddresses();
+      setAddresses(addressesData);
+    } catch (error) {
+      console.error("Failed to fetch addresses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Reset form
   const resetForm = () => {
     setFormData({
-      street: "",
-      city: "",
-      state: "",
-      zip: "",
-      country: "United States",
+      receiverName: "",
+      receiverPhone: "",
+      province: "",
+      district: "",
+      ward: "",
+      addressLine: "",
+      isDefault: false,
     });
     setIsAdding(false);
     setEditingId(null);
@@ -56,71 +59,233 @@ export default function BillingAddress() {
   };
 
   // Add new address
-  const handleAdd = () => {
-    if (!formData.street || !formData.city || !formData.zip) return;
+  // Add new address
+  const handleAdd = async () => {
+    if (!validateForm()) return;
 
-    const newAddr: Address = {
-      id: Date.now().toString(),
-      ...formData,
-      isDefault: addresses.length === 0,
-    };
+    try {
+      const newAddr = await addAddress({
+        ...formData,
+        isDefault: addresses.length === 0,
+      });
+      setAddresses((prev) => [...prev, newAddr]);
+      resetForm();
+      alert("Đã thêm địa chỉ thành công!");
+    } catch (error: unknown) {
+      console.error("Failed to add address:", error);
 
-    setAddresses((prev) => [...prev, newAddr]);
-    resetForm();
+      let errorMessage = "Không thể thêm địa chỉ. Vui lòng thử lại.";
+
+      if (error instanceof Error && "response" in error) {
+        const axiosError = error as {
+          response?: {
+            data?: {
+              message?: string;
+              data?: Record<string, string>;
+            };
+          };
+        };
+        errorMessage = axiosError.response?.data?.message || errorMessage;
+
+        // Nếu có validation errors từ backend, hiển thị chi tiết
+        if (axiosError.response?.data?.data) {
+          const validationErrors = Object.values(axiosError.response.data.data).join(", ");
+          errorMessage = `Lỗi xác thực: ${validationErrors}`;
+        }
+      }
+
+      alert(errorMessage);
+    }
   };
 
   // Update address
-  const handleUpdate = () => {
-    if (!editingId || !formData.street || !formData.city || !formData.zip) return;
+  // Update address
+  const handleUpdate = async () => {
+    if (!editingId || !validateForm()) return;
 
-    setAddresses((prev) => prev.map((addr) => (addr.id === editingId ? { ...addr, ...formData } : addr)));
-    resetForm();
-  };
+    try {
+      const updatedAddr = await updateAddress(editingId, {
+        ...formData,
+        id: editingId,
+      });
+      setAddresses((prev) => prev.map((addr) => (addr.id === editingId ? updatedAddr : addr)));
+      resetForm();
+      alert("Đã cập nhật địa chỉ thành công!");
+    } catch (error: unknown) {
+      console.error("Failed to update address:", error);
 
-  // Delete address
-  const handleDelete = (id: string) => {
-    setAddresses((prev) => {
-      const filtered = prev.filter((a) => a.id !== id);
-      if (filtered.length > 0 && !filtered.some((a) => a.isDefault)) {
-        filtered[0].isDefault = true;
+      let errorMessage = "Không thể cập nhật địa chỉ. Vui lòng thử lại.";
+
+      if (error instanceof Error && "response" in error) {
+        const axiosError = error as {
+          response?: {
+            data?: {
+              message?: string;
+              data?: Record<string, string>;
+            };
+          };
+        };
+        errorMessage = axiosError.response?.data?.message || errorMessage;
+
+        // Nếu có validation errors từ backend, hiển thị chi tiết
+        if (axiosError.response?.data?.data) {
+          const validationErrors = Object.values(axiosError.response.data.data).join(", ");
+          errorMessage = `Lỗi xác thực: ${validationErrors}`;
+        }
       }
-      return filtered;
-    });
-  };
 
+      alert(errorMessage);
+    }
+  };
   // Set default
-  const setDefault = (id: string) => {
-    setAddresses((prev) => prev.map((addr) => ({ ...addr, isDefault: addr.id === id })));
+  const handleSetDefault = async (id: number) => {
+    try {
+      setAddresses((prev) =>
+        prev.map((addr) => ({
+          ...addr,
+          isDefault: addr.id === id,
+        }))
+      );
+      alert("Đã đặt địa chỉ mặc định thành công!");
+    } catch (error: unknown) {
+      console.error("Failed to set default address:", error);
+
+      let errorMessage = "Không thể đặt địa chỉ mặc định. Vui lòng thử lại.";
+
+      if (error instanceof Error && "response" in error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        errorMessage = axiosError.response?.data?.message || errorMessage;
+      }
+
+      alert(errorMessage);
+    }
+  };
+  // Delete address
+  const handleDelete = async (id: number) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa địa chỉ này?")) return;
+
+    try {
+      await deleteAddress(id);
+      setAddresses((prev) => prev.filter((a) => a.id !== id));
+      alert("Đã xóa địa chỉ thành công!");
+    } catch (error: unknown) {
+      console.error("Failed to delete address:", error);
+
+      let errorMessage = "Không thể xóa địa chỉ. Vui lòng thử lại.";
+
+      if (error instanceof Error && "response" in error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        errorMessage = axiosError.response?.data?.message || errorMessage;
+      }
+
+      alert(errorMessage);
+    }
   };
 
   // Start editing
-  const startEdit = (addr: Address) => {
-    setEditingId(addr.id);
+  const startEdit = (addr: AddressDTO) => {
+    setEditingId(addr.id!);
     setFormData({
-      street: addr.street,
-      city: addr.city,
-      state: addr.state,
-      zip: addr.zip,
-      country: addr.country,
+      receiverName: addr.receiverName,
+      receiverPhone: addr.receiverPhone,
+      province: addr.province,
+      district: addr.district,
+      ward: addr.ward,
+      addressLine: addr.addressLine,
+      isDefault: addr.isDefault,
     });
   };
+
+  // Start adding new address
+  const startAdd = () => {
+    setIsAdding(true);
+    setFormData({
+      receiverName: "",
+      receiverPhone: "",
+      province: "",
+      district: "",
+      ward: "",
+      addressLine: "",
+      isDefault: addresses.length === 0,
+    });
+  };
+
+  // Validate form
+  const validateForm = () => {
+    const requiredFields = ["receiverName", "receiverPhone", "province", "district", "ward", "addressLine"];
+
+    for (const field of requiredFields) {
+      if (!formData[field as keyof typeof formData]) {
+        alert(`Vui lòng điền đầy đủ thông tin ${getFieldLabel(field)}`);
+        return false;
+      }
+    }
+
+    // Validate phone number
+    const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
+    if (!phoneRegex.test(formData.receiverPhone)) {
+      alert("Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam.");
+      return false;
+    }
+
+    return true;
+  };
+
+  // Get field label for validation messages
+  const getFieldLabel = (field: string) => {
+    const labels: { [key: string]: string } = {
+      receiverName: "tên người nhận",
+      receiverPhone: "số điện thoại",
+      province: "tỉnh/thành phố",
+      district: "quận/huyện",
+      ward: "phường/xã",
+      addressLine: "địa chỉ chi tiết",
+    };
+    return labels[field] || field;
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-sm" style={{ border: "1px solid #e5e7eb" }}>
+        <div className="flex justify-between items-center pb-4 mb-6" style={{ borderBottom: "1px solid #e5e7eb" }}>
+          <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
+          <div className="h-9 bg-gray-200 rounded w-28 animate-pulse"></div>
+        </div>
+        <div className="space-y-4">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="p-4 rounded-lg border bg-gray-100 animate-pulse h-24"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm" style={{ border: "1px solid #e5e7eb" }}>
       {/* Header */}
       <div className="flex justify-between items-center pb-4 mb-6" style={{ borderBottom: "1px solid #e5e7eb" }}>
         <h3 className="text-lg font-semibold" style={{ color: "#111827" }}>
-          Billing Addresses
+          Địa chỉ giao hàng
         </h3>
         <button
-          onClick={() => setIsAdding(true)}
-          className="flex items-center gap-2 text-sm font-medium"
-          style={{ color: "#FF9F0D" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#eb8d00")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#FF9F0D")}
+          onClick={startAdd}
+          className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full transition-colors"
+          style={{
+            color: "#FF9F0D",
+            border: "1px solid #FF9F0D",
+            backgroundColor: "transparent",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#FF9F0D";
+            e.currentTarget.style.color = "#ffffff";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "#FF9F0D";
+          }}
         >
           <Plus size={16} />
-          Add Address
+          Thêm địa chỉ
         </button>
       </div>
 
@@ -137,21 +302,24 @@ export default function BillingAddress() {
           >
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-2">
                   <MapPin size={16} style={{ color: "#6b7280" }} />
                   <p className="font-medium text-sm" style={{ color: "#1f2937" }}>
-                    {addr.street}, {addr.city}
+                    {addr.receiverName} - {addr.receiverPhone}
                   </p>
                 </div>
+                <p className="text-sm ml-6 mb-1" style={{ color: "#4b5563" }}>
+                  {addr.addressLine}
+                </p>
                 <p className="text-sm ml-6" style={{ color: "#4b5563" }}>
-                  {addr.state}, {addr.zip}, {addr.country}
+                  {addr.ward}, {addr.district}, {addr.province}
                 </p>
                 {addr.isDefault && (
                   <span
-                    className="inline-block ml-6 mt-1 px-2 py-0.5 text-xs font-medium rounded-full"
+                    className="inline-block ml-6 mt-2 px-2 py-0.5 text-xs font-medium rounded-full"
                     style={{ color: "#FF9F0D", backgroundColor: "#fed7aa" }}
                   >
-                    Default
+                    Mặc định
                   </span>
                 )}
               </div>
@@ -159,30 +327,57 @@ export default function BillingAddress() {
               <div className="flex items-center gap-2">
                 {!addr.isDefault && (
                   <button
-                    onClick={() => setDefault(addr.id)}
-                    className="text-xs font-medium"
-                    style={{ color: "#FF9F0D" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-                    onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+                    onClick={() => handleSetDefault(addr.id!)}
+                    className="text-xs font-medium px-2 py-1 rounded transition-colors"
+                    style={{
+                      color: "#FF9F0D",
+                      border: "1px solid #FF9F0D",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#FF9F0D";
+                      e.currentTarget.style.color = "#ffffff";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.color = "#FF9F0D";
+                    }}
                   >
-                    Set Default
+                    Đặt mặc định
                   </button>
                 )}
                 <button
                   onClick={() => startEdit(addr)}
-                  className="p-1"
-                  style={{ color: "#6b7280" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#FF9F0D")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "#6b7280")}
+                  className="p-2 rounded transition-colors"
+                  style={{
+                    color: "#6b7280",
+                    border: "1px solid #e5e7eb",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#f3f4f6";
+                    e.currentTarget.style.color = "#FF9F0D";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#6b7280";
+                  }}
                 >
                   <Edit2 size={16} />
                 </button>
                 <button
-                  onClick={() => handleDelete(addr.id)}
-                  className="p-1"
-                  style={{ color: "#6b7280" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#FF9F0D")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "#6b7280")}
+                  onClick={() => handleDelete(addr.id!)}
+                  className="p-2 rounded transition-colors"
+                  style={{
+                    color: "#6b7280",
+                    border: "1px solid #e5e7eb",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#fef2f2";
+                    e.currentTarget.style.color = "#ef4444";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#6b7280";
+                  }}
                 >
                   <Trash2 size={16} />
                 </button>
@@ -192,72 +387,148 @@ export default function BillingAddress() {
             {/* Edit Form (inline) */}
             {editingId === addr.id && (
               <div className="mt-4 pt-4 space-y-3" style={{ borderTop: "1px solid #e5e7eb" }}>
-                <input
-                  type="text"
-                  name="street"
-                  value={formData.street}
-                  onChange={handleChange}
-                  placeholder="Street"
-                  className="w-full px-3 py-2 border rounded-md text-sm"
-                  style={{ borderColor: "#d1d5db", color: "#374151" }}
-                />
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                      Tên người nhận *
+                    </label>
+                    <input
+                      type="text"
+                      name="receiverName"
+                      value={formData.receiverName}
+                      onChange={handleChange}
+                      placeholder="Nhập tên người nhận"
+                      className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                      style={
+                        {
+                          borderColor: "#d1d5db",
+                          color: "#374151",
+                          "--tw-ring-color": "#FF9F0D",
+                        } as React.CSSProperties
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                      Số điện thoại *
+                    </label>
+                    <input
+                      type="tel"
+                      name="receiverPhone"
+                      value={formData.receiverPhone}
+                      onChange={handleChange}
+                      placeholder="Nhập số điện thoại"
+                      className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                      style={
+                        {
+                          borderColor: "#d1d5db",
+                          color: "#374151",
+                          "--tw-ring-color": "#FF9F0D",
+                        } as React.CSSProperties
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                      Tỉnh/Thành phố *
+                    </label>
+                    <input
+                      type="text"
+                      name="province"
+                      value={formData.province}
+                      onChange={handleChange}
+                      placeholder="Ví dụ: Hà Nội"
+                      className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                      style={
+                        {
+                          borderColor: "#d1d5db",
+                          color: "#374151",
+                          "--tw-ring-color": "#FF9F0D",
+                        } as React.CSSProperties
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                      Quận/Huyện *
+                    </label>
+                    <input
+                      type="text"
+                      name="district"
+                      value={formData.district}
+                      onChange={handleChange}
+                      placeholder="Ví dụ: Cầu Giấy"
+                      className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                      style={
+                        {
+                          borderColor: "#d1d5db",
+                          color: "#374151",
+                          "--tw-ring-color": "#FF9F0D",
+                        } as React.CSSProperties
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                      Phường/Xã *
+                    </label>
+                    <input
+                      type="text"
+                      name="ward"
+                      value={formData.ward}
+                      onChange={handleChange}
+                      placeholder="Ví dụ: Dịch Vọng"
+                      className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                      style={
+                        {
+                          borderColor: "#d1d5db",
+                          color: "#374151",
+                          "--tw-ring-color": "#FF9F0D",
+                        } as React.CSSProperties
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                    Địa chỉ chi tiết *
+                  </label>
                   <input
                     type="text"
-                    name="city"
-                    value={formData.city}
+                    name="addressLine"
+                    value={formData.addressLine}
                     onChange={handleChange}
-                    placeholder="City"
-                    className="px-3 py-2 border rounded-md text-sm"
-                    style={{ borderColor: "#d1d5db", color: "#374151" }}
-                  />
-                  <input
-                    type="text"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    placeholder="State"
-                    className="px-3 py-2 border rounded-md text-sm"
-                    style={{ borderColor: "#d1d5db", color: "#374151" }}
+                    placeholder="Ví dụ: Số 123, Đường ABC"
+                    className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                    style={
+                      {
+                        borderColor: "#d1d5db",
+                        color: "#374151",
+                        "--tw-ring-color": "#FF9F0D",
+                      } as React.CSSProperties
+                    }
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    name="zip"
-                    value={formData.zip}
-                    onChange={handleChange}
-                    placeholder="Zip Code"
-                    className="px-3 py-2 border rounded-md text-sm"
-                    style={{ borderColor: "#d1d5db", color: "#374151" }}
-                  />
-                  <select
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    className="px-3 py-2 border rounded-md text-sm"
-                    style={{ borderColor: "#d1d5db", color: "#374151" }}
-                  >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>United Kingdom</option>
-                  </select>
-                </div>
+
                 <div className="flex gap-2">
                   <button
                     onClick={handleUpdate}
-                    className="px-4 py-2 text-sm font-medium text-white rounded-full"
+                    className="px-4 py-2 text-sm font-medium text-white rounded-full transition-colors"
                     style={{
                       backgroundColor: "#FF9F0D",
                     }}
                     onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#db8300")}
                     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#FF9F0D")}
                   >
-                    Save
+                    Lưu thay đổi
                   </button>
                   <button
                     onClick={resetForm}
-                    className="px-4 py-2 text-sm font-medium rounded-full"
+                    className="px-4 py-2 text-sm font-medium rounded-full transition-colors"
                     style={{
                       backgroundColor: "#f3f4f6",
                       color: "#374151",
@@ -265,7 +536,7 @@ export default function BillingAddress() {
                     onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#e5e7eb")}
                     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f3f4f6")}
                   >
-                    Cancel
+                    Hủy
                   </button>
                 </div>
               </div>
@@ -276,75 +547,155 @@ export default function BillingAddress() {
         {/* Add New Address Form */}
         {isAdding && (
           <div className="p-4 rounded-lg space-y-3" style={{ border: "2px dashed #d1d5db" }}>
-            <input
-              type="text"
-              name="street"
-              value={formData.street}
-              onChange={handleChange}
-              placeholder="Street Address"
-              className="w-full px-3 py-2 border rounded-md text-sm"
-              style={{ borderColor: "#d1d5db", color: "#374151" }}
-            />
-            <div className="grid grid-cols-2 gap-3">
+            <h4 className="font-medium" style={{ color: "#374151" }}>
+              Thêm địa chỉ mới
+            </h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                  Tên người nhận *
+                </label>
+                <input
+                  type="text"
+                  name="receiverName"
+                  value={formData.receiverName}
+                  onChange={handleChange}
+                  placeholder="Nhập tên người nhận"
+                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                  style={
+                    {
+                      borderColor: "#d1d5db",
+                      color: "#374151",
+                      "--tw-ring-color": "#FF9F0D",
+                    } as React.CSSProperties
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                  Số điện thoại *
+                </label>
+                <input
+                  type="tel"
+                  name="receiverPhone"
+                  value={formData.receiverPhone}
+                  onChange={handleChange}
+                  placeholder="Nhập số điện thoại"
+                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                  style={
+                    {
+                      borderColor: "#d1d5db",
+                      color: "#374151",
+                      "--tw-ring-color": "#FF9F0D",
+                    } as React.CSSProperties
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                  Tỉnh/Thành phố *
+                </label>
+                <input
+                  type="text"
+                  name="province"
+                  value={formData.province}
+                  onChange={handleChange}
+                  placeholder="Ví dụ: Hà Nội"
+                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                  style={
+                    {
+                      borderColor: "#d1d5db",
+                      color: "#374151",
+                      "--tw-ring-color": "#FF9F0D",
+                    } as React.CSSProperties
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                  Quận/Huyện *
+                </label>
+                <input
+                  type="text"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleChange}
+                  placeholder="Ví dụ: Cầu Giấy"
+                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                  style={
+                    {
+                      borderColor: "#d1d5db",
+                      color: "#374151",
+                      "--tw-ring-color": "#FF9F0D",
+                    } as React.CSSProperties
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                  Phường/Xã *
+                </label>
+                <input
+                  type="text"
+                  name="ward"
+                  value={formData.ward}
+                  onChange={handleChange}
+                  placeholder="Ví dụ: Dịch Vọng"
+                  className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                  style={
+                    {
+                      borderColor: "#d1d5db",
+                      color: "#374151",
+                      "--tw-ring-color": "#FF9F0D",
+                    } as React.CSSProperties
+                  }
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
+                Địa chỉ chi tiết *
+              </label>
               <input
                 type="text"
-                name="city"
-                value={formData.city}
+                name="addressLine"
+                value={formData.addressLine}
                 onChange={handleChange}
-                placeholder="City"
-                className="px-3 py-2 border rounded-md text-sm"
-                style={{ borderColor: "#d1d5db", color: "#374151" }}
-              />
-              <input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                placeholder="State"
-                className="px-3 py-2 border rounded-md text-sm"
-                style={{ borderColor: "#d1d5db", color: "#374151" }}
+                placeholder="Ví dụ: Số 123, Đường ABC"
+                className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
+                style={
+                  {
+                    borderColor: "#d1d5db",
+                    color: "#374151",
+                    "--tw-ring-color": "#FF9F0D",
+                  } as React.CSSProperties
+                }
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                type="text"
-                name="zip"
-                value={formData.zip}
-                onChange={handleChange}
-                placeholder="Zip Code"
-                className="px-3 py-2 border rounded-md text-sm"
-                style={{ borderColor: "#d1d5db", color: "#374151" }}
-              />
-              <select
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                className="px-3 py-2 border rounded-md text-sm"
-                style={{ borderColor: "#d1d5db", color: "#374151" }}
-              >
-                <option>United States</option>
-                <option>Canada</option>
-                <option>United Kingdom</option>
-              </select>
-            </div>
+
             <div className="flex gap-2">
               <button
                 onClick={handleAdd}
-                className="px-4 py-2 text-sm font-medium text-white rounded-full"
+                className="px-4 py-2 text-sm font-medium text-white rounded-full transition-colors"
                 style={{ backgroundColor: "#FF9F0D" }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#db8300")}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#FF9F0D")}
               >
-                Add Address
+                Thêm địa chỉ
               </button>
               <button
                 onClick={resetForm}
-                className="px-4 py-2 text-sm font-medium rounded-full"
+                className="px-4 py-2 text-sm font-medium rounded-full transition-colors"
                 style={{ backgroundColor: "#f3f4f6", color: "#374151" }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#e5e7eb")}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f3f4f6")}
               >
-                Cancel
+                Hủy
               </button>
             </div>
           </div>
@@ -352,9 +703,13 @@ export default function BillingAddress() {
 
         {/* Empty State */}
         {addresses.length === 0 && !isAdding && (
-          <p className="text-center py-8" style={{ color: "#6b7280" }}>
-            No billing addresses yet.
-          </p>
+          <div className="text-center py-8" style={{ color: "#6b7280" }}>
+            <MapPin size={48} className="mx-auto mb-4 opacity-50" />
+            <p className="mb-2">Chưa có địa chỉ nào</p>
+            <button onClick={startAdd} className="text-sm font-medium" style={{ color: "#FF9F0D" }}>
+              Thêm địa chỉ đầu tiên
+            </button>
+          </div>
         )}
       </div>
     </div>

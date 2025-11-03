@@ -1,6 +1,16 @@
 // src/Account/components/UserAvatar.tsx
+import { useContext } from "react";
+import { GlobalContext } from "../../../contexts/GlobalContext";
 
 export default function UserAvatar() {
+  const globalContext = useContext(GlobalContext);
+
+  if (!globalContext) {
+    return null;
+  }
+
+  const { user } = globalContext;
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm h-full flex flex-col justify-between">
       <div className="text-center">
@@ -10,15 +20,15 @@ export default function UserAvatar() {
         >
           <img
             src="https://randomuser.me/api/portraits/women/44.jpg"
-            alt="Dianne Russell"
+            alt={user?.fullName || "User"}
             className="w-full h-full object-cover"
           />
         </div>
         <h3 className="text-xl font-semibold" style={{ color: "#111827" }}>
-          Dianne Russell
+          {user?.fullName || "Unknown User"}
         </h3>
         <p className="text-sm" style={{ color: "#6B7280" }}>
-          Customer
+          {user?.role || "Customer"}
         </p>
       </div>
 

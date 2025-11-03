@@ -1,6 +1,6 @@
-// src/api/accountApi.ts
+// src/accountApi.ts
 import axiosClient from "../utils/axiosClient";
-// src/api/accountApi.ts
+
 // ==================== TYPES ====================
 
 export interface UserResponse {
@@ -27,15 +27,23 @@ export interface ChangePasswordRequest {
   confirmNewPassword: string;
 }
 
-// Cập nhật AddressDTO theo backend requirement
 export interface AddressDTO {
-  id?: number;
-  receiverName: string; // Tên người nhận
-  receiverPhone: string; // Số điện thoại người nhận
-  province: string; // Tỉnh/Thành phố
-  district: string; // Quận/Huyện
-  ward: string; // Phường/Xã
-  addressLine: string; // Địa chỉ chi tiết
+  addressLine: string;
+  ward: string;
+  district: string;
+  province: string;
+  receiverName: string;
+  receiverPhone: string;
+}
+
+export interface AddressResponse {
+  id: number;
+  addressLine: string;
+  ward: string;
+  district: string;
+  province: string;
+  receiverName: string;
+  receiverPhone: string;
   isDefault: boolean;
 }
 
@@ -76,24 +84,24 @@ export const changePassword = async (request: ChangePasswordRequest): Promise<vo
 /**
  * Lấy danh sách địa chỉ của người dùng
  */
-export const getUserAddresses = async (): Promise<AddressDTO[]> => {
-  const response = await axiosClient.get<ApiResponse<AddressDTO[]>>("/users/customer/addresses");
+export const getUserAddresses = async (): Promise<AddressResponse[]> => {
+  const response = await axiosClient.get<ApiResponse<AddressResponse[]>>("/users/customer/addresses");
   return response.data.data || [];
 };
 
 /**
  * Thêm địa chỉ mới
  */
-export const addAddress = async (addressDTO: AddressDTO): Promise<AddressDTO> => {
-  const response = await axiosClient.post<ApiResponse<AddressDTO>>("/users/customer/addresses", addressDTO);
+export const addAddress = async (addressDTO: AddressDTO): Promise<AddressResponse> => {
+  const response = await axiosClient.post<ApiResponse<AddressResponse>>("/users/customer/addresses", addressDTO);
   return response.data.data!;
 };
 
 /**
  * Cập nhật địa chỉ
  */
-export const updateAddress = async (id: number, addressDTO: AddressDTO): Promise<AddressDTO> => {
-  const response = await axiosClient.put<ApiResponse<AddressDTO>>(`/users/customer/addresses/${id}`, addressDTO);
+export const updateAddress = async (id: number, addressDTO: AddressDTO): Promise<AddressResponse> => {
+  const response = await axiosClient.put<ApiResponse<AddressResponse>>(`/users/customer/addresses/${id}`, addressDTO);
   return response.data.data!;
 };
 
@@ -107,16 +115,16 @@ export const deleteAddress = async (id: number): Promise<void> => {
 /**
  * Đặt địa chỉ mặc định
  */
-export const setDefaultAddress = async (id: number): Promise<AddressDTO> => {
-  const response = await axiosClient.patch<ApiResponse<AddressDTO>>(`/users/customer/addresses/${id}/default`);
+export const setDefaultAddress = async (id: number): Promise<AddressResponse> => {
+  const response = await axiosClient.patch<ApiResponse<AddressResponse>>(`/users/customer/addresses/${id}/default`);
   return response.data.data!;
 };
 
 /**
  * Lấy địa chỉ mặc định
  */
-export const getDefaultAddress = async (): Promise<AddressDTO> => {
-  const response = await axiosClient.get<ApiResponse<AddressDTO>>("/users/customer/addresses/default");
+export const getDefaultAddress = async (): Promise<AddressResponse> => {
+  const response = await axiosClient.get<ApiResponse<AddressResponse>>("/users/customer/addresses/default");
   return response.data.data!;
 };
 

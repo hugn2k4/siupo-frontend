@@ -1,54 +1,88 @@
-import AddressForm from "./Components/AddressForm";
-import CheckoutNavigation from "./Components/CheckoutNavigation";
+import { Box } from "@mui/material";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import MyButton from "../../components/common/Button";
+import { EMethodPayment, type MethodPayment } from "../../types/enums/methodPayment.enum";
+import type { Address } from "../../types/models/address";
+import type { CartItem } from "../../types/models/cartItem";
+import AddressItem from "./Components/AddressItem";
 import OrderSummary from "./Components/OrderSummary";
 import PaymentMethod from "./Components/PaymentMethod";
 import Voucher from "./Components/Voucher";
-import { useState } from "react";
 
 const CheckoutPage: React.FC = () => {
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("momo");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<MethodPayment>(EMethodPayment.COD);
 
-  // Dữ liệu mẫu cho đơn hàng
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
+  useEffect(() => {
+    const { items } = location.state || { items: [] };
+
+    if (!items || items.length === 0) {
+      navigate("/cart", { replace: true });
+    } else {
+      setCartItems(items);
+    }
+  }, [location.state, navigate]);
+
+  // Tính toán subtotal từ cart items
+  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
+  // Các thông số tính toán
+  const shipping = selectedPaymentMethod === EMethodPayment.COD ? 2 : 0;
+  const discount = 0; // TODO: Tính từ voucher/coupon
+  const vatRate = 0.1; // 10% VAT
+  const vat = (subtotal - discount) * vatRate;
+
+  // Tính total
+  const baseTotal = subtotal + shipping - discount + vat;
+  const finalTotal = baseTotal + shipping;
+
+  // Dữ liệu đơn hàng
   const orderData = {
-    items: [
-      {
-        name: "Chicken Tikka Kabab",
-        weight: "150 gm net",
-        price: 50,
-        image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=150&h=150&fit=crop&crop=center",
-      },
-      {
-        name: "Chicken Tikka Kabab",
-        weight: "150 gm net",
-        price: 50,
-        image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=150&h=150&fit=crop&crop=center",
-      },
-      {
-        name: "Chicken Tikka Kabab",
-        weight: "150 gm net",
-        price: 50,
-        image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=150&h=150&fit=crop&crop=center",
-      },
-    ],
-    subtotal: 150,
-    shipping: 0,
-    discount: 25,
-    vat: 54.76,
-    total: 432.65,
+    items: cartItems,
+    subtotal,
+    shipping,
+    discount,
+    vat,
+    total: finalTotal,
   };
 
-  // Thêm phí COD nếu chọn COD
-  const finalTotal = selectedPaymentMethod === "cod" ? orderData.total + 15 : orderData.total;
-
   const handleBackToCart = () => {
-    console.log("Quay lại giỏ hàng");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate("/cart", {
+      state: {
+        selectedIds: cartItems.map((it) => it.id),
+      },
+    });
+  };
+
+  const handleGoToShop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate("/shop");
   };
 
   const handleProceedToPayment = () => {
+    if (!selectedAddress) {
+      // You may want to show a snackbar / validation message here
+      console.warn("No shipping address selected");
+      return;
+    }
+
     console.log("Tiến hành thanh toán với phương thức:", selectedPaymentMethod);
+    console.log("Dữ liệu đơn hàng:", orderData);
+    console.log("Shipping address:", selectedAddress);
   };
 
-  const handlePaymentMethodChange = (method: string) => {
+  const handlePaymentMethodChange = (method: MethodPayment) => {
     setSelectedPaymentMethod(method);
   };
 
@@ -58,15 +92,35 @@ const CheckoutPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cột bên trái - Form */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Form địa chỉ giao hàng */}
-            <AddressForm title="Address Details" />
+            {/* Address selector / add-new flow */}
+            <AddressItem onSelect={(a) => setSelectedAddress(a)} />
             {/* Form voucher */ <Voucher title="Discount Code" />}
 
             {/* Phương thức thanh toán */}
             <PaymentMethod selectedMethod={selectedPaymentMethod} onMethodChange={handlePaymentMethodChange} />
 
-            {/* Điều hướng - Sử dụng component CheckoutNavigation */}
-            <CheckoutNavigation onBackToCart={handleBackToCart} onProceedToShipping={handleProceedToPayment} />
+            {/* Navigation buttons */}
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
+              <MyButton
+                fullWidth
+                sx={{ borderRadius: 0 }}
+                colorScheme="grey"
+                onClick={handleBackToCart}
+                startIcon={<ArrowLeft size={16} />}
+              >
+                Back to Cart
+              </MyButton>
+
+              <MyButton
+                fullWidth
+                sx={{ borderRadius: 0 }}
+                colorScheme="orange"
+                onClick={handleGoToShop}
+                endIcon={<ArrowRight size={16} />}
+              >
+                Go to Shop
+              </MyButton>
+            </Box>
           </div>
 
           {/* Cột bên phải - Tóm tắt đơn hàng */}
@@ -82,6 +136,7 @@ const CheckoutPage: React.FC = () => {
                 total={finalTotal}
                 selectedPaymentMethod={selectedPaymentMethod}
                 onProceedToPayment={handleProceedToPayment}
+                loading={false}
               />
             </div>
           </div>

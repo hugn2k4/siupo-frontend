@@ -13,7 +13,8 @@ import { useSnackbar } from "../../../hooks/useSnackbar";
 import cartService from "../../../services/cartService";
 import { EProductStatus } from "../../../types/enums/product.enum";
 import type { ProductDetailResponse } from "../../../types/responses/product.response";
-
+import wishlistApi from "../../../api/wishListApi";
+import { useEffect } from "react";
 interface ProductInfoProps {
   product: ProductDetailResponse;
 }
@@ -21,6 +22,7 @@ interface ProductInfoProps {
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
 
   const { isLogin } = useGlobal();
   const { showSnackbar } = useSnackbar();
@@ -31,6 +33,27 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
 
   const displayStatus = isAvailable ? "Available" : "Unavailable";
   const displayPrice = new Intl.NumberFormat("vi-VN").format(product.price) + " VND";
+  const handleToggleWishlist = async () => {
+    if (!isLogin) {
+      setShowLoginDialog(true);
+      return;
+    }
+
+    try {
+      if (isInWishlist) {
+        await wishlistApi.removeFromWishlist(product.id);
+        setIsInWishlist(false);
+        showSnackbar("Removed from wishlist!", "success", 3000);
+      } else {
+        await wishlistApi.addToWishlist(product.id);
+        setIsInWishlist(true);
+        showSnackbar("Added to wishlist!", "success", 3000);
+      }
+    } catch (error) {
+      console.error(error);
+      showSnackbar("Error updating wishlist!", "error", 3000);
+    }
+  };
 
   const handleAddToCart = async () => {
     // Check if user is logged in
@@ -47,15 +70,14 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       showSnackbar("Failed to add product to cart!", "error", 3000);
     }
   };
-
-  const handleAddToWishlist = () => {
-    if (!isLogin) {
-      setShowLoginDialog(true);
-      return;
+  useEffect(() => {
+    if (isLogin) {
+      wishlistApi
+        .checkProduct(product.id)
+        .then((res) => setIsInWishlist(res.data.isInWishlist))
+        .catch(() => setIsInWishlist(false));
     }
-    // TODO: Implement wishlist logic
-    showSnackbar("Added to wishlist!", "success", 3000);
-  };
+  }, [isLogin, product.id]);
 
   const handleCompare = () => {
     if (!isLogin) {
@@ -233,21 +255,21 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       <Box sx={{ mb: 4, ml: 0.5 }}>
         <Stack direction="row" spacing={0} alignItems="center">
           <Button
-            startIcon={<FavoriteBorderOutlinedIcon />}
+            startIcon={isInWishlist ? <FavoriteBorderOutlinedIcon color="error" /> : <FavoriteBorderOutlinedIcon />}
             variant="text"
-            onClick={handleAddToWishlist}
+            onClick={handleToggleWishlist}
             sx={{
               fontWeight: 400,
               textTransform: "none",
-              color: "var(--color-gray2)",
+              color: isInWishlist ? "error.main" : "var(--color-gray2)",
               "&:hover": {
-                color: "var(--color-primary)",
+                color: isInWishlist ? "error.light" : "var(--color-primary)",
                 backgroundColor: "transparent",
               },
               pl: 0.5,
             }}
           >
-            Add to Wishlist
+            {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
           </Button>
           <Button
             variant="text"

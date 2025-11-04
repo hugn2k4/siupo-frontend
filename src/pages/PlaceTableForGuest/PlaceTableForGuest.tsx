@@ -16,6 +16,7 @@ const PlaceTableForGuest: React.FC = () => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem("accessToken");
       const user = localStorage.getItem("user");
+      console.log("Auth status changed. Token:", token, "User:", user);
       setIsLoggedIn(!!(token && user));
     };
 

@@ -1,100 +1,102 @@
 // src/Account/components/ChangePassword.tsx
-import React, { useState } from "react";
-import { changePassword } from "../../../api/accountApi";
-import type { ChangePasswordRequest } from "../../../api/accountApi";
+
+import React, { useState, useEffect } from "react";
+import userApi from "../../../api/userApi";
+import { useSnackbar } from "../../../hooks/useSnackbar";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
+
+type ChangePasswordRequest = {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
 
 export default function ChangePassword() {
-  const [formData, setFormData] = useState<ChangePasswordRequest>({
-    oldPassword: "",
-    newPassword: "",
-    confirmNewPassword: "",
-  });
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-  };
+  // Lỗi cho từng field - kiểu rõ ràng
+  const [errors, setErrors] = useState<{
+    current: string;
+    new: string;
+    confirm: string;
+  }>({
+    current: "",
+    new: "",
+    confirm: "",
+  });
 
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
+  const { showSnackbar } = useSnackbar();
 
-    if (!formData.oldPassword) {
-      newErrors.oldPassword = "Mật khẩu cũ không được để trống";
-    }
+  // Validate realtime
+  useEffect(() => {
+    const err: typeof errors = {
+      current: "",
+      new: "",
+      confirm: "",
+    };
 
-    if (!formData.newPassword) {
-      newErrors.newPassword = "Mật khẩu mới không được để trống";
-    } else if (formData.newPassword.length < 6) {
-      newErrors.newPassword = "Mật khẩu phải có ít nhất 6 ký tự";
-    }
-
-    if (!formData.confirmNewPassword) {
-      newErrors.confirmNewPassword = "Xác nhận mật khẩu không được để trống";
-    } else if (formData.newPassword !== formData.confirmNewPassword) {
-      newErrors.confirmNewPassword = "Mật khẩu xác nhận không khớp";
+    // Current password
+    if (currentPassword && currentPassword.length < 1) {
+      err.current = "Vui lòng nhập mật khẩu hiện tại";
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
+    // New password
+    if (newPassword) {
+      if (newPassword.length < 6) {
+        err.new = "Mật khẩu phải ít nhất 6 ký tự";
+      } else if (newPassword === currentPassword) {
+        err.new = "Mật khẩu mới phải khác mật khẩu cũ";
+      }
     }
 
-    setLoading(true);
+    // Confirm password
+    if (confirmPassword && confirmPassword !== newPassword) {
+      err.confirm = "Mật khẩu xác nhận không khớp";
+    }
+
+    setErrors(err);
+  }, [currentPassword, newPassword, confirmPassword]);
+
+  // Ép kiểu boolean rõ ràng
+  const hasError = Boolean(errors.current || errors.new || errors.confirm);
+  const isDisabled = !currentPassword || !newPassword || !confirmPassword || hasError || loading;
+
+  const handleSubmit = async () => {
+    if (hasError || loading) return;
+
+    const payload: ChangePasswordRequest = {
+      oldPassword: currentPassword,
+      newPassword,
+      confirmNewPassword: confirmPassword,
+    };
+
     try {
-      await changePassword(formData);
-      alert("Đổi mật khẩu thành công!");
+      setLoading(true);
+      await userApi.changePassword(payload);
+      showSnackbar("Đổi mật khẩu thành công!", "success");
+
       // Reset form
-      setFormData({
-        oldPassword: "",
-        newPassword: "",
-        confirmNewPassword: "",
-      });
-      setErrors({});
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setShowCurrent(false);
+      setShowNew(false);
+      setShowConfirm(false);
+      setErrors({ current: "", new: "", confirm: "" });
     } catch (error: unknown) {
-      console.error("Failed to change password:", error);
+      let msg = "Đổi mật khẩu thất bại";
 
-      let errorMessage = "Đổi mật khẩu thất bại. Vui lòng thử lại.";
-      let isOldPasswordError = false;
-
-      if (error instanceof Error && "response" in error) {
-        const axiosError = error as {
-          response?: {
-            data?: {
-              message?: string;
-              data?: {
-                oldPassword?: string;
-              };
-            };
-          };
-        };
-
-        errorMessage = axiosError.response?.data?.message || errorMessage;
-
-        // Check if it's an old password error
-        const message = axiosError.response?.data?.message?.toLowerCase() || "";
-        isOldPasswordError = message.includes("mật khẩu cũ") || message.includes("old password");
+      if (error && typeof error === "object" && "response" in error) {
+        const err = error as { response?: { data?: { message?: string } } };
+        msg = err.response?.data?.message || msg;
       }
-
-      if (isOldPasswordError) {
-        setErrors((prev) => ({ ...prev, oldPassword: "Mật khẩu cũ không đúng" }));
-      } else {
-        alert(errorMessage);
-      }
+      showSnackbar(msg, "error");
     } finally {
       setLoading(false);
     }
@@ -102,112 +104,145 @@ export default function ChangePassword() {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm" style={{ border: "1px solid #e5e7eb" }}>
-      {/* TIÊU ĐỀ + ĐƯỜNG VIỀN DƯỚI */}
       <div className="border-b pb-4 mb-6" style={{ borderColor: "#e5e7eb" }}>
         <h3 className="text-lg font-semibold" style={{ color: "#111827" }}>
-          Đổi mật khẩu
+          Change Password
         </h3>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Current Password - full width */}
-        <div>
+      <div className="space-y-4">
+        {/* Current Password */}
+        <div className="relative">
           <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
-            Mật khẩu cũ *
+            Current Password
           </label>
           <input
-            type="password"
-            name="oldPassword"
-            value={formData.oldPassword}
-            onChange={handleChange}
-            required
-            className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 ${
-              errors.oldPassword ? "border-red-500" : "border-gray-300"
+            type={showCurrent ? "text" : "password"}
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            className={`w-full px-3 py-2 pr-10 border rounded-md text-sm focus:outline-none focus:ring-1 ${
+              errors.current ? "border-red-500" : ""
             }`}
             style={
               {
-                "--tw-ring-color": "#FF9F0D",
+                borderColor: errors.current ? "#ef4444" : "#d1d5db",
+                "--tw-ring-color": errors.current ? "#ef4444" : "#FF9F0D",
                 outline: "none",
                 color: "#666666",
               } as React.CSSProperties
             }
             placeholder="Nhập mật khẩu hiện tại"
+            disabled={loading}
           />
-          {errors.oldPassword && <p className="text-red-500 text-xs mt-1">{errors.oldPassword}</p>}
+          <button
+            type="button"
+            onClick={() => setShowCurrent(!showCurrent)}
+            className="absolute right-2 top-9 text-gray-500 hover:text-gray-700"
+            disabled={loading}
+          >
+            {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+          {errors.current && (
+            <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+              <AlertCircle size={14} />
+              {errors.current}
+            </p>
+          )}
         </div>
 
-        {/* New Password + Confirm Password - cùng 1 hàng */}
+        {/* New + Confirm */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
+          {/* New Password */}
+          <div className="relative">
             <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
-              Mật khẩu mới *
+              New Password
             </label>
             <input
-              type="password"
-              name="newPassword"
-              value={formData.newPassword}
-              onChange={handleChange}
-              required
-              minLength={6}
-              className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 ${
-                errors.newPassword ? "border-red-500" : "border-gray-300"
+              type={showNew ? "text" : "password"}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className={`w-full px-3 py-2 pr-10 border rounded-md text-sm focus:outline-none focus:ring-1 ${
+                errors.new ? "border-red-500" : ""
               }`}
               style={
                 {
-                  "--tw-ring-color": "#FF9F0D",
+                  borderColor: errors.new ? "#ef4444" : "#d1d5db",
+                  "--tw-ring-color": errors.new ? "#ef4444" : "#FF9F0D",
                   outline: "none",
                   color: "#666666",
                 } as React.CSSProperties
               }
-              placeholder="Nhập mật khẩu mới"
+              placeholder="Mật khẩu mới"
+              disabled={loading}
             />
-            {errors.newPassword && <p className="text-red-500 text-xs mt-1">{errors.newPassword}</p>}
+            <button
+              type="button"
+              onClick={() => setShowNew(!showNew)}
+              className="absolute right-2 top-9 text-gray-500 hover:text-gray-700"
+              disabled={loading}
+            >
+              {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+            {errors.new && (
+              <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                <AlertCircle size={14} />
+                {errors.new}
+              </p>
+            )}
           </div>
 
-          <div>
+          {/* Confirm Password */}
+          <div className="relative">
             <label className="block text-sm font-medium mb-1" style={{ color: "#374151" }}>
-              Xác nhận mật khẩu *
+              Confirm Password
             </label>
             <input
-              type="password"
-              name="confirmNewPassword"
-              value={formData.confirmNewPassword}
-              onChange={handleChange}
-              required
-              minLength={6}
-              className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 ${
-                errors.confirmNewPassword ? "border-red-500" : "border-gray-300"
+              type={showConfirm ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={`w-full px-3 py-2 pr-10 border rounded-md text-sm focus:outline-none focus:ring-1 ${
+                errors.confirm ? "border-red-500" : ""
               }`}
               style={
                 {
-                  "--tw-ring-color": "#FF9F0D",
+                  borderColor: errors.confirm ? "#ef4444" : "#d1d5db",
+                  "--tw-ring-color": errors.confirm ? "#ef4444" : "#FF9F0D",
                   outline: "none",
                   color: "#666666",
                 } as React.CSSProperties
               }
-              placeholder="Nhập lại mật khẩu mới"
+              placeholder="Xác nhận mật khẩu"
+              disabled={loading}
             />
-            {errors.confirmNewPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmNewPassword}</p>}
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-2 top-9 text-gray-500 hover:text-gray-700"
+              disabled={loading}
+            >
+              {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+            {errors.confirm && (
+              <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                <AlertCircle size={14} />
+                {errors.confirm}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Password requirements */}
-        <div className="text-xs text-gray-500">
-          <p>Mật khẩu phải có ít nhất 6 ký tự.</p>
-        </div>
-
-        {/* Save Button */}
+        {/* Submit Button */}
         <button
-          type="submit"
-          disabled={loading}
-          className="mt-4 px-6 py-2.5 text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-6 px-6 py-2.5 text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ backgroundColor: "#FF9F0D" }}
-          onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = "#e48900")}
-          onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = "#FF9F0D")}
+          onClick={handleSubmit}
+          disabled={isDisabled}
+          onMouseEnter={(e) => !isDisabled && (e.currentTarget.style.backgroundColor = "#ec8e00")}
+          onMouseLeave={(e) => !isDisabled && (e.currentTarget.style.backgroundColor = "#FF9F0D")}
         >
-          {loading ? "Đang đổi mật khẩu..." : "Đổi mật khẩu"}
+          {loading ? "Đang xử lý..." : "Change Password"}
         </button>
-      </form>
+      </div>
     </div>
   );
 }

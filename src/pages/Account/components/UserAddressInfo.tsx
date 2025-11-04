@@ -1,106 +1,76 @@
 // src/Account/components/UserAddressInfo.tsx
-import { useState, useEffect, useContext } from "react";
-import { GlobalContext } from "../../../contexts/GlobalContext";
-import { getDefaultAddress } from "../../../api/accountApi";
-import type { AddressDTO } from "../../../api/accountApi";
+import { useEffect, useState } from "react";
+import userApi from "../../../api/userApi";
+import { useNavigate } from "react-router-dom";
+
+interface UserInfo {
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+}
+
+interface AddressInfo {
+  addressLine: string;
+  ward: string;
+  district: string;
+  province: string;
+  receiverName: string;
+  receiverPhone: string;
+}
 
 export default function UserAddressInfo() {
-  const globalContext = useContext(GlobalContext);
-  const [defaultAddress, setDefaultAddress] = useState<AddressDTO | null>(null);
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const [address, setAddress] = useState<AddressInfo | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchDefaultAddress = async () => {
+    const fetchData = async () => {
       try {
-        const addressData = await getDefaultAddress();
-        setDefaultAddress(addressData);
-        setError(null);
-      } catch (error: unknown) {
-        console.error("Failed to fetch default address:", error);
+        setLoading(true);
+        const [userRes, addrRes] = await Promise.all([
+          userApi.getCurrentUser(),
+          userApi.getDefaultAddress().catch(() => ({ data: null })),
+        ]);
 
-        // Check if it's a 404 error (address not found)
-        let isNotFoundError = false;
-
-        if (error instanceof Error && "response" in error) {
-          const axiosError = error as { response?: { status?: number } };
-          isNotFoundError = axiosError.response?.status === 404;
+        if (userRes.data) {
+          setUser({
+            fullName: userRes.data.fullName,
+            phoneNumber: userRes.data.phoneNumber,
+            email: userRes.data.email,
+          });
         }
 
-        // Nếu lỗi 404 (không tìm thấy địa chỉ mặc định), coi như không có địa chỉ
-        if (isNotFoundError) {
-          setDefaultAddress(null);
-          setError(null);
-        } else {
-          setError("Không thể tải địa chỉ");
+        if (addrRes.data) {
+          const addr = addrRes.data;
+          setAddress({
+            addressLine: addr.addressLine,
+            ward: addr.ward,
+            district: addr.district,
+            province: addr.province,
+            receiverName: addr.receiverName,
+            receiverPhone: addr.receiverPhone,
+          });
         }
+      } catch (error) {
+        console.error("Lỗi tải dữ liệu:", error);
+        setUser(null);
+        setAddress(null);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchDefaultAddress();
+    fetchData();
   }, []);
 
-  if (!globalContext) {
-    return null;
-  }
+  const formatFullAddress = (addr: AddressInfo) => {
+    const parts = [addr.addressLine, addr.ward, addr.district, addr.province];
+    return parts.filter(Boolean).join(", ");
+  };
 
-  const { user } = globalContext;
-
-  if (loading) {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-sm h-full flex flex-col justify-between">
-        <div className="space-y-6 text-sm">
-          <div>
-            <div className="h-4 bg-gray-200 rounded w-24 mb-4 animate-pulse"></div>
-            <div className="h-6 bg-gray-200 rounded w-32 mb-3 animate-pulse"></div>
-            <div className="h-4 bg-gray-200 rounded w-48 mb-2 animate-pulse"></div>
-            <div className="h-4 bg-gray-200 rounded w-16 mb-3 animate-pulse"></div>
-            <div className="h-4 bg-gray-200 rounded w-40 mb-2 animate-pulse"></div>
-            <div className="h-4 bg-gray-200 rounded w-28 animate-pulse"></div>
-          </div>
-        </div>
-        <div className="h-5 bg-gray-200 rounded w-20 mt-6 animate-pulse"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-sm h-full flex flex-col justify-between">
-        <div className="space-y-6 text-sm">
-          <div>
-            <p
-              style={{
-                color: "#6B7280",
-                fontSize: "12px",
-                marginBottom: "6px",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                fontWeight: "600",
-              }}
-            >
-              ĐỊA CHỈ GIAO HÀNG
-            </p>
-            <p className="text-red-500 text-sm">{error}</p>
-          </div>
-        </div>
-        <button
-          className="font-medium hover:underline self-start"
-          style={{
-            color: "#FF9F0D",
-            fontSize: "14px",
-            marginTop: "24px",
-            fontWeight: "600",
-          }}
-          onClick={() => window.location.reload()}
-        >
-          Thử lại
-        </button>
-      </div>
-    );
-  }
+  const handleEditAddress = () => {
+    navigate("/account/settings#billing-address");
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm h-full flex flex-col justify-between">
@@ -116,115 +86,40 @@ export default function UserAddressInfo() {
               fontWeight: "600",
             }}
           >
-            ĐỊA CHỈ GIAO HÀNG
+            BILLING ADDRESS
           </p>
 
-          {/* Tên người nhận - in đậm */}
-          {defaultAddress ? (
+          {loading ? (
+            <div className="space-y-2">
+              <div className="h-5 bg-gray-200 rounded w-48 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded w-64 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
+            </div>
+          ) : user ? (
             <>
-              <p
-                style={{
-                  color: "#111827",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  marginBottom: "4px",
-                }}
-              >
-                {defaultAddress.receiverName}
+              <p style={{ color: "#111827", fontSize: "16px", fontWeight: "600", marginBottom: "4px" }}>
+                {address?.receiverName || user.fullName}
               </p>
-
-              {/* Địa chỉ chi tiết */}
-              <p
-                style={{
-                  color: "#111827",
-                  fontSize: "14px",
-                  lineHeight: "1.5",
-                  marginBottom: "2px",
-                }}
-              >
-                {defaultAddress.addressLine}
+              <p style={{ color: "#111827", fontSize: "14px", lineHeight: "1.5", marginBottom: "2px" }}>
+                {address ? formatFullAddress(address) : "Chưa có địa chỉ giao hàng"}
               </p>
-
-              {/* Địa chỉ khu vực */}
-              <p
-                style={{
-                  color: "#111827",
-                  fontSize: "14px",
-                  marginBottom: "12px",
-                }}
-              >
-                {defaultAddress.ward}, {defaultAddress.district}, {defaultAddress.province}
-              </p>
-
-              {/* Số điện thoại */}
-              <p
-                style={{
-                  color: "#111827",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                }}
-              >
-                {defaultAddress.receiverPhone}
+              <p style={{ color: "#111827", fontSize: "14px", marginBottom: "4px" }}>{user.email}</p>
+              <p style={{ color: "#111827", fontSize: "14px", fontWeight: "500" }}>
+                {address?.receiverPhone || user.phoneNumber}
               </p>
             </>
           ) : (
-            <>
-              <p
-                style={{
-                  color: "#111827",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  marginBottom: "4px",
-                }}
-              >
-                {user?.fullName || "Unknown User"}
-              </p>
-              <p
-                style={{
-                  color: "#6B7280",
-                  fontSize: "14px",
-                  fontStyle: "italic",
-                  marginBottom: "12px",
-                }}
-              >
-                Chưa có địa chỉ mặc định
-              </p>
-              {/* Email */}
-              <p
-                style={{
-                  color: "#111827",
-                  fontSize: "14px",
-                  marginBottom: "4px",
-                }}
-              >
-                {user?.email || "No email provided"}
-              </p>
-
-              {/* Số điện thoại */}
-              <p
-                style={{
-                  color: "#111827",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                }}
-              >
-                {user?.phoneNumber || "No phone number"}
-              </p>
-            </>
+            <p style={{ color: "#9CA3AF", fontSize: "14px", fontStyle: "italic" }}>Không tải được thông tin</p>
           )}
         </div>
       </div>
 
       <button
         className="font-medium hover:underline self-start"
-        style={{
-          color: "#FF9F0D",
-          fontSize: "14px",
-          marginTop: "24px",
-          fontWeight: "600",
-        }}
+        style={{ color: "#FF9F0D", fontSize: "14px", marginTop: "24px", fontWeight: "600" }}
+        onClick={handleEditAddress}
       >
-        Chỉnh sửa địa chỉ
+        {address ? "Edit Address" : "Add Address"}
       </button>
     </div>
   );

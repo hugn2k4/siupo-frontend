@@ -15,6 +15,7 @@ import { EProductStatus } from "../../../types/enums/product.enum";
 import type { ProductDetailResponse } from "../../../types/responses/product.response";
 import wishlistApi from "../../../api/wishListApi";
 import { useEffect } from "react";
+
 interface ProductInfoProps {
   product: ProductDetailResponse;
 }
@@ -70,6 +71,22 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       showSnackbar("Failed to add product to cart!", "error", 3000);
     }
   };
+
+  const handleAddToWishlist = async () => {
+    if (!isLogin) {
+      setShowLoginDialog(true);
+      return;
+    }
+
+    try {
+      await wishlistApi.addToWishlist(product.id);
+      showSnackbar("Added to wishlist!", "success", 3000);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to add to wishlist";
+      showSnackbar(errorMessage, "error", 3000);
+    }
+  };
+
   useEffect(() => {
     if (isLogin) {
       wishlistApi

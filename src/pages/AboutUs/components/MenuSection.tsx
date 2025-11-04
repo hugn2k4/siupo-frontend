@@ -9,8 +9,12 @@ import productApi from "../../../api/productApi";
 import type { CategoryResponse } from "../../../types/responses/category.response";
 import type { ProductResponse } from "../../../types/responses/product.response";
 
+// Hooks
+import { useTranslation } from "../../../hooks/useTranslation";
+
 const MenuSection: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation("about");
 
   // State
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
@@ -51,6 +55,7 @@ const MenuSection: React.FC = () => {
         const response = await productApi.searchProducts(
           null, // name
           [activeCategoryId], // categoryIds
+          null,
           null, // minPrice
           null, // maxPrice
           0, // page
@@ -78,11 +83,8 @@ const MenuSection: React.FC = () => {
     <section className="py-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Our Food Menu</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
-          </p>
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">{t("menu.title")}</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">{t("menu.description")}</p>
         </div>
 
         {/* Categories - giữ nguyên giao diện cũ */}
@@ -133,7 +135,7 @@ const MenuSection: React.FC = () => {
                     <button className="text-xl font-semibold text-gray-800 mb-2 hover:text-primary cursor-pointer">
                       {item.name}
                     </button>
-                    <p className="text-gray-600 mb-2">{item.description || "No description available"}</p>
+                    <p className="text-gray-600 mb-2">{item.description || t("menu.noDescription")}</p>
                   </div>
                   <div className="text-2xl font-bold text-primary ml-4">${item.price.toFixed(2)}</div>
                 </div>
@@ -146,7 +148,7 @@ const MenuSection: React.FC = () => {
             className="bg-white text-primary border border-primary px-8 py-3 font-semibold transition-colors hover:bg-primary hover:text-white"
             onClick={() => navigate("/menu")}
           >
-            View More Menu
+            {t("menu.viewMore")}
           </button>
         </div>
       </div>

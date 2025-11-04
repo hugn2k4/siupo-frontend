@@ -15,6 +15,8 @@ import contactEn from "../locales/en/contact.json";
 import homeEn from "../locales/en/home.json";
 import menuEn from "../locales/en/menu.json";
 import productEn from "../locales/en/product.json";
+import shopEn from "../locales/en/shop.json";
+import vouchersEn from "../locales/en/vouchers.json";
 import aboutVi from "../locales/vi/about.json";
 import accountVi from "../locales/vi/account.json";
 import authVi from "../locales/vi/auth.json";
@@ -27,8 +29,8 @@ import contactVi from "../locales/vi/contact.json";
 import homeVi from "../locales/vi/home.json";
 import menuVi from "../locales/vi/menu.json";
 import productVi from "../locales/vi/product.json";
-import shopEn from "../locales/en/shop.json";
 import shopVi from "../locales/vi/shop.json";
+import vouchersVi from "../locales/vi/vouchers.json";
 
 // Define resources type for type safety
 export const resources = {
@@ -46,6 +48,7 @@ export const resources = {
     contact: contactEn,
     chef: chefEn,
     shop: shopEn,
+    vouchers: vouchersEn,
   },
   vi: {
     common: commonVi,
@@ -61,6 +64,7 @@ export const resources = {
     contact: contactVi,
     chef: chefVi,
     shop: shopVi,
+    vouchers: vouchersVi,
   },
 } as const;
 
@@ -95,6 +99,7 @@ i18n
       "contact",
       "chef",
       "shop",
+      "vouchers",
     ],
 
     // Language detection options

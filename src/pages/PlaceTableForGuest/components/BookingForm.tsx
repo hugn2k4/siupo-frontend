@@ -7,6 +7,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
 import React, { useEffect, useState } from "react";
 import { bookingApi } from "../../../api/bookingApi";
+import preOrderPayment from "../../../api/preOrderPayment";
 import type { CartItem } from "../../../types/responses/product.response";
 
 interface BookingFormProps {
@@ -81,8 +82,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
   };
 
   const validateDateTime = (datetime: string) => {
+    // Validate year format (must be exactly 4 digits)
+    const yearMatch = datetime.match(/^(\d{4})-/);
+    if (!yearMatch || yearMatch[1].length !== 4) {
+      return "Year must be exactly 4 digits";
+    }
+
     const selectedTime = new Date(datetime);
     const now = new Date();
+
+    // Check if date is valid
+    if (isNaN(selectedTime.getTime())) {
+      return "Invalid date format";
+    }
 
     if (selectedTime <= now) {
       return "Booking time must be in the future";
@@ -124,8 +136,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
     }
 
     const memberCount = parseInt(formData.memberInt);
-    if (!memberCount || memberCount < 1) {
-      newErrors.memberInt = "Number of guests must be greater than 0";
+    if (!formData.memberInt || !memberCount || memberCount < 1) {
+      newErrors.memberInt = "Number of guests must be at least 1";
     } else if (memberCount > 50) {
       newErrors.memberInt = "Number of guests cannot exceed 50 people";
     }
@@ -195,6 +207,65 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
             : null,
       };
 
+      // Nếu có preOrderItems và đã đăng nhập, cần thanh toán MoMo trước
+      if (isLoggedIn && preOrderItems.length > 0) {
+        // Tỷ giá USD sang VND
+        const USD_TO_VND_RATE = 26290.95;
+
+        // Tính tổng tiền (chuyển từ USD sang VND)
+        const totalAmount = preOrderItems.reduce((sum, item) => {
+          return sum + item.price * item.quantity * USD_TO_VND_RATE;
+        }, 0);
+
+        // Kiểm tra số tiền tối thiểu (MoMo yêu cầu tối thiểu 10,000 VND)
+        if (totalAmount < 10000) {
+          setErrors({
+            submit: "Tổng tiền đặt trước phải ít nhất 10,000 VND",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Tạo payment request
+        // ✅ CODE MỚI
+        const paymentRequest = {
+          amount: Math.round(totalAmount),
+          description: `Đặt bàn ${formData.memberInt} người - ${formData.fullname}`,
+          items: preOrderItems.map((item) => {
+            const itemWithCombo = item as typeof item & { comboId?: number };
+            return {
+              productId: itemWithCombo.comboId ? undefined : item.id,
+              comboId: itemWithCombo.comboId,
+              name: item.name,
+              quantity: item.quantity,
+              price: Math.round(item.price * USD_TO_VND_RATE),
+            };
+          }),
+          customerInfo: {
+            name: formData.fullname.trim(),
+            phone: formData.phoneNumber.trim(),
+          },
+        };
+
+        console.log("Payment request:", paymentRequest); // Debug log
+
+        // Gọi API tạo payment
+        const paymentResponse = await preOrderPayment.createPayment(paymentRequest);
+
+        if (paymentResponse.success && paymentResponse.data?.payUrl) {
+          // Lưu thông tin booking vào localStorage để xử lý sau khi callback từ MoMo
+          localStorage.setItem("pendingBooking", JSON.stringify(requestData));
+          localStorage.removeItem(FORM_STORAGE_KEY);
+
+          // Redirect to MoMo
+          window.location.href = paymentResponse.data.payUrl;
+          return; // Dừng ở đây, không submit booking ngay
+        } else {
+          throw new Error(paymentResponse.message || "Không nhận được payment URL");
+        }
+      }
+
+      // Nếu không có preOrderItems hoặc chưa đăng nhập, submit booking bình thường
       let result;
 
       if (isLoggedIn) {
@@ -205,7 +276,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
 
       if (result?.success) {
         setSubmitSuccess(true);
-        // Clear saved form data after successful submission
         localStorage.removeItem(FORM_STORAGE_KEY);
         setFormData({
           fullname: "",
@@ -350,7 +420,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
                   max="50"
                   placeholder="2"
                   value={formData.memberInt}
-                  onChange={(e) => handleChange("memberInt", e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Only allow positive integers
+                    if (value === "" || (parseInt(value) >= 1 && parseInt(value) <= 50)) {
+                      handleChange("memberInt", value);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    // Prevent negative sign, decimal point, and 'e'
+                    if (e.key === "-" || e.key === "." || e.key === "e" || e.key === "E" || e.key === "+") {
+                      e.preventDefault();
+                    }
+                  }}
                   className="w-full outline-none text-gray-700"
                 />
               </div>
@@ -366,8 +448,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
                 <input
                   type="datetime-local"
                   min={getMinDateTime()}
+                  max="9999-12-31T23:59"
                   value={formData.startedAt}
                   onChange={(e) => handleChange("startedAt", e.target.value)}
+                  onBlur={(e) => {
+                    // Additional validation on blur
+                    const value = e.target.value;
+                    if (value) {
+                      const dateTimeError = validateDateTime(value);
+                      if (dateTimeError) {
+                        setErrors((prev) => ({ ...prev, startedAt: dateTimeError }));
+                      }
+                    }
+                  }}
                   className="w-full outline-none text-gray-700"
                 />
               </div>

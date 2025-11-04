@@ -39,6 +39,7 @@ const productService = {
   searchProducts: async (
     name: string | null,
     categoryIds: number[] | null,
+    tagIds: number[] | null,
     minPrice: number | null,
     maxPrice: number | null,
     page: number,
@@ -49,6 +50,7 @@ const productService = {
       const response: ApiResponse<PageResponse<ProductResponse>> = await productApi.searchProducts(
         name,
         categoryIds,
+        tagIds,
         minPrice,
         maxPrice,
         page,

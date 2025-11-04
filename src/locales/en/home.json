@@ -1,35 +1,76 @@
 {
-  "hero": {
-    "subtitle": "Healthy & Tasty Food",
-    "title1": "Enjoy Healthy Life",
-    "title2": "& Tasty Food.",
-    "description": "Discover a variety of healthy and delicious meals crafted to nourish your body and delight your taste buds. From fresh salads to wholesome bowls, every dish is made with love and quality ingredients, helping you enjoy a balanced and flavorful lifestyle.",
-    "showMore": "Show More",
-    "placeOrder": "Place an Order"
-  },
-  "stats": {
-    "yearsOfExperience": "Years of Experience",
-    "happyCustomers": "Happy Customers",
-    "masterChefs": "Master Chefs",
-    "popularDishes": "Popular Dishes"
-  },
   "aboutSection": {
+    "description": "Eating well is not just about feeling full — it's about fueling your body with the right nutrients to stay strong and energized. A balanced diet of vegetables, grains, proteins, and healthy fats helps you enjoy both wellness and flavor while supporting long-term health.",
     "heading": "About Us",
     "title": "Food is an important part Of a balanced diet",
-    "description": "Eating well is not just about feeling full — it's about fueling your body with the right nutrients to stay strong and energized. A balanced diet of vegetables, grains, proteins, and healthy fats helps you enjoy both wellness and flavor while supporting long-term health."
+    "watchVideo": "Watch Video"
   },
-  "menuSection": {
-    "heading": "Our Menu",
-    "title": "Explore Our Delicious Dishes",
-    "viewAllMenu": "View All Menu"
+  "blog": {
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius sed pharetra dictum neque massa congue",
+    "readMore": "Read more",
+    "title": "Latest news & Blog"
   },
   "chefSection": {
     "heading": "Our Team",
+    "members": [
+      {
+        "name": "Le Cong Hung",
+        "role": "Tech Lead & Architect"
+      },
+      {
+        "name": "Vo Thi Kim Anh",
+        "role": "Senior Frontend Developer"
+      },
+      {
+        "name": "Tran Nhat Minh",
+        "role": "Backend Engineering Lead"
+      }
+    ],
     "title": "Meet Our Master Chefs",
     "viewAllChefs": "View All Chefs"
+  },
+  "foodCategory": {
+    "description": "Discover delicious dishes by category.",
+    "loading": "Loading categories...",
+    "noCategories": "No categories found.",
+    "title": "Food category"
+  },
+  "hero": {
+    "description": "Discover a variety of healthy and delicious meals crafted to nourish your body and delight your taste buds. From fresh salads to wholesome bowls, every dish is made with love and quality ingredients, helping you enjoy a balanced and flavorful lifestyle.",
+    "placeOrder": "Place an Order",
+    "showMore": "Show More",
+    "subtitle": "Healthy & Tasty Food",
+    "title1": "Enjoy Healthy Life",
+    "title2": "& Tasty Food.",
+    "watchVideo": "Watch Video"
+  },
+  "menuSection": {
+    "description": "Discover our selection of wholesome, flavorful meals crafted with the freshest organic ingredients. From vibrant salads to nourishing bowls and protein-packed options, every dish is designed to fuel your body and delight your taste buds—perfect for a healthy lifestyle.",
+    "heading": "Our Menu",
+    "title": "Our Food Menu",
+    "viewAllMenu": "View All Menu"
+  },
+  "partners": {
+    "heading": "Partners & Clients",
+    "title": "We work with the best people"
+  },
+  "stats": {
+    "happyCustomers": "Happy Customers",
+    "masterChefs": "Master Chefs",
+    "popularDishes": "Popular Dishes",
+    "yearsOfExperience": "Years of Experience"
   },
   "testimonials": {
     "heading": "Testimonials",
     "title": "What Our Customers Say"
+  },
+  "whyChooseUs": {
+    "description": "We believe healthy eating should be a joy, not a chore. That's why we use only the finest fresh ingredients and heartfelt recipes to create meals that nourish your body and delight your taste buds—so you can feel energized and happy every day.",
+    "fastDelivery": "Fast Delivery",
+    "freshFood": "Fresh food",
+    "heading": "Why We are the best?",
+    "qualityMaintain": "Quality maintain",
+    "sectionTitle": "Why Choose us",
+    "service247": "24/7 services"
   }
 }

@@ -1,7 +1,9 @@
-import { useState } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const CustomerReview = () => {
+  const { t } = useTranslation("home");
   const [currentReview, setCurrentReview] = useState(0);
 
   const reviews = [
@@ -60,10 +62,12 @@ const CustomerReview = () => {
             {/* Header */}
             <div>
               <p className="text-gray-600 italic mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
-                <span>Testimonials</span>
+                <span>{t("testimonials.heading") as string}</span>
                 <span className="w-8 sm:w-12 h-[1px] bg-gray-400"></span>
               </p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">Customer Review</h2>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+                {t("testimonials.title") as string}
+              </h2>
 
               {/* Quote Icon */}
               <div className="text-green-600 text-4xl sm:text-5xl lg:text-6xl mb-4 sm:mb-6 font-serif leading-none">

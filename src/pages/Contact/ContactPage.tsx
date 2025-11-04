@@ -4,7 +4,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { Box, Container, TextField, Typography } from "@mui/material";
 import { motion } from "framer-motion";
-import ContactImage from "../../assets/images/image_restaurant_exterior.png";
+import ContactImage from "../../assets/images/defaults/image_restaurant_exterior.png";
 import { useTranslation } from "../../hooks/useTranslation";
 
 function ContactPage() {

@@ -1,21 +1,16 @@
-import { Box, Skeleton, Typography, Dialog, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close"; // ← Thêm icon đóng
+import { Box, Dialog, IconButton, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react"; // ← Thêm import này
-import CloseIcon from "@mui/icons-material/Close"; // ← Thêm icon đóng
-import DefaultAboutUs from "../../../assets/images/image_about_us_home.png";
+import { useNavigate } from "react-router-dom";
+import ImageAboutUs from "../../../assets/images/defaults/image_about_us.png";
 import MyButton from "../../../components/common/Button";
 import { useTranslation } from "../../../hooks/useTranslation";
-import type { Banner } from "../../../types/models/banner";
-import { useNavigate } from "react-router-dom";
 
-interface AboutUsProps {
-  banners: Banner[];
-  loading: boolean;
-}
-
-function AboutUs({ banners, loading }: AboutUsProps) {
+function AboutUs() {
   const { t } = useTranslation("home");
   const navigate = useNavigate();
+  const loading = false;
 
   // State để mở/đóng modal video
   const [openVideo, setOpenVideo] = useState(false);
@@ -24,7 +19,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
   const handleCloseVideo = () => setOpenVideo(false);
 
   // Lấy banner từ API
-  const aboutUsImage = banners[0]?.url || DefaultAboutUs;
+  const aboutUsImage = ImageAboutUs;
 
   return (
     <section className="w-full min-h-screen flex flex-col relative">
@@ -183,7 +178,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
 
               {/* Nút Watch Video - mở modal */}
               <MyButton isWatch={true} onClick={handleOpenVideo}>
-                Watch Video
+                {t("aboutSection.watchVideo") as string}
               </MyButton>
             </Box>
           </Box>

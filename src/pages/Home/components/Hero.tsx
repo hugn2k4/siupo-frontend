@@ -4,23 +4,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ShiningStarsIcon from "../../../assets/icons/shining_stars.svg";
 import SparkleIcon from "../../../assets/icons/sparkle.svg";
-import DefaultHero from "../../../assets/images/image_hero.png";
-import DefaultHeroMobile from "../../../assets/images/image_hero_mobile.png";
+import ImageHero from "../../../assets/images/defaults/image_hero.png";
+import ImageHeroMobile from "../../../assets/images/defaults/image_hero_mobile.png";
 import MyButton from "../../../components/common/Button";
 import { useTranslation } from "../../../hooks/useTranslation";
-import type { Banner } from "../../../types/models/banner";
 
-interface HeroProps {
-  banners: Banner[];
-  loading: boolean;
-}
-
-const Hero = ({ banners, loading }: HeroProps) => {
+const Hero = () => {
+  const loading = false;
   const { t } = useTranslation("home");
   const [hoveredPlace, setHoveredPlace] = useState(false);
   // Lấy banner từ API
-  const heroImage = banners[0]?.url || DefaultHero;
-  const heroImageMobile = banners[1]?.url || DefaultHeroMobile;
+  const heroImage = ImageHero;
+  const heroImageMobile = ImageHeroMobile;
   const navigate = useNavigate();
   return (
     <section className="w-full min-h-[90vh] flex flex-col relative overflow-hidden">

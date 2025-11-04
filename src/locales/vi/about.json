@@ -1,7 +1,8 @@
 {
   "hero": {
     "title": "Về Chúng Tôi",
-    "subtitle": "Câu Chuyện & Đam Mê Của Chúng Tôi"
+    "subtitle": "Câu Chuyện & Đam Mê Của Chúng Tôi",
+    "watchVideo": "Xem Video"
   },
   "story": {
     "title": "Câu Chuyện Của Chúng Tôi",
@@ -51,5 +52,35 @@
         "description": "Không gian nhà hàng sạch sẽ, thoải mái và an toàn, đảm bảo vệ sinh thực phẩm theo tiêu chuẩn cao nhất."
       }
     }
+  },
+  "menu": {
+    "title": "Thực Đơn Của Chúng Tôi",
+    "description": "Khám phá các món ăn ngon được chế biến từ nguyên liệu tươi ngon nhất và công thức truyền thống.",
+    "viewMore": "Xem Thêm Thực Đơn",
+    "noDescription": "Chưa có mô tả"
+  },
+  "testimonials": {
+    "subtitle": "Đánh Giá",
+    "title": "Khách Hàng Nói Gì Về Chúng Tôi",
+    "items": [
+      {
+        "name": "Aaravh Naehia",
+        "role": "Chuyên Gia Ẩm Thực",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+        "text": "Chất lượng nguyên liệu ở đây thật sự xuất sắc. Mỗi món salad đều tươi ngon và được chuẩn bị chu đáo. Đây đã trở thành địa điểm yêu thích của tôi cho những bữa ăn lành mạnh, ngon miệng!"
+      },
+      {
+        "name": "Emma Larson",
+        "role": "Huấn Luyện Viên Thể Hình",
+        "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
+        "text": "Cuối cùng cũng tìm được nhà hàng thực sự hiểu về ăn uống lành mạnh! Khẩu phần hoàn hảo, hương vị tuyệt vời và tất cả đều làm từ nguyên liệu tươi, thật sự. Món quinoa bowl là phải thử!"
+      },
+      {
+        "name": "David Kim",
+        "role": "Khách Hàng Quen Thuộc",
+        "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+        "text": "Tôi đặt đồ ăn trưa ở đây 4-5 lần mỗi tuần. Món salad cá hồi nướng thật tuyệt vời — luôn tươi, nấu gia vị vừa phải và giao hàng nhanh. Đây chắc chắn là lựa chọn đồ ăn lành mạnh tốt nhất trong thành phố!"
+      }
+    ]
   }
 }

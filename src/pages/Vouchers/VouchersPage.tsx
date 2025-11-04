@@ -1,13 +1,14 @@
-import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Container, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { Copy, Gift, Percent, Tag, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import voucherApi from "../../api/voucherApi";
-import LoadingPageSpinner from "../../components/common/LoadingSpinner";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { useTranslation } from "../../hooks/useTranslation";
 import type { VoucherResponse } from "../../types/responses/voucher.response";
 
 const VouchersPage: React.FC = () => {
+  const { t } = useTranslation("vouchers");
   const [vouchers, setVouchers] = useState<VoucherResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const { showSnackbar } = useSnackbar();
@@ -17,22 +18,20 @@ const VouchersPage: React.FC = () => {
     try {
       const response = await voucherApi.getAvailableVouchers();
       setVouchers(response.data || []);
+      setLoading(false);
     } catch (err) {
       console.error("Failed to fetch vouchers:", err);
-      showSnackbar("Failed to load vouchers", "error");
-    } finally {
-      setLoading(false);
+      // Keep loading = true to show skeleton
     }
   };
 
   useEffect(() => {
     fetchVouchers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const copyVoucherCode = (code: string) => {
     navigator.clipboard.writeText(code);
-    showSnackbar(`Copied voucher code: ${code}`, "success");
+    showSnackbar(t("messages.copiedCode", { code }), "success");
   };
 
   const getVoucherIcon = (type: string) => {
@@ -49,7 +48,7 @@ const VouchersPage: React.FC = () => {
   };
 
   const getVoucherValue = (voucher: VoucherResponse) => {
-    if (voucher.type === "FREE_SHIPPING") return "Free Shipping";
+    if (voucher.type === "FREE_SHIPPING") return t("types.freeShippingValue");
     if (voucher.type === "PERCENTAGE") return `${voucher.discountValue}%`;
     return `${new Intl.NumberFormat("vi-VN").format(voucher.discountValue)}₫`;
   };
@@ -57,22 +56,66 @@ const VouchersPage: React.FC = () => {
   const getVoucherTypeLabel = (type: string) => {
     switch (type) {
       case "PERCENTAGE":
-        return "Percentage Discount";
+        return t("types.percentage");
       case "FIXED_AMOUNT":
-        return "Fixed Amount Discount";
+        return t("types.fixedAmount");
       case "FREE_SHIPPING":
-        return "Free Shipping";
+        return t("types.freeShipping");
       default:
         return type;
     }
   };
 
-  if (loading) return <LoadingPageSpinner />;
-
   return (
     <Box sx={{ bgcolor: "#F9F9F9", minHeight: "100vh", py: 6 }}>
       <Container maxWidth="lg">
-        {vouchers.length === 0 ? (
+        {loading ? (
+          <Grid container spacing={3}>
+            {[...Array(3)].map((_, index) => (
+              <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={index}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    height: "100%",
+                    border: "1px solid var(--color-gray5)",
+                    borderRadius: 2,
+                    p: 3,
+                  }}
+                >
+                  {/* Header skeleton */}
+                  <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+                    <Skeleton variant="rectangular" width={56} height={56} sx={{ borderRadius: 2 }} />
+                    <Skeleton variant="rectangular" width={80} height={24} sx={{ borderRadius: 1 }} />
+                  </Box>
+
+                  {/* Value skeleton */}
+                  <Skeleton variant="text" width="60%" height={48} sx={{ mb: 2 }} />
+
+                  {/* Name skeleton */}
+                  <Skeleton variant="text" width="80%" height={32} sx={{ mb: 1 }} />
+
+                  {/* Description skeleton */}
+                  <Skeleton variant="text" width="100%" height={20} sx={{ mb: 1 }} />
+                  <Skeleton variant="text" width="90%" height={20} sx={{ mb: 3 }} />
+
+                  {/* Divider */}
+                  <Box sx={{ borderTop: "1px solid var(--color-gray5)", my: 2 }} />
+
+                  {/* Details skeleton */}
+                  <Skeleton variant="text" width="100%" height={20} sx={{ mb: 0.75 }} />
+                  <Skeleton variant="text" width="90%" height={20} sx={{ mb: 0.75 }} />
+                  <Skeleton variant="text" width="85%" height={20} sx={{ mb: 3 }} />
+
+                  {/* Code box skeleton */}
+                  <Skeleton variant="rectangular" height={48} sx={{ borderRadius: 1, mb: 1.5 }} />
+
+                  {/* Usage info skeleton */}
+                  <Skeleton variant="text" width="50%" height={16} />
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        ) : vouchers.length === 0 ? (
           <Paper
             elevation={0}
             sx={{
@@ -83,12 +126,21 @@ const VouchersPage: React.FC = () => {
               bgcolor: "white",
             }}
           >
-            <Gift size={64} style={{ color: "var(--color-gray4)", marginBottom: "16px" }} />
+            <Gift
+              size={64}
+              style={{
+                color: "var(--color-gray4)",
+                marginBottom: "16px",
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            />
             <Typography variant="h6" fontWeight={600} color="var(--color-gray2)" sx={{ mb: 1 }}>
-              No vouchers available
+              {t("empty.title")}
             </Typography>
             <Typography variant="body2" color="var(--color-gray3)">
-              Check back soon for new promotions!
+              {t("empty.description")}
             </Typography>
           </Paper>
         ) : (
@@ -173,17 +225,18 @@ const VouchersPage: React.FC = () => {
                     <Box sx={{ mb: 3 }}>
                       {voucher.minOrderValue && (
                         <Typography variant="body2" color="var(--color-gray3)" sx={{ mb: 0.75 }}>
-                          • Min order: <strong>{new Intl.NumberFormat("vi-VN").format(voucher.minOrderValue)}₫</strong>
+                          • {t("details.minOrder")}:{" "}
+                          <strong>{new Intl.NumberFormat("vi-VN").format(voucher.minOrderValue)}₫</strong>
                         </Typography>
                       )}
                       {voucher.maxDiscountAmount && (
                         <Typography variant="body2" color="var(--color-gray3)" sx={{ mb: 0.75 }}>
-                          • Max discount:{" "}
+                          • {t("details.maxDiscount")}:{" "}
                           <strong>{new Intl.NumberFormat("vi-VN").format(voucher.maxDiscountAmount)}₫</strong>
                         </Typography>
                       )}
                       <Typography variant="body2" color="var(--color-gray3)">
-                        • Valid until: <strong>{format(new Date(voucher.endDate), "dd MMM yyyy")}</strong>
+                        • {t("details.validUntil")}: <strong>{format(new Date(voucher.endDate), "dd MMM yyyy")}</strong>
                       </Typography>
                     </Box>
 
@@ -220,7 +273,7 @@ const VouchersPage: React.FC = () => {
                     {/* Usage Info */}
                     {voucher.usageLimit && (
                       <Typography variant="caption" color="var(--color-gray3)" sx={{ mt: 1.5, display: "block" }}>
-                        Used: {voucher.usedCount} / {voucher.usageLimit}
+                        {t("details.used")}: {voucher.usedCount} / {voucher.usageLimit}
                       </Typography>
                     )}
                   </Box>
@@ -242,16 +295,10 @@ const VouchersPage: React.FC = () => {
           }}
         >
           <Typography variant="h6" fontWeight={600} color="var(--color-gray1)" sx={{ mb: 3 }}>
-            How to use vouchers
+            {t("howToUse.title")}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {[
-              "Click on voucher code to copy it",
-              "Add items to your cart",
-              "Go to checkout page",
-              "Paste code in Discount Code section",
-              "Click Apply to get your discount",
-            ].map((step, index) => (
+            {(t("howToUse.steps", { returnObjects: true }) as string[]).map((step, index) => (
               <Box key={index} sx={{ display: "flex", gap: 2 }}>
                 <Typography
                   variant="body2"
@@ -286,7 +333,7 @@ const VouchersPage: React.FC = () => {
             }}
           >
             <Typography variant="body2" color="var(--color-gray2)" fontWeight={500}>
-              💡 Only one voucher can be applied per order
+              💡 {t("howToUse.note")}
             </Typography>
           </Box>
         </Paper>

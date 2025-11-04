@@ -43,9 +43,9 @@ export default function SignUpPage() {
     setIsSubmitting(true);
     const request: RegisterRequest = {
       email: data.email,
+      fullName: data.fullName,
       password: data.password,
       phoneNumber: data.phoneNumber,
-      fullName: data.fullName,
     };
     try {
       const res = await authService.register(request);

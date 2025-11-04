@@ -27,6 +27,7 @@ interface FilterSidebarProps {
   onFilterChange: (filters: {
     searchName: string | null;
     categoryIds: number[];
+    tagIds: number[];
     minPrice: number;
     maxPrice: number;
     viewMode: "all" | "products" | "combos";
@@ -46,9 +47,9 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
   const maxSlider = isVi ? 5000000 : 200;
   const [priceRange, setPriceRange] = useState<number[]>([0, maxSlider]);
   const [viewMode, setViewMode] = useState<"all" | "products" | "combos">("all");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const prevFilterKey = useRef<string>("");
-  const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${priceRange[0]}|${priceRange[1]}|${viewMode}`;
+  const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${selectedTagIds.join(",")}|${priceRange[0]}|${priceRange[1]}|${viewMode}`;
   const EXCHANGE_RATE = EXCHANGE_RATE_USD_TO_VND;
 
   useEffect(() => {
@@ -65,17 +66,29 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
       onFilterChange({
         searchName,
         categoryIds: selectedCategories,
+        tagIds: selectedTagIds,
         minPrice: finalMinPrice,
         maxPrice: finalMaxPrice,
         viewMode,
       });
     }
-  }, [currentFilterKey, onFilterChange, searchName, selectedCategories, priceRange, viewMode, isVi, EXCHANGE_RATE]);
+  }, [
+    currentFilterKey,
+    onFilterChange,
+    searchName,
+    selectedCategories,
+    selectedTagIds,
+    priceRange,
+    viewMode,
+    isVi,
+    EXCHANGE_RATE,
+  ]);
 
   const handleSearch = () => {
     onFilterChange({
       searchName,
       categoryIds: selectedCategories,
+      tagIds: selectedTagIds,
       minPrice: priceRange[0],
       maxPrice: priceRange[1],
       viewMode,
@@ -92,8 +105,8 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
     setPriceRange(newValue as number[]);
   };
 
-  const handleTagClick = (tagName: string) => {
-    setSelectedTag((prev) => (prev === tagName ? null : tagName));
+  const handleTagClick = (tagId: number) => {
+    setSelectedTagIds((prev) => (prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]));
   };
 
   return (
@@ -188,44 +201,52 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
         >
           {t("filter.category")}
         </Typography>
-        <FormGroup
-          sx={{
-            "& .MuiFormControlLabel-root": {
-              marginBottom: "4px",
-              marginLeft: -1,
-              marginRight: 0,
-            },
-            "& .MuiFormControlLabel-label": {
-              fontSize: "0.85rem",
-              marginLeft: "2px",
-            },
-          }}
-        >
-          {categories.map((category) => (
-            <FormControlLabel
-              key={category.id}
-              control={
-                <Checkbox
-                  checked={selectedCategories.includes(category.id)}
-                  onChange={() => handleCategoryChange(category.id)}
-                  sx={{
-                    transform: "scale(0.85)",
-                    padding: "4px",
-                    "& .MuiSvgIcon-root": { fontSize: 18 },
-                    "&.Mui-checked": { color: "#FF9F0D" },
-                    "& .MuiTouchRipple-root": { display: "none" },
-                    "& .MuiCheckbox-root": {
-                      borderRadius: 1,
-                      "&:not(.Mui-checked)": { border: "1.5px solid #ccc" },
-                      "&.Mui-checked": { border: "1.5px solid #FF9F0D", bgcolor: "transparent" },
-                    },
-                  }}
-                />
-              }
-              label={category.name}
-            />
-          ))}
-        </FormGroup>
+        {categories.length === 0 ? (
+          <Box sx={{ py: 1 }}>
+            <Box sx={{ height: 24, bgcolor: "grey.200", mb: 1, borderRadius: 1 }} className="animate-pulse" />
+            <Box sx={{ height: 24, bgcolor: "grey.200", mb: 1, borderRadius: 1 }} className="animate-pulse" />
+            <Box sx={{ height: 24, bgcolor: "grey.200", borderRadius: 1 }} className="animate-pulse" />
+          </Box>
+        ) : (
+          <FormGroup
+            sx={{
+              "& .MuiFormControlLabel-root": {
+                marginBottom: "4px",
+                marginLeft: -1,
+                marginRight: 0,
+              },
+              "& .MuiFormControlLabel-label": {
+                fontSize: "0.85rem",
+                marginLeft: "2px",
+              },
+            }}
+          >
+            {categories.map((category) => (
+              <FormControlLabel
+                key={category.id}
+                control={
+                  <Checkbox
+                    checked={selectedCategories.includes(category.id)}
+                    onChange={() => handleCategoryChange(category.id)}
+                    sx={{
+                      transform: "scale(0.85)",
+                      padding: "4px",
+                      "& .MuiSvgIcon-root": { fontSize: 18 },
+                      "&.Mui-checked": { color: "#FF9F0D" },
+                      "& .MuiTouchRipple-root": { display: "none" },
+                      "& .MuiCheckbox-root": {
+                        borderRadius: 1,
+                        "&:not(.Mui-checked)": { border: "1.5px solid #ccc" },
+                        "&.Mui-checked": { border: "1.5px solid #FF9F0D", bgcolor: "transparent" },
+                      },
+                    }}
+                  />
+                }
+                label={category.name}
+              />
+            ))}
+          </FormGroup>
+        )}
       </Box>
 
       {/* Poster */}
@@ -325,63 +346,83 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
           {t("filter.latest")}
         </Typography>
 
-        {latestProducts.map((item) => (
-          <Box
-            key={item.id}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              mb: 0.5,
-              pl: 0,
-            }}
-          >
-            <img
-              src={
-                item.imageUrls[0] ||
-                "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop&crop=center"
-              }
-              alt={item.name}
-              style={{
-                width: 60,
-                height: 60,
-                marginRight: 10,
-                objectFit: "cover",
+        {latestProducts.length === 0 ? (
+          <Box sx={{ py: 1 }}>
+            {[1, 2, 3].map((i) => (
+              <Box key={i} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <Box
+                  sx={{ width: 60, height: 60, bgcolor: "grey.200", mr: 1.5, borderRadius: 1 }}
+                  className="animate-pulse"
+                />
+                <Box sx={{ flex: 1 }}>
+                  <Box sx={{ height: 16, bgcolor: "grey.200", mb: 0.5, borderRadius: 1 }} className="animate-pulse" />
+                  <Box
+                    sx={{ height: 14, bgcolor: "grey.200", width: "60%", borderRadius: 1 }}
+                    className="animate-pulse"
+                  />
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        ) : (
+          latestProducts.map((item) => (
+            <Box
+              key={item.id}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                mb: 0.5,
+                pl: 0,
               }}
-            />
-            <Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  fontSize: "0.85rem",
-                  mb: 0.2,
-                }}
-              >
-                {item.name}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="#f97316"
-                sx={{
-                  fontSize: "0.85rem",
-                  mb: 0.2,
-                }}
-              >
-                {format(item.price)}
-              </Typography>
-              <Rating
-                name={`rating-${item.id}`}
-                value={item.averageRating}
-                precision={0.1}
-                readOnly
-                size="small"
-                sx={{
-                  fontSize: "0.9rem",
-                  color: "#f97316",
+            >
+              <img
+                src={
+                  item.imageUrls[0] ||
+                  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop&crop=center"
+                }
+                alt={item.name}
+                style={{
+                  width: 60,
+                  height: 60,
+                  marginRight: 10,
+                  objectFit: "cover",
                 }}
               />
+              <Box>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: "0.85rem",
+                    mb: 0.2,
+                  }}
+                >
+                  {item.name}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="#f97316"
+                  sx={{
+                    fontSize: "0.85rem",
+                    mb: 0.2,
+                  }}
+                >
+                  {format(item.price)}
+                </Typography>
+                <Rating
+                  name={`rating-${item.id}`}
+                  value={item.averageRating}
+                  precision={0.1}
+                  readOnly
+                  size="small"
+                  sx={{
+                    fontSize: "0.9rem",
+                    color: "#f97316",
+                  }}
+                />
+              </Box>
             </Box>
-          </Box>
-        ))}
+          ))
+        )}
       </Box>
 
       {/* Product Tags – giữ nguyên 100% */}
@@ -406,15 +447,15 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
             {tags.map((tag) => (
               <Typography
-                key={tag.name}
+                key={tag.id}
                 variant="body2"
                 sx={{
                   display: "inline-block",
                   px: 2,
                   py: 0.5,
-                  bgcolor: selectedTag === tag.name ? "#FF9F0D" : "transparent",
-                  color: selectedTag === tag.name ? "#fff" : "#4F4F4F",
-                  borderBottom: selectedTag === tag.name ? "none" : "1px solid #F2F2F2",
+                  bgcolor: selectedTagIds.includes(tag.id) ? "#FF9F0D" : "transparent",
+                  color: selectedTagIds.includes(tag.id) ? "#fff" : "#4F4F4F",
+                  borderBottom: selectedTagIds.includes(tag.id) ? "none" : "1px solid #F2F2F2",
                   borderRadius: 0,
                   cursor: "pointer",
                   fontSize: "0.9rem",
@@ -424,7 +465,7 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
                     borderBottomColor: "#FF9F0D",
                   },
                 }}
-                onClick={() => handleTagClick(tag.name)}
+                onClick={() => handleTagClick(tag.id)}
               >
                 {tag.name}
               </Typography>

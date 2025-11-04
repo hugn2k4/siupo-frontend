@@ -6,7 +6,7 @@ import WishlistHeader from "../WishList/components/WishlistHeader";
 import WishlistItem from "../WishList/components/WishlistItem";
 import WishlistEmpty from "../WishList/components/WishlistEmpty";
 import WishlistLoading from "../WishList/components/WishlistLoading";
-import { wishlistApi } from "../../api/wishlistApi";
+import { wishlistApi } from "../../api/wishListApi";
 import type { WishlistResponse } from "../../types/models/wishlist";
 import { useSnackbar } from "../../hooks/useSnackbar";
 

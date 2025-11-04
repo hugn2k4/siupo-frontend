@@ -13,7 +13,7 @@ import { useSnackbar } from "../../../hooks/useSnackbar";
 import cartService from "../../../services/cartService";
 import { EProductStatus } from "../../../types/enums/product.enum";
 import type { ProductDetailResponse } from "../../../types/responses/product.response";
-import { wishlistApi } from "../../../api/wishlistApi";
+import { wishlistApi } from "../../../api/wishListApi";
 
 interface ProductInfoProps {
   product: ProductDetailResponse;

@@ -44,7 +44,7 @@ function OurShopPage() {
           maxPrice={filters.maxPrice}
         />
       </Box>
-      <Box sx={{ width: "300px" }}>
+      <Box sx={{ width: "250px", flexShrink: 0 }}>
         <FilterSidebar onFilterChange={handleFilterChange} />
       </Box>
     </Box>

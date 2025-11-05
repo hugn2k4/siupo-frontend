@@ -20,7 +20,9 @@ import ProductDetailPage from "../pages/ProductDetail/ProductDetailPage";
 import OurShopPage from "../pages/Shop/OurShopPage";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
-
+import SettingsPage from "../pages/Account/SettingsPage";
+import DashboardPages from "../pages/Account/DashboardPage";
+import WishlistPage from "../pages/WishList/WishlistPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -54,7 +56,12 @@ const router = createBrowserRouter([
       },
       {
         element: <PrivateRoute />,
-        children: [{ path: "cart", element: <Cart /> }],
+        children: [
+          { path: "cart", element: <Cart /> },
+          { path: "account/settings", element: <SettingsPage /> },
+          { path: "account/dashboard", element: <DashboardPages /> },
+          { path: "/account/wishlist", element: <WishlistPage /> },
+        ],
       },
       { path: "dev", element: <Dev /> },
       { path: "placetable", element: <PlaceTableForGuest /> },

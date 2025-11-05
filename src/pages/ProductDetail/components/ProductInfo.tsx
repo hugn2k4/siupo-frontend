@@ -13,6 +13,7 @@ import { useSnackbar } from "../../../hooks/useSnackbar";
 import cartService from "../../../services/cartService";
 import { EProductStatus } from "../../../types/enums/product.enum";
 import type { ProductDetailResponse } from "../../../types/responses/product.response";
+import { wishlistApi } from "../../../api/wishListApi";
 
 interface ProductInfoProps {
   product: ProductDetailResponse;
@@ -48,13 +49,19 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
     }
   };
 
-  const handleAddToWishlist = () => {
+  const handleAddToWishlist = async () => {
     if (!isLogin) {
       setShowLoginDialog(true);
       return;
     }
-    // TODO: Implement wishlist logic
-    showSnackbar("Added to wishlist!", "success", 3000);
+
+    try {
+      await wishlistApi.addToWishlist(product.id);
+      showSnackbar("Added to wishlist!", "success", 3000);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to add to wishlist";
+      showSnackbar(errorMessage, "error", 3000);
+    }
   };
 
   const handleCompare = () => {

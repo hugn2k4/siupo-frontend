@@ -1,7 +1,9 @@
 import type { MethodPayment } from "../enums/methodPayment.enum";
-import type { Order } from "../models/order";
+import type { Address } from "../models/address";
+import type { OrderItem } from "../models/orderItem";
 
 export type CreateOrderRequest = {
-  order: Order;
-  methodePayment: MethodPayment;
+  items: OrderItem[];
+  shippingAddress: Address;
+  paymentMethod: MethodPayment;
 };

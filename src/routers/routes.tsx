@@ -14,6 +14,7 @@ import HomePage from "../pages/Home/HomePage";
 import MenuPage from "../pages/Menu/MenuPage";
 import NotFoundPage from "../pages/NotFound/NotFoundPage";
 import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
+import OrderSuccessPage from "../pages/OrderSuccess/OrderSuccessPage";
 import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
 import ProductDetailPage from "../pages/ProductDetail/ProductDetailPage";
 import OurShopPage from "../pages/Shop/OurShopPage";
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "", element: <HomePage /> },
+      { path: "order-success", element: <OrderSuccessPage /> },
       { path: "checkout", element: <CheckoutPage /> },
       { path: "menu", element: <MenuPage /> },
       { path: "chef", element: <ChefPage /> },

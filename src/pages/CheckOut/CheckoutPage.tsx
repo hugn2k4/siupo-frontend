@@ -3,9 +3,12 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import orderService from "../../services/orderService";
 import { EMethodPayment, type MethodPayment } from "../../types/enums/methodPayment.enum";
 import type { Address } from "../../types/models/address";
 import type { CartItem } from "../../types/models/cartItem";
+import type { CreateOrderRequest } from "../../types/requests/order.request";
 import AddressItem from "./Components/AddressItem";
 import OrderSummary from "./Components/OrderSummary";
 import PaymentMethod from "./Components/PaymentMethod";
@@ -17,6 +20,7 @@ const CheckoutPage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
   const location = useLocation();
 
   useEffect(() => {
@@ -70,16 +74,28 @@ const CheckoutPage: React.FC = () => {
     navigate("/shop");
   };
 
-  const handleProceedToPayment = () => {
+  const handleProceedToPayment = async () => {
     if (!selectedAddress) {
-      // You may want to show a snackbar / validation message here
-      console.warn("No shipping address selected");
       return;
     }
+    const request: CreateOrderRequest = {
+      items: orderData.items,
+      shippingAddress: selectedAddress,
+      paymentMethod: selectedPaymentMethod,
+    };
 
-    console.log("Tiến hành thanh toán với phương thức:", selectedPaymentMethod);
-    console.log("Dữ liệu đơn hàng:", orderData);
-    console.log("Shipping address:", selectedAddress);
+    try {
+      const res = await orderService.createOrder(request);
+      const orderData = res.data;
+      if (!orderData) throw new Error("Invalid order response");
+      navigate("/order-success", { state: { orderId: orderData.orderId, order: orderData } });
+    } catch (err) {
+      console.error("Create order failed:", err);
+      showSnackbar("Failed to create order", "error", 1000);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      await new Promise((res) => setTimeout(res, 1000));
+      navigate("/cart");
+    }
   };
 
   const handlePaymentMethodChange = (method: MethodPayment) => {

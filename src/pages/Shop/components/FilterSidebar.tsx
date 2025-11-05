@@ -202,7 +202,36 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
                   <Checkbox
                     checked={selectedCategories.includes(category.id)}
                     onChange={() => handleCategoryChange(category.id)}
-                    sx={{ transform: "scale(0.8)", padding: "2px" }}
+                    sx={{
+                      transform: "scale(0.85)", // Nhỏ hơn một chút
+                      padding: "4px", // Tăng nhẹ để dễ click
+                      "& .MuiSvgIcon-root": {
+                        // Icon bên trong
+                        fontSize: 18,
+                      },
+                      "&.Mui-checked": {
+                        color: "#FF9F0D", // Màu khi được chọn
+                      },
+                      // Làm mỏng viền (outline) của checkbox
+                      "& .MuiTouchRipple-root": {
+                        display: "none", // Tắt ripple nếu muốn gọn
+                      },
+                      // Tùy chỉnh viền (border) của checkbox
+                      "& .MuiButtonBase-root": {
+                        padding: 0,
+                      },
+                      // Dùng border thay vì outline mặc định
+                      "& .MuiCheckbox-root": {
+                        borderRadius: 1,
+                        "&:not(.Mui-checked)": {
+                          border: "1.5px solid #ccc", // Viền mỏng khi chưa chọn
+                        },
+                        "&.Mui-checked": {
+                          border: "1.5px solid #FF9F0D", // Viền mỏng khi chọn
+                          bgcolor: "transparent",
+                        },
+                      },
+                    }}
                   />
                 }
                 label={category.name}

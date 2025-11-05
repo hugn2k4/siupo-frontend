@@ -15,7 +15,7 @@ function OurShopPage() {
     searchName: null,
     categoryIds: [],
     minPrice: 0,
-    maxPrice: 8000,
+    maxPrice: 1000000,
   });
 
   const handleFilterChange = useCallback((newFilters: FilterState) => {

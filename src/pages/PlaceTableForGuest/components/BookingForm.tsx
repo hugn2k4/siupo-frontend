@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { bookingApi } from "../../../api/bookingApi";
 import type { CartItem } from "../../../types/responses/product.response";
 import PersonIcon from "@mui/icons-material/Person";
@@ -14,6 +14,7 @@ interface BookingFormProps {
 }
 
 const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [formData, setFormData] = useState({
     fullname: "",
     phoneNumber: "",
@@ -27,6 +28,21 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const token = localStorage.getItem("accessToken");
+  const user = localStorage.getItem("user");
+  // Check login status
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      setIsLoggedIn(!!(token && user));
+    };
+
+    checkAuthStatus();
+    window.addEventListener("storage", checkAuthStatus);
+
+    return () => {
+      window.removeEventListener("storage", checkAuthStatus);
+    };
+  }, []);
 
   const validatePhone = (phone: string) => {
     const phoneRegex = /^(0|\+84)(3|5|7|8|9)[0-9]{8}$/;
@@ -153,7 +169,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
             : null,
       };
 
-      const result = await bookingApi.placeTable(requestData);
+      let result;
+
+      if (isLoggedIn) {
+        // API cho Customer đã đăng nhập
+        result = await bookingApi.placeTableForCustomer(requestData);
+      } else {
+        // API cho Guest chưa đăng nhập
+        result = await bookingApi.placeTableForGuest(requestData);
+      }
 
       if (result?.success) {
         setSubmitSuccess(true);
@@ -204,9 +228,13 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
             <div className="flex items-start">
               <CheckCircleIcon className="h-6 w-6 text-green-500 mt-0.5" />
               <div className="ml-3">
-                <h3 className="text-lg font-semibold text-green-800 mb-1">Booking request submitted successfully!</h3>
+                <h3 className="text-lg font-semibold text-green-800 mb-1">
+                  {isLoggedIn ? "Booking confirmed successfully!" : "Booking request submitted successfully!"}
+                </h3>
                 <p className="text-green-700">
-                  The restaurant manager will contact you to confirm booking details as soon as possible.
+                  {isLoggedIn
+                    ? "Your booking has been confirmed. You can view it in My Bookings."
+                    : "The restaurant manager will contact you to confirm booking details as soon as possible."}
                   {preOrderItems.length > 0 && (
                     <span className="block mt-1 font-semibold">
                       Your selected dishes will be prepared when you arrive.
@@ -219,7 +247,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
         )}
 
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Booking Information</h2>
-        <p className="text-center text-gray-600 mb-8">Please fill in complete information to make a reservation</p>
+        <p className="text-center text-gray-600 mb-8">
+          Please fill in complete information to make a reservation
+          {isLoggedIn && <span className="block text-amber-600 font-semibold mt-1">✓ Logged in - Direct booking</span>}
+        </p>
 
         <div className="space-y-4">
           {/* Submit Error */}
@@ -234,7 +265,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
             <label className="block text-sm font-semibold text-gray-700 mb-1">
               Full Name <span className="text-red-500">*</span>
             </label>
-            <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+            <div className="flex items-center border border-gray-300 px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
               <PersonIcon className="mr-3 text-gray-500" />
               <input
                 type="text"
@@ -252,7 +283,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Phone Number <span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+              <div className="flex items-center border border-gray-300 px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
                 <PhoneIcon className="mr-3 text-gray-500" />
                 <input
                   type="tel"
@@ -266,7 +297,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-              <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+              <div className="flex items-center border border-gray-300 px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
                 <EmailIcon className="mr-3 text-gray-500" />
                 <input
                   type="email"
@@ -285,7 +316,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Number of Guests <span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+              <div className="flex items-center border border-gray-300 px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
                 <GroupIcon className="mr-3 text-gray-500" />
                 <input
                   type="number"
@@ -304,7 +335,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Booking Time <span className="text-red-500">*</span>
               </label>
-              <div className="flex items-center border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+              <div className="flex items-center border border-gray-300 px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
                 <AccessTimeIcon className="mr-3 text-gray-500" />
                 <input
                   type="datetime-local"
@@ -322,7 +353,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
           {/* Note */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">Note</label>
-            <div className="flex items-start border border-gray-300  px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
+            <div className="flex items-start border border-gray-300 px-4 py-3 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-transparent">
               <NoteIcon className="mr-3 text-gray-500 mt-1" />
               <textarea
                 placeholder="Special requests (if any)..."
@@ -360,7 +391,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className={`w-full font-semibold py-3  transition ${
+            className={`w-full font-semibold py-3 transition ${
               isSubmitting
                 ? "bg-gray-400 text-gray-200 cursor-not-allowed"
                 : "bg-amber-500 hover:bg-amber-600 text-white"
@@ -372,8 +403,10 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
           {/* Help Text */}
           <div className="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
             <p className="text-sm text-amber-800 text-center">
-              <strong>Note:</strong> After submitting your request, the restaurant manager will contact you to confirm
-              booking details as soon as possible.
+              <strong>Note:</strong>
+              {isLoggedIn
+                ? " Your booking will be confirmed immediately. You can manage it in My Bookings section."
+                : " After submitting your request, the restaurant manager will contact you to confirm booking details as soon as possible."}
               {preOrderItems.length > 0 && (
                 <span className="block mt-2 font-semibold">
                   Your selected dishes ({preOrderItems.reduce((sum, item) => sum + item.quantity, 0)} items) will be

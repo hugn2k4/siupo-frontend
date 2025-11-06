@@ -15,11 +15,11 @@ const ROUTES_META: Record<string, RouteMeta> = {
   },
   "/cart": {
     title: "Shoping Cart",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shoping Cart" }],
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Cart" }],
   },
   "/checkout": {
     title: "Checkout",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Checkout" }],
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Cart", path: "/cart" }, { label: "Checkout" }],
   },
   "/shop": {
     title: "Our Shop",
@@ -57,6 +57,18 @@ const ROUTES_META: Record<string, RouteMeta> = {
   "/shop/:productId": {
     title: "Product Detail",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop", path: "/shop" }, { label: "Product Detail" }],
+  },
+  "/account/dashboard": {
+    title: "Account",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Account" }],
+  },
+  "/account/settings": {
+    title: "Account",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Account" }],
+  },
+  "/account/wishlist": {
+    title: "Account",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "WishList" }],
   },
 };
 

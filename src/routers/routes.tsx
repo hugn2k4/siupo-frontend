@@ -14,18 +14,22 @@ import HomePage from "../pages/Home/HomePage";
 import MenuPage from "../pages/Menu/MenuPage";
 import NotFoundPage from "../pages/NotFound/NotFoundPage";
 import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
+import OrderSuccessPage from "../pages/OrderSuccess/OrderSuccessPage";
 import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
 import ProductDetailPage from "../pages/ProductDetail/ProductDetailPage";
 import OurShopPage from "../pages/Shop/OurShopPage";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
-
+import SettingsPage from "../pages/Account/SettingsPage";
+import DashboardPages from "../pages/Account/DashboardPage";
+import WishlistPage from "../pages/WishList/WishlistPage";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
       { path: "", element: <HomePage /> },
+      { path: "order-success", element: <OrderSuccessPage /> },
       { path: "checkout", element: <CheckoutPage /> },
       { path: "menu", element: <MenuPage /> },
       { path: "chef", element: <ChefPage /> },
@@ -52,7 +56,12 @@ const router = createBrowserRouter([
       },
       {
         element: <PrivateRoute />,
-        children: [{ path: "cart", element: <Cart /> }],
+        children: [
+          { path: "cart", element: <Cart /> },
+          { path: "account/settings", element: <SettingsPage /> },
+          { path: "account/dashboard", element: <DashboardPages /> },
+          { path: "/account/wishlist", element: <WishlistPage /> },
+        ],
       },
       { path: "dev", element: <Dev /> },
       { path: "placetable", element: <PlaceTableForGuest /> },

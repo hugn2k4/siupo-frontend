@@ -38,8 +38,7 @@ function Actions() {
   };
 
   const handleProfile = () => {
-    // TODO: Navigate to profile page
-    console.log("Navigate to profile");
+    navigate("/account/dashboard");
     handleMenuClose();
   };
 

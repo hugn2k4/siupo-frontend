@@ -16,6 +16,13 @@ import productService from "../../../services/productService";
 import type { ProductResponse } from "../../../types/responses/product.response";
 import { useNavigate } from "react-router-dom";
 
+// Icons MUI
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import FirstPageOutlinedIcon from "@mui/icons-material/FirstPageOutlined";
+import LastPageOutlinedIcon from "@mui/icons-material/LastPageOutlined";
+
 interface ProductListProps {
   searchName: string | null;
   categoryIds: number[];
@@ -69,19 +76,18 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
     }
   };
 
-  // Fetch products based on filters
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       setError(null);
       try {
         let result;
-        if (searchName || categoryIds.length > 0 || minPrice > 0 || maxPrice < 8000) {
+        if (searchName || categoryIds.length > 0 || minPrice > 0 || maxPrice < 1000000) {
           result = await productService.searchProducts(
             searchName,
             categoryIds.length > 0 ? categoryIds : null,
             minPrice > 0 ? minPrice : null,
-            maxPrice < 8000 ? maxPrice : null,
+            maxPrice < 1000000 ? maxPrice : null,
             currentPage,
             mapShowCount(showCount),
             mapSortBy(sortBy)
@@ -94,8 +100,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
         if (result.error) {
           setError(result.error);
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (err) {
+      } catch {
         setError("Failed to fetch products. Please try again.");
       } finally {
         setLoading(false);
@@ -106,32 +111,50 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    window.scrollTo({ top: 300, behavior: "smooth" });
   };
+
   const handleProductClick = (productId: number) => {
-    navigate(`/shop/${productId}`); // Chuyển hướng tới ShopDetailPage
+    navigate(`/shop/${productId}`);
   };
+
   const renderPagination = () => {
     const pages = [];
 
+    // Nút Previous (First Page)
     pages.push(
       <Button
         key="prev"
         onClick={() => handlePageChange(Math.max(0, currentPage - 1))}
         disabled={currentPage === 0 || loading}
         sx={{
-          minWidth: 0,
-          px: 1,
-          py: 0.5,
+          minWidth: 40,
+          width: 40,
+          height: 40,
+          p: 0,
           border: "1px solid #d1d5db",
-          color: "#6b7280",
-          "&:hover": { bgcolor: "#f9fafb" },
-          "&.Mui-disabled": { opacity: 0.5, cursor: "not-allowed" },
+          bgcolor: "#fff",
+          color: "#FF9F0D",
+          borderRadius: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          "&:hover": {
+            bgcolor: "#f3f4f6",
+            color: "#6b7280",
+          },
+          "&.Mui-disabled": {
+            opacity: 0.5,
+            cursor: "not-allowed",
+            color: "#d1d5db",
+          },
         }}
       >
-        ‹
+        <FirstPageOutlinedIcon sx={{ fontSize: 20 }} />
       </Button>
     );
 
+    // Các trang số
     for (let i = 0; i < totalPages; i++) {
       pages.push(
         <Button
@@ -139,13 +162,20 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
           onClick={() => handlePageChange(i)}
           disabled={loading}
           sx={{
-            minWidth: 0,
-            px: 1,
-            py: 0.5,
-            border: "1px solid #d1d5db",
-            color: i === currentPage ? "#fff" : "#374151",
-            bgcolor: i === currentPage ? "#f97316" : "transparent",
-            "&:hover": { bgcolor: i === currentPage ? "#f97316" : "#f9fafb" },
+            minWidth: 40,
+            width: 40,
+            height: 40,
+            p: 0,
+            border: i === currentPage ? "none" : "1px solid #d1d5db",
+            bgcolor: i === currentPage ? "#FF9F0D" : "#fff",
+            color: i === currentPage ? "#fff" : "#FF9F0D",
+            borderRadius: 0,
+            fontWeight: "bold",
+            fontSize: 14,
+            "&:hover": {
+              bgcolor: i === currentPage ? "#e68a00" : "#f3f4f6",
+              color: i === currentPage ? "#fff" : "#e68a00",
+            },
           }}
         >
           {i + 1}
@@ -153,22 +183,36 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       );
     }
 
+    // Nút Next (Last Page)
     pages.push(
       <Button
         key="next"
         onClick={() => handlePageChange(Math.min(totalPages - 1, currentPage + 1))}
         disabled={currentPage === totalPages - 1 || loading}
         sx={{
-          minWidth: 0,
-          px: 1,
-          py: 0.5,
+          minWidth: 40,
+          width: 40,
+          height: 40,
+          p: 0,
           border: "1px solid #d1d5db",
-          color: "#6b7280",
-          "&:hover": { bgcolor: "#f9fafb" },
-          "&.Mui-disabled": { opacity: 0.5, cursor: "not-allowed" },
+          bgcolor: "#fff",
+          color: "#FF9F0D",
+          borderRadius: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          "&:hover": {
+            bgcolor: "#f3f4f6",
+            color: "#6b7280",
+          },
+          "&.Mui-disabled": {
+            opacity: 0.5,
+            cursor: "not-allowed",
+            color: "#d1d5db",
+          },
         }}
       >
-        ›
+        <LastPageOutlinedIcon sx={{ fontSize: 20 }} />
       </Button>
     );
 
@@ -184,11 +228,12 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       viewport={{ once: true, amount: 0.3 }}
       sx={{
         flex: 1,
-        p: 6,
+        p: { xs: 2, md: 3 },
+        minWidth: 0,
       }}
     >
       {/* Sort and Show controls */}
-      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mb: 2 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Typography variant="body1">Sort By:</Typography>
           <FormControl sx={{ minWidth: 200 }}>
@@ -286,28 +331,50 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
         </Alert>
       )}
 
-      {/* Product Grid */}
+      {/* Product Grid - RESPONSIVE GRID + WIDTH CARD */}
       {!loading && !error && (
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 2, mb: 3, mt: 2 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr", // Mobile: 1 cột
+              sm: "repeat(2, 1fr)", // Tablet: 2 cột
+              md: "repeat(3, 1fr)", // Desktop: 3 cột
+            },
+            gap: 2,
+            mb: 3,
+            mt: 2,
+          }}
+        >
           {products.map((product, index) => (
             <Box
               key={product.id}
               component={motion.div}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0, delay: index * 0 }}
               viewport={{ once: true }}
               sx={{
                 bgcolor: "#fff",
                 borderRadius: 0,
                 overflow: "hidden",
                 boxShadow: "0 2px 4px rgba(255, 255, 255, 0.1)",
-                "&:hover": { boxShadow: "0 4px 8px rgba(0,0,0,0.2)", transform: "translateY(-4px)" },
+                "&:hover": {
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                  transform: "translateY(-4px)",
+                  "& .overlay-icons": {
+                    opacity: 1,
+                  },
+                },
                 transition: "all 0.3s ease",
-                width: 265,
+                width: { xs: "100%", md: 265 }, // Mobile: full width, Desktop: 265px
                 height: 265,
+                cursor: "pointer",
+                mx: "auto", // Căn giữa trên mobile
               }}
+              onClick={() => handleProductClick(product.id)}
             >
+              {/* Image Container */}
               <Box
                 sx={{
                   position: "relative",
@@ -326,9 +393,10 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                   sx={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover", // Phủ hết khung, crop cắt bớt thừa, không lộ viền
-                    objectPosition: "center", // Căn giữa khi crop
+                    objectFit: "cover",
+                    objectPosition: "center",
                     display: "block",
+                    transition: "transform 0.4s ease",
                   }}
                 />
                 {isNewProduct(product.createdAt) && (
@@ -349,7 +417,10 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                     NEW!
                   </Box>
                 )}
+
+                {/* Overlay Icons */}
                 <Box
+                  className="overlay-icons"
                   sx={{
                     position: "absolute",
                     top: "50%",
@@ -359,52 +430,100 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                     gap: 1.5,
                     opacity: 0,
                     transition: "opacity 0.3s ease",
-                    // Sửa hover: áp dụng cho Box cha để hover toàn bộ khu vực
-                    "&:hover": { opacity: 1 },
+                    pointerEvents: "none",
+                    "& > *": {
+                      pointerEvents: "auto",
+                    },
                   }}
                 >
                   <Box
-                    sx={{ bgcolor: "rgba(255, 255, 255, 0.8)", p: 0.5, borderRadius: 1, cursor: "pointer" }}
+                    sx={{
+                      bgcolor: "#fff",
+                      p: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                      transition: "all 0.2s ease",
+                      "&:hover": {
+                        bgcolor: "#f5f5f5",
+                        transform: "scale(1.1)",
+                      },
+                    }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log("👇 Button clicked for product:", product.id);
                       handleProductClick(product.id);
                     }}
                   >
-                    <span role="img" aria-label="icon1">
-                      👇
-                    </span>
+                    <InfoOutlinedIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />
                   </Box>
-                  <Box sx={{ bgcolor: "rgba(255, 255, 255, 0.8)", p: 0.5, borderRadius: 1 }}>
-                    <span role="img" aria-label="icon2">
-                      🛒
-                    </span>
+
+                  <Box
+                    sx={{
+                      bgcolor: "#FF9F0D",
+                      p: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                      transition: "all 0.2s ease",
+                      "&:hover": {
+                        bgcolor: "#e68a00",
+                        transform: "scale(1.1)",
+                      },
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log("Add to cart:", product.id);
+                    }}
+                  >
+                    <ShoppingCartOutlinedIcon sx={{ color: "#fff", fontSize: 20 }} />
                   </Box>
-                  <Box sx={{ bgcolor: "rgba(255, 255, 255, 0.8)", p: 0.5, borderRadius: 1 }}>
-                    <span role="img" aria-label="icon3">
-                      ❤️
-                    </span>
+
+                  <Box
+                    sx={{
+                      bgcolor: "#fff",
+                      p: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                      transition: "all 0.2s ease",
+                      "&:hover": {
+                        bgcolor: "#f5f5f5",
+                        transform: "scale(1.1)",
+                      },
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log("Favorite:", product.id);
+                    }}
+                  >
+                    <FavoriteBorderOutlinedIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />
                   </Box>
                 </Box>
               </Box>
-              <Box sx={{ p: 0, textAlign: "left" }}>
+
+              {/* Product Info */}
+              <Box sx={{ p: 0, textAlign: "left", px: 1, pb: 1 }}>
                 <Typography variant="body2" color="#333333" sx={{ mt: 1, mb: 0.5, fontSize: 14, fontWeight: "bold" }}>
                   {product.name}
                 </Typography>
-                <Box sx={{ mb: 0.5, display: "flex", alignItems: "center", gap: 0.5 }}>
-                  <Typography variant="body2" color="#FF9F0D" sx={{ fontSize: 13 }}>
-                    ${product.price.toFixed(2)}
-                  </Typography>
-                </Box>
+                <Typography variant="body2" color="#FF9F0D" sx={{ fontSize: 13 }}>
+                  ${product.price.toFixed(2)}
+                </Typography>
               </Box>
             </Box>
           ))}
         </Box>
       )}
 
-      {/* Pagination */}
+      {/* Pagination - GIỮ NGUYÊN 100% */}
       {!loading && !error && totalPages > 1 && (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 3, pt: 1.5, borderTop: "1px solid #e5e7eb" }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3, pt: 1.5, gap: 1, borderTop: "1px solid #e5e7eb" }}>
           {renderPagination()}
         </Box>
       )}

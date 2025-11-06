@@ -82,12 +82,12 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       setError(null);
       try {
         let result;
-        if (searchName || categoryIds.length > 0 || minPrice > 0 || maxPrice < 8000) {
+        if (searchName || categoryIds.length > 0 || minPrice > 0 || maxPrice < 1000000) {
           result = await productService.searchProducts(
             searchName,
             categoryIds.length > 0 ? categoryIds : null,
             minPrice > 0 ? minPrice : null,
-            maxPrice < 8000 ? maxPrice : null,
+            maxPrice < 1000000 ? maxPrice : null,
             currentPage,
             mapShowCount(showCount),
             mapSortBy(sortBy)
@@ -228,11 +228,12 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       viewport={{ once: true, amount: 0.3 }}
       sx={{
         flex: 1,
-        p: 6,
+        p: { xs: 2, md: 3 },
+        minWidth: 0,
       }}
     >
       {/* Sort and Show controls */}
-      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mb: 2 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Typography variant="body1">Sort By:</Typography>
           <FormControl sx={{ minWidth: 200 }}>
@@ -330,9 +331,21 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
         </Alert>
       )}
 
-      {/* Product Grid */}
+      {/* Product Grid - RESPONSIVE GRID + WIDTH CARD */}
       {!loading && !error && (
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 2, mb: 3, mt: 2 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr", // Mobile: 1 cột
+              sm: "repeat(2, 1fr)", // Tablet: 2 cột
+              md: "repeat(3, 1fr)", // Desktop: 3 cột
+            },
+            gap: 2,
+            mb: 3,
+            mt: 2,
+          }}
+        >
           {products.map((product, index) => (
             <Box
               key={product.id}
@@ -354,9 +367,10 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                   },
                 },
                 transition: "all 0.3s ease",
-                width: 265,
+                width: { xs: "100%", md: 265 }, // Mobile: full width, Desktop: 265px
                 height: 265,
                 cursor: "pointer",
+                mx: "auto", // Căn giữa trên mobile
               }}
               onClick={() => handleProductClick(product.id)}
             >
@@ -404,7 +418,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                   </Box>
                 )}
 
-                {/* Overlay Icons - Vuông, 1&3: nền trắng + icon cam, 2: nền cam + icon trắng */}
+                {/* Overlay Icons */}
                 <Box
                   className="overlay-icons"
                   sx={{
@@ -422,7 +436,6 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                     },
                   }}
                 >
-                  {/* 1. View Details - nền trắng, icon cam */}
                   <Box
                     sx={{
                       bgcolor: "#fff",
@@ -446,7 +459,6 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                     <InfoOutlinedIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />
                   </Box>
 
-                  {/* 2. Add to Cart - nền cam, icon trắng */}
                   <Box
                     sx={{
                       bgcolor: "#FF9F0D",
@@ -465,13 +477,11 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                     onClick={(e) => {
                       e.stopPropagation();
                       console.log("Add to cart:", product.id);
-                      // TODO: Thêm vào giỏ hàng
                     }}
                   >
                     <ShoppingCartOutlinedIcon sx={{ color: "#fff", fontSize: 20 }} />
                   </Box>
 
-                  {/* 3. Favorite - nền trắng, icon cam */}
                   <Box
                     sx={{
                       bgcolor: "#fff",
@@ -490,7 +500,6 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                     onClick={(e) => {
                       e.stopPropagation();
                       console.log("Favorite:", product.id);
-                      // TODO: Yêu thích sản phẩm
                     }}
                   >
                     <FavoriteBorderOutlinedIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />
@@ -512,7 +521,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
         </Box>
       )}
 
-      {/* Pagination */}
+      {/* Pagination - GIỮ NGUYÊN 100% */}
       {!loading && !error && totalPages > 1 && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 3, pt: 1.5, gap: 1, borderTop: "1px solid #e5e7eb" }}>
           {renderPagination()}

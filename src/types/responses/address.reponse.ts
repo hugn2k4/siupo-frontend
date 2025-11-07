@@ -1,9 +1,10 @@
-// types/dto/address.dto.ts
-export interface AddressDTO {
-  addressLine: string;
+export interface AddressResponse {
+  id: number;
+  address: string;
   ward: string;
   district: string;
   province: string;
   receiverName: string;
   receiverPhone: string;
+  isDefault: boolean;
 }

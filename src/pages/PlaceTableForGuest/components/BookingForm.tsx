@@ -13,23 +13,48 @@ interface BookingFormProps {
   preOrderItems?: CartItem[];
 }
 
+const FORM_STORAGE_KEY = "bookingFormData";
+
 const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [formData, setFormData] = useState({
-    fullname: "",
-    phoneNumber: "",
-    email: "",
-    memberInt: "2",
-    startedAt: "",
-    note: "",
-    agreePolicy: false,
-  });
 
+  // Function to get saved form data from localStorage
+  const getSavedFormData = () => {
+    try {
+      const saved = localStorage.getItem(FORM_STORAGE_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.error("Error loading saved form data:", error);
+    }
+    return {
+      fullname: "",
+      phoneNumber: "",
+      email: "",
+      memberInt: "2",
+      startedAt: "",
+      note: "",
+      agreePolicy: false,
+    };
+  };
+
+  const [formData, setFormData] = useState(getSavedFormData());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const token = localStorage.getItem("accessToken");
   const user = localStorage.getItem("user");
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
+    } catch (error) {
+      console.error("Error saving form data:", error);
+    }
+  }, [formData]);
+
   // Check login status
   useEffect(() => {
     const checkAuthStatus = () => {
@@ -42,7 +67,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
     return () => {
       window.removeEventListener("storage", checkAuthStatus);
     };
-  }, []);
+  }, [token, user]);
 
   const validatePhone = (phone: string) => {
     const phoneRegex = /^(0|\+84)(3|5|7|8|9)[0-9]{8}$/;
@@ -58,11 +83,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
   const validateDateTime = (datetime: string) => {
     const selectedTime = new Date(datetime);
     const now = new Date();
-    const hour = selectedTime.getHours();
 
     if (selectedTime <= now) {
       return "Booking time must be in the future";
     }
+
+    const hour = selectedTime.getHours();
 
     if (hour < 8 || hour >= 22) {
       return "Booking time must be within operating hours (8:00 AM - 10:00 PM)";
@@ -172,15 +198,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
       let result;
 
       if (isLoggedIn) {
-        // API cho Customer đã đăng nhập
         result = await bookingApi.placeTableForCustomer(requestData);
       } else {
-        // API cho Guest chưa đăng nhập
         result = await bookingApi.placeTableForGuest(requestData);
       }
 
       if (result?.success) {
         setSubmitSuccess(true);
+        // Clear saved form data after successful submission
+        localStorage.removeItem(FORM_STORAGE_KEY);
         setFormData({
           fullname: "",
           phoneNumber: "",

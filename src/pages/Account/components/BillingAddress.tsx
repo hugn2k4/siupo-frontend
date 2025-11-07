@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Edit2, Trash2, Plus, MapPin } from "lucide-react";
-import userApi from "../../../api/userApi";
+import { Edit2, MapPin, Plus, Trash2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useSnackbar } from "../../../hooks/useSnackbar";
-import type { AddressDTO } from "../../../types/dto/address.dto";
+import userService from "../../../services/userService";
+import type { Address } from "../../../types/models/address";
 import type { AddressUpdateRequest } from "../../../types/requests/address-update.request";
 
 export default function BillingAddress() {
-  const [addresses, setAddresses] = useState<AddressDTO[]>([]);
-  const [defaultAddress, setDefaultAddress] = useState<AddressDTO | null>(null);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [defaultAddress, setDefaultAddress] = useState<Address | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<AddressDTO | null>(null);
-  const [formData, setFormData] = useState<Partial<AddressDTO>>({
-    addressLine: "",
+  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+  const [formData, setFormData] = useState<Partial<Address>>({
+    address: "",
     ward: "",
     district: "",
     province: "",
@@ -29,8 +29,8 @@ export default function BillingAddress() {
       try {
         setLoading(true);
         const [addrRes, defaultRes] = await Promise.all([
-          userApi.getAddresses(),
-          userApi.getDefaultAddress().catch(() => ({ data: null })),
+          userService.getAddresses(),
+          userService.getDefaultAddress().catch(() => ({ data: null })),
         ]);
 
         setAddresses(addrRes.data || []);
@@ -47,7 +47,7 @@ export default function BillingAddress() {
   // Reset form
   const resetForm = () => {
     setFormData({
-      addressLine: "",
+      address: "",
       ward: "",
       district: "",
       province: "",
@@ -65,9 +65,9 @@ export default function BillingAddress() {
   };
 
   // So sánh 2 địa chỉ (không dùng id)
-  const isSameAddress = (a1: AddressDTO, a2: AddressDTO) => {
+  const isSameAddress = (a1: Address, a2: Address) => {
     return (
-      a1.addressLine === a2.addressLine &&
+      a1.address === a2.address &&
       a1.ward === a2.ward &&
       a1.district === a2.district &&
       a1.province === a2.province &&
@@ -77,25 +77,23 @@ export default function BillingAddress() {
   };
 
   const handleAdd = async () => {
-    if (!formData.addressLine || !formData.ward || !formData.district || !formData.province) {
+    if (!formData.address || !formData.ward || !formData.district || !formData.province) {
       showSnackbar("Vui lòng nhập đầy đủ thông tin", "error");
       return;
     }
 
     try {
-      const res = await userApi.addAddress(formData as AddressDTO);
+      const res = await userService.addAddress(formData as Address);
 
-      if (!res.data) {
-        showSnackbar("Thêm địa chỉ thất bại: không nhận được dữ liệu", "error");
+      if (!res.success) {
+        showSnackbar("Thêm địa chỉ thất bại", "error");
         return;
       }
-
-      const newAddress = res.data; // chắc chắn là AddressDTO
-
-      setAddresses((prev) => [...prev, newAddress]);
+      const newAddr = res.data;
+      setAddresses((prev) => [...prev, newAddr as Address]);
 
       if (!defaultAddress) {
-        const defaultRes = await userApi.getDefaultAddress().catch(() => ({ data: null }));
+        const defaultRes = await userService.getDefaultAddress().catch(() => ({ data: null }));
         setDefaultAddress(defaultRes.data ?? null);
       }
 
@@ -107,18 +105,18 @@ export default function BillingAddress() {
   };
 
   const handleUpdate = async () => {
-    if (!editingAddress || !formData.addressLine || !formData.ward || !formData.district || !formData.province) {
+    if (!editingAddress || !formData.address || !formData.ward || !formData.district || !formData.province) {
       showSnackbar("Vui lòng nhập đầy đủ thông tin", "error");
       return;
     }
 
     const updateRequest: AddressUpdateRequest = {
-      oldAddress: editingAddress,
-      newAddress: formData as AddressDTO,
+      addressId: editingAddress.id!,
+      updateAddress: formData as Address,
     };
 
     try {
-      const res = await userApi.updateAddress(updateRequest);
+      const res = await userService.updateAddress(updateRequest);
 
       // Kiểm tra res.data trước khi dùng
       if (!res.data) {
@@ -142,13 +140,13 @@ export default function BillingAddress() {
   };
 
   // Delete address
-  const handleDelete = async (address: AddressDTO) => {
+  const handleDelete = async (address: Address) => {
     try {
-      await userApi.deleteAddress(address);
+      await userService.deleteAddress(address.id!);
       setAddresses((prev) => prev.filter((a) => !isSameAddress(a, address)));
 
       if (defaultAddress && isSameAddress(defaultAddress, address)) {
-        const updatedDefault = await userApi.getDefaultAddress().catch(() => ({ data: null }));
+        const updatedDefault = await userService.getDefaultAddress().catch(() => ({ data: null }));
         setDefaultAddress(updatedDefault.data ?? null);
       }
 
@@ -159,10 +157,9 @@ export default function BillingAddress() {
     }
   };
 
-  const setDefault = async (address: AddressDTO) => {
+  const setDefault = async (address: Address) => {
     try {
-      const res = await userApi.setDefaultAddress(address);
-
+      const res = await userService.setDefaultAddress(address);
       if (!res.data) {
         showSnackbar("Đặt mặc định thất bại: không nhận được dữ liệu", "error");
         return;
@@ -183,7 +180,7 @@ export default function BillingAddress() {
   };
 
   // Start editing
-  const startEdit = (addr: AddressDTO) => {
+  const startEdit = (addr: Address) => {
     setEditingAddress(addr);
     setFormData({ ...addr });
   };
@@ -224,7 +221,7 @@ export default function BillingAddress() {
 
             return (
               <div
-                key={`${addr.addressLine}-${addr.receiverPhone}`}
+                key={`${addr.address}-${addr.receiverPhone}`}
                 className="p-4 rounded-lg border transition-all"
                 style={{
                   borderColor: isDefault ? "#FF9F0D" : "#e5e7eb",
@@ -236,7 +233,7 @@ export default function BillingAddress() {
                     <div className="flex items-center gap-2 mb-1">
                       <MapPin size={16} style={{ color: "#6b7280" }} />
                       <p className="font-medium text-sm" style={{ color: "#1f2937" }}>
-                        {addr.addressLine}, {addr.ward}
+                        {addr.address}, {addr.ward}
                       </p>
                     </div>
                     <p className="text-sm ml-6" style={{ color: "#4b5563" }}>
@@ -293,8 +290,8 @@ export default function BillingAddress() {
                   <div className="mt-4 pt-4 space-y-3" style={{ borderTop: "1px solid #e5e7eb" }}>
                     <input
                       type="text"
-                      name="addressLine"
-                      value={formData.addressLine}
+                      name="address"
+                      value={formData.address}
                       onChange={handleChange}
                       placeholder="Địa chỉ"
                       className="w-full px-3 py-2 border rounded-md text-sm"
@@ -381,8 +378,8 @@ export default function BillingAddress() {
         <div className="p-4 rounded-lg space-y-3 mt-6" style={{ border: "2px dashed #d1d5db" }}>
           <input
             type="text"
-            name="addressLine"
-            value={formData.addressLine}
+            name="address"
+            value={formData.address}
             onChange={handleChange}
             placeholder="Địa chỉ"
             className="w-full px-3 py-2 border rounded-md text-sm"

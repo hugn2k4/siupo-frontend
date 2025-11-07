@@ -65,7 +65,7 @@ const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
   };
 
   const handleSaveNew = (data: NewAddressData) => {
-    const nextId = Math.max(0, ...addresses.map((a) => a.id)) + 1;
+    const nextId = Math.max(0, ...addresses.map((a) => a.id!)) + 1;
     const provinceLabel = data.city && typeof data.city === "string" ? data.city : data.city || "";
 
     // Nếu địa chỉ mới được đánh dấu là mặc định, bỏ mặc định của các địa chỉ khác
@@ -182,9 +182,9 @@ const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
                     value={addr.id}
                     checked={selected === addr.id}
                     sx={{ p: 0, mt: 0 }}
-                    onClick={() => setSelected(addr.id)}
+                    onClick={() => setSelected(addr.id!)}
                   />
-                  <Box sx={{ flex: 1, minWidth: 0 }} onClick={() => setSelected(addr.id)}>
+                  <Box sx={{ flex: 1, minWidth: 0 }} onClick={() => setSelected(addr.id!)}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
                       <Typography variant="body2" fontWeight={600} color="var(--color-gray1)" noWrap>
                         {addr.receiverName}
@@ -219,7 +219,7 @@ const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
                         size="small"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleUpdateAddress(addr.id);
+                          handleUpdateAddress(addr.id!);
                         }}
                         sx={{
                           mt: 1,
@@ -241,7 +241,7 @@ const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
                           size="small"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleSetDefault(addr.id);
+                            handleSetDefault(addr.id!);
                           }}
                           sx={{
                             mt: 1,

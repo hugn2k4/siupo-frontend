@@ -1,5 +1,5 @@
+import { Check, Gift, Percent, Tag, X } from "lucide-react";
 import React, { useState } from "react";
-import { Tag, Check, X, Percent, Gift } from "lucide-react";
 
 interface VoucherItem {
   code: string;
@@ -96,7 +96,7 @@ const Voucher: React.FC<VoucherProps> = ({
   };
 
   return (
-    <div className="bg-white p-6 shadow-sm border border-gray-400">
+    <div className="bg-white p-6 border border-gray-200">
       <div className="flex items-center gap-2 mb-4">
         <Tag className="text-orange-500" size={20} />
         <h3 className="text-lg font-semibold">{title}</h3>
@@ -185,7 +185,7 @@ const Voucher: React.FC<VoucherProps> = ({
       )}
 
       {/* Ghi chú */}
-      <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mt-4 p-3 bg-blue-50 borde border-blue-200 rounded-none">
         <div className="flex items-start gap-2">
           <Gift className="text-blue-600 mt-0.5" size={16} />
           <div className="text-sm text-blue-700">

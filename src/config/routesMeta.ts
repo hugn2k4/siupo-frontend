@@ -15,11 +15,11 @@ const ROUTES_META: Record<string, RouteMeta> = {
   },
   "/cart": {
     title: "Shoping Cart",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shoping Cart" }],
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Cart" }],
   },
   "/checkout": {
     title: "Checkout",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Checkout" }],
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Cart", path: "/cart" }, { label: "Checkout" }],
   },
   "/shop": {
     title: "Our Shop",

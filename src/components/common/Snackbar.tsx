@@ -30,7 +30,7 @@ const AppSnackbar: React.FC<AppSnackbarProps> = ({
   sx,
 }) => {
   // vertical offset per stacked snackbar (tweak as needed)
-  const offset = stackIndex * 72; // 72px per item
+  const offset = stackIndex * 84; // 72px per item + 12px gap
 
   const mergedSx = [
     {

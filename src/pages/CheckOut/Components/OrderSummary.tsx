@@ -1,43 +1,66 @@
-import React from "react";
+import { Skeleton } from "@mui/material";
 import { ArrowRight } from "lucide-react";
-import CartItem from "./CartItem";
+import React from "react";
+import MyButton from "../../../components/common/Button";
+import { EMethodPayment, type MethodPayment } from "../../../types/enums/methodPayment.enum";
+import type { OrderItem as OrderItemType } from "../../../types/models/orderItem";
+import { formatCurrency } from "../../../utils/format";
+import OrderItemComponent from "./OrderItem";
 
 interface OrderSummaryProps {
-  items: { name: string; weight: string; price: number; image: string }[];
+  items: OrderItemType[];
   subtotal: number;
   shipping: number;
-  discount: number; // giả sử là số tiền USD giảm
-  tax: number;
+  discount: number;
+  vat: number;
   total: number;
-  selectedPaymentMethod?: string;
+  selectedPaymentMethod?: MethodPayment;
   onProceedToPayment?: () => void;
+  loading?: boolean;
 }
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({
   items,
   subtotal,
   shipping,
+  vat,
   discount,
-  tax,
   total,
-  selectedPaymentMethod = "momo",
+  selectedPaymentMethod = EMethodPayment.MOMO,
   onProceedToPayment,
+  loading = false,
 }) => (
-  <div className="bg-white p-6 border border-gray-400">
+  <div className="bg-white shadow-sm p-6 border border-gray-200">
     <h3 className="text-lg font-semibold mb-4">Your Order Detail</h3>
 
     {/* Danh sách món ăn */}
     <div className="divide-y divide-gray-100">
-      {items.map((item, index) => (
-        <CartItem key={index} item={item} />
-      ))}
+      {loading ? (
+        <>
+          {[1, 2].map((i) => (
+            <div key={i} className="py-3 flex gap-3">
+              <Skeleton variant="rectangular" width={60} height={60} />
+              <div className="flex-1">
+                <Skeleton variant="text" width="80%" height={20} />
+                <Skeleton variant="text" width="40%" height={16} sx={{ mt: 0.5 }} />
+              </div>
+              <div className="text-right">
+                <Skeleton variant="text" width={60} height={20} />
+                <Skeleton variant="text" width={50} height={16} sx={{ mt: 0.5 }} />
+              </div>
+            </div>
+          ))}
+        </>
+      ) : (
+        items.map((item, index) => <OrderItemComponent key={index} item={item} />)
+      )}
     </div>
 
     {/* Tóm tắt chi phí */}
-    <div className="mt-6 pt-4 border-t border-gray-400 space-y-2">
+    <div className="mt-6 pt-4 border-t border-gray-300 space-y-2">
       <div className="flex justify-between text-sm">
         <span>Subtotal</span>
-        <span>${subtotal.toLocaleString()}</span>
+        <span>{formatCurrency(subtotal, "USD")}</span>
       </div>
       <div className="flex justify-between text-sm">
         <span>Shipping fee</span>
@@ -48,29 +71,32 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <span className="text-red-500">{discount > 0 ? `- $${discount.toLocaleString()}` : "- $0"}</span>
       </div>
       <div className="flex justify-between text-sm">
-        <span>Tax</span>
-        <span>${tax.toLocaleString()}</span>
+        <span>VAT (10%)</span>
+        <span>${vat.toFixed(2)}</span>
       </div>
-      <div className="flex justify-between font-semibold text-lg pt-2 border-t border-gray-400">
+      <div className="flex justify-between font-semibold text-lg pt-2 border-t border-gray-300">
         <span>Total</span>
-        <span>${total.toLocaleString()}</span>
+        <span>{formatCurrency(total, "USD")}</span>
       </div>
     </div>
 
     {/* Nút thanh toán */}
-    <button
+    <MyButton
+      fullWidth
+      colorScheme="orange"
       onClick={onProceedToPayment}
-      className="w-full mt-6 bg-primary hover:bg-orange-600 text-white font-medium py-3 px-4 flex items-center justify-center gap-2 transition-colors"
+      endIcon={<ArrowRight size={16} />}
+      sx={{ mt: 3, borderRadius: 0 }}
+      disabled={loading}
     >
-      {selectedPaymentMethod === "cod" ? "Place Order" : "Pay Now"}
-      <ArrowRight size={16} />
-    </button>
+      {loading ? "Processing..." : selectedPaymentMethod === EMethodPayment.COD ? "Place Order" : "Pay Now"}
+    </MyButton>
 
     {/* Thông tin phương thức thanh toán đã chọn */}
     <div className="mt-4 text-center text-sm text-gray-600">
-      {selectedPaymentMethod === "momo" && "Payment via MoMo e-wallet"}
-      {selectedPaymentMethod === "vnpay" && "Payment via VNPay gateway"}
-      {selectedPaymentMethod === "cod" && "Cash on Delivery (COD)"}
+      {selectedPaymentMethod === EMethodPayment.MOMO && "Payment via MoMo e-wallet"}
+      {selectedPaymentMethod === EMethodPayment.VNPAY && "Payment via VNPay gateway"}
+      {selectedPaymentMethod === EMethodPayment.COD && "Cash on Delivery (COD)"}
     </div>
   </div>
 );

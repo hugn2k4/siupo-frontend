@@ -3,8 +3,8 @@ export type Address = {
   receiverName: string;
   receiverPhone: string;
   address: string;
-  ward: string;
-  district: string;
-  province: string;
+  ward: string; // phường
+  district: string; // quận
+  province: string; // thành phố
   isDefault?: boolean;
 };

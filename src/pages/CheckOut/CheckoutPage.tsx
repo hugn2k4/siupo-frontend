@@ -9,16 +9,16 @@ import { EMethodPayment, type MethodPayment } from "../../types/enums/methodPaym
 import type { Address } from "../../types/models/address";
 import type { CartItem } from "../../types/models/cartItem";
 import type { CreateOrderRequest } from "../../types/requests/order.request";
-import AddressItem from "./Components/AddressItem";
+import AddressList from "./Components/AddressList";
 import OrderSummary from "./Components/OrderSummary";
 import PaymentMethod from "./Components/PaymentMethod";
 import Voucher from "./Components/Voucher";
 
 const CheckoutPage: React.FC = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<MethodPayment>(EMethodPayment.COD);
-
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const location = useLocation();
@@ -47,8 +47,7 @@ const CheckoutPage: React.FC = () => {
   const vat = (subtotal - discount) * vatRate;
 
   // Tính total
-  const baseTotal = subtotal + shipping - discount + vat;
-  const finalTotal = baseTotal + shipping;
+  const finalTotal = subtotal - discount + vat + shipping;
 
   // Dữ liệu đơn hàng
   const orderData = {
@@ -76,8 +75,11 @@ const CheckoutPage: React.FC = () => {
 
   const handleProceedToPayment = async () => {
     if (!selectedAddress) {
+      showSnackbar("Please select a shipping address", "error");
       return;
     }
+
+    setLoading(true);
     const request: CreateOrderRequest = {
       items: orderData.items,
       shippingAddress: selectedAddress,
@@ -86,15 +88,33 @@ const CheckoutPage: React.FC = () => {
 
     try {
       const res = await orderService.createOrder(request);
-      const orderData = res.data;
-      if (!orderData) throw new Error("Invalid order response");
-      navigate("/order-success", { state: { orderId: orderData.orderId, order: orderData } });
+      const orderResponse = res.data;
+      if (!orderResponse) throw new Error("Invalid order response");
+
+      // If payment method is COD, go directly to success page
+      if (selectedPaymentMethod === EMethodPayment.COD) {
+        navigate("/order-success", { state: { orderId: orderResponse.orderId, order: orderResponse } });
+        return;
+      }
+
+      // For online payments (MOMO/VNPAY), redirect to payment URL
+      if (orderResponse.payUrl) {
+        // Redirect to payment URL (MoMo payment page) in the same tab
+        window.location.href = orderResponse.payUrl;
+      } else {
+        showSnackbar("Failed to get payment URL", "error", 1000);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        await new Promise((res) => setTimeout(res, 1000));
+        navigate("/cart");
+      }
     } catch (err) {
       console.error("Create order failed:", err);
       showSnackbar("Failed to create order", "error", 1000);
       window.scrollTo({ top: 0, behavior: "smooth" });
       await new Promise((res) => setTimeout(res, 1000));
       navigate("/cart");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,7 +129,7 @@ const CheckoutPage: React.FC = () => {
           {/* Cột bên trái - Form */}
           <div className="lg:col-span-2 space-y-6">
             {/* Address selector / add-new flow */}
-            <AddressItem onSelect={(a) => setSelectedAddress(a)} />
+            <AddressList onSelect={(a) => setSelectedAddress(a)} />
             {/* Form voucher */ <Voucher title="Discount Code" />}
 
             {/* Phương thức thanh toán */}
@@ -152,7 +172,7 @@ const CheckoutPage: React.FC = () => {
                 total={finalTotal}
                 selectedPaymentMethod={selectedPaymentMethod}
                 onProceedToPayment={handleProceedToPayment}
-                loading={false}
+                loading={loading}
               />
             </div>
           </div>

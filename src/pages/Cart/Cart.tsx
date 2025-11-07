@@ -15,6 +15,7 @@ const Cart: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [updatingItems, setUpdatingItems] = useState<Set<number>>(new Set());
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const location = useLocation();
@@ -51,13 +52,22 @@ const Cart: React.FC = () => {
 
   const handleQuantityChange = async (id: number, newQuantity: number) => {
     const prevItems = [...cartItems];
+
+    // Optimistic update with loading state
+    setUpdatingItems((prev) => new Set(prev).add(id));
     setCartItems((items) => items.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)));
+
     try {
       await cartService.updateItemQuantity(id.toString(), newQuantity);
-      // showSnackbar("Quantity updated successfully", "success");
     } catch {
       showSnackbar("Failed to update item quantity", "error");
       setCartItems(prevItems);
+    } finally {
+      setUpdatingItems((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
     }
   };
 
@@ -272,6 +282,7 @@ const Cart: React.FC = () => {
                   onToggle={handleToggleItem}
                   onQuantityChange={handleQuantityChange}
                   onRemove={handleRemoveItem}
+                  isUpdating={updatingItems.has(item.id)}
                 />
                 {index < cartItems.length - 1 && (
                   <Divider

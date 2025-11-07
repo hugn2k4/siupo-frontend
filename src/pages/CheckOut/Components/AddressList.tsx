@@ -44,7 +44,7 @@ type AddressItemProps = {
   onSelect?: (addr: Address | null) => void;
 };
 
-const AddressItem: React.FC<AddressItemProps> = ({ onSelect }) => {
+const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
   const [addresses, setAddresses] = useState<Address[]>(sampleAddresses);
   const [selected, setSelected] = useState<string | number>(addresses[0]?.id ?? "");
   // Open the address editor if there's no selected address; otherwise collapse when an address is selected
@@ -311,4 +311,4 @@ const AddressItem: React.FC<AddressItemProps> = ({ onSelect }) => {
   );
 };
 
-export default AddressItem;
+export default AddressList;

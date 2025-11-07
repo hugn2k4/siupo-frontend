@@ -18,4 +18,7 @@ export type OrderResponse = {
   vat: number;
   status: OrderStatus;
   paymentMethod: MethodPayment;
+  payUrl?: string;
+  qrCodeUrl?: string;
+  deeplink?: string;
 };

@@ -1,27 +1,31 @@
 import {
+  Alert,
   Box,
   Button,
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   Typography,
-  CircularProgress,
-  Alert,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import imageDefault from "../../../assets/gallery/gallery_burger.png";
 import productService from "../../../services/productService";
 import type { ProductResponse } from "../../../types/responses/product.response";
-import { useNavigate } from "react-router-dom";
 
 // Icons MUI
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FirstPageOutlinedIcon from "@mui/icons-material/FirstPageOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LastPageOutlinedIcon from "@mui/icons-material/LastPageOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
+import { useGlobal } from "../../../hooks/useGlobal";
+import { useSnackbar } from "../../../hooks/useSnackbar";
+import cartService from "../../../services/cartService";
 
 interface ProductListProps {
   searchName: string | null;
@@ -45,6 +49,9 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const { isLogin } = useGlobal();
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const mapSortBy = (uiSort: string): string => {
@@ -118,6 +125,20 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
     navigate(`/shop/${productId}`);
   };
 
+  const handleAddToCart = async (productId: number) => {
+    // Check if user is logged in
+    if (!isLogin) {
+      setShowLoginDialog(true);
+      return;
+    }
+    try {
+      await cartService.addToCart({ productId: productId, quantity: 1 });
+      showSnackbar("Product added to cart!", "success", 3000);
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      showSnackbar("Failed to add product to cart!", "error", 3000);
+    }
+  };
   const renderPagination = () => {
     const pages = [];
 
@@ -476,7 +497,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log("Add to cart:", product.id);
+                      handleAddToCart(product.id);
                     }}
                   >
                     <ShoppingCartOutlinedIcon sx={{ color: "#fff", fontSize: 20 }} />
@@ -527,6 +548,11 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
           {renderPagination()}
         </Box>
       )}
+      <LoginRequiredDialog
+        open={showLoginDialog}
+        onClose={() => setShowLoginDialog(false)}
+        message="You need to login to add items to cart. Please sign in or create a new account."
+      />
     </Box>
   );
 };

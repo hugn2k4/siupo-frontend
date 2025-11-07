@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Dev from "../Dev";
 import AboutUsPage from "../pages/AboutUs/AboutUsPage";
+import DashboardPages from "../pages/Account/DashboardPage";
+import SettingsPage from "../pages/Account/SettingsPage";
 import RequestForgotPassword from "../pages/Auth/components/RequestForgotPassword";
 import SetNewPassword from "../pages/Auth/components/SetNewPassword";
 import ForgotPasswordPage from "../pages/Auth/ForgotPasswordPage";
@@ -15,14 +17,13 @@ import MenuPage from "../pages/Menu/MenuPage";
 import NotFoundPage from "../pages/NotFound/NotFoundPage";
 import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
 import OrderSuccessPage from "../pages/OrderSuccess/OrderSuccessPage";
+import PaymentCallbackPage from "../pages/PaymentCallback/PaymentCallbackPage";
 import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
 import ProductDetailPage from "../pages/ProductDetail/ProductDetailPage";
 import OurShopPage from "../pages/Shop/OurShopPage";
+import WishlistPage from "../pages/WishList/WishlistPage";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
-import SettingsPage from "../pages/Account/SettingsPage";
-import DashboardPages from "../pages/Account/DashboardPage";
-import WishlistPage from "../pages/WishList/WishlistPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
     children: [
       { path: "", element: <HomePage /> },
       { path: "order-success", element: <OrderSuccessPage /> },
+      { path: "payment-callback", element: <PaymentCallbackPage /> },
       { path: "checkout", element: <CheckoutPage /> },
       { path: "menu", element: <MenuPage /> },
       { path: "chef", element: <ChefPage /> },

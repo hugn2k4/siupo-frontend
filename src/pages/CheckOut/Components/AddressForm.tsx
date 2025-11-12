@@ -1,5 +1,6 @@
 import React from "react";
 import MyButton from "../../../components/common/Button";
+import type { Address } from "../../../types/models/address";
 import CustomInput from "./CustomInput";
 import CustomSelect from "./CustomSelect";
 
@@ -8,21 +9,13 @@ interface AddressFormProps {
   showBillingOption?: boolean;
   onBillingToggle?: () => void;
   isBillingSameAsShipping?: boolean;
-  // optional callback when user saves the form
-  onSave?: (data: {
-    fullName: string;
-    phoneNumber: string;
-    city: string;
-    district: string;
-    ward: string;
-    address: string;
-    isDefault?: boolean;
-  }) => void;
+  onSave?: (data: Address) => void;
   onCancel?: () => void;
   showSaveButton?: boolean;
+  initial?: Address | null;
 }
 
-const AddressForm: React.FC<AddressFormProps> = ({ title, onSave, onCancel, showSaveButton }) => {
+const AddressForm: React.FC<AddressFormProps> = ({ title, onSave, onCancel, showSaveButton, initial = null }) => {
   const cities = [
     { label: "TP. Hồ Chí Minh", value: "hcm" },
     { label: "Hà Nội", value: "hn" },
@@ -31,13 +24,23 @@ const AddressForm: React.FC<AddressFormProps> = ({ title, onSave, onCancel, show
   ];
 
   const [selectedCity, setSelectedCity] = React.useState("");
-
-  const [fullName, setFullName] = React.useState("");
-  const [phoneNumber, setPhoneNumber] = React.useState("");
+  const [receiverName, setReceiverName] = React.useState("");
+  const [receiverPhone, setReceiverPhone] = React.useState("");
   const [ward, setWard] = React.useState("");
   const [address, setAddress] = React.useState("");
   const [district, setDistrict] = React.useState("");
   const [isDefault, setIsDefault] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!initial) return;
+    setReceiverName(initial.receiverName || "");
+    setReceiverPhone(initial.receiverPhone || "");
+    setSelectedCity(initial.province || "");
+    setDistrict(initial.district || "");
+    setWard(initial.ward || "");
+    setAddress(initial.address || "");
+    setIsDefault(!!initial.isDefault);
+  }, [initial]);
 
   return (
     <div className="bg-white p-6 border border-gray-200">
@@ -46,13 +49,18 @@ const AddressForm: React.FC<AddressFormProps> = ({ title, onSave, onCancel, show
       <div className="space-y-4">
         {/* Họ và tên */}
         <div className="grid grid-cols-2 gap-4">
-          <CustomInput id="fullName" label="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <CustomInput
+            id="receiverName"
+            label="Full name"
+            value={receiverName}
+            onChange={(e) => setReceiverName(e.target.value)}
+          />
 
           <CustomInput
-            id="phoneNumber"
+            id="receiverPhone"
             label="Phone number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            value={receiverPhone}
+            onChange={(e) => setReceiverPhone(e.target.value)}
           />
         </div>
 
@@ -97,7 +105,17 @@ const AddressForm: React.FC<AddressFormProps> = ({ title, onSave, onCancel, show
             )}
             <MyButton
               colorScheme="orange"
-              onClick={() => onSave({ fullName, phoneNumber, city: selectedCity, district, ward, address, isDefault })}
+              onClick={() =>
+                onSave({
+                  receiverName,
+                  receiverPhone,
+                  province: selectedCity,
+                  district,
+                  ward,
+                  address,
+                  isDefault,
+                })
+              }
               sx={{ gridColumn: onCancel ? "auto" : "span 2", borderRadius: 0 }}
             >
               Save address

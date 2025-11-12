@@ -1,10 +1,11 @@
 import AddIcon from "@mui/icons-material/Add";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Avatar, Box, Button, Divider, Rating, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaFacebookF, FaInstagram, FaTwitter, FaVk, FaYoutube } from "react-icons/fa";
 import MyButton from "../../../components/common/Button";
 import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
@@ -13,6 +14,7 @@ import { useSnackbar } from "../../../hooks/useSnackbar";
 import cartService from "../../../services/cartService";
 import { EProductStatus } from "../../../types/enums/product.enum";
 import type { ProductDetailResponse } from "../../../types/responses/product.response";
+import { wishlistApi } from "../../../api/wishListApi";
 
 interface ProductInfoProps {
   product: ProductDetailResponse;
@@ -21,19 +23,47 @@ interface ProductInfoProps {
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isCheckingWishlist, setIsCheckingWishlist] = useState(true);
 
   const { isLogin } = useGlobal();
   const { showSnackbar } = useSnackbar();
 
   const isAvailable = product?.status === EProductStatus.AVAILABLE;
-  // size for quantity cells (increase to match button height visually)
   const qtySize = 48;
 
   const displayStatus = isAvailable ? "Available" : "Unavailable";
   const displayPrice = new Intl.NumberFormat("vi-VN").format(product.price) + " VND";
 
+  // Check if product is in wishlist when component mounts or login status changes
+  useEffect(() => {
+    const checkWishlistStatus = async () => {
+      if (!isLogin || !product?.id) {
+        setIsInWishlist(false);
+        setIsCheckingWishlist(false);
+        return;
+      }
+
+      try {
+        setIsCheckingWishlist(true);
+        const wishlist = await wishlistApi.getWishlist();
+        // Check if product exists in wishlist items array
+        const isProductInWishlist = wishlist?.items?.some(
+          (item: { productId: number }) => item.productId === product.id
+        );
+        setIsInWishlist(isProductInWishlist || false);
+      } catch (error) {
+        console.error("Error checking wishlist status:", error);
+        setIsInWishlist(false);
+      } finally {
+        setIsCheckingWishlist(false);
+      }
+    };
+
+    checkWishlistStatus();
+  }, [isLogin, product?.id]);
+
   const handleAddToCart = async () => {
-    // Check if user is logged in
     if (!isLogin) {
       setShowLoginDialog(true);
       return;
@@ -48,13 +78,28 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
     }
   };
 
-  const handleAddToWishlist = () => {
+  const handleToggleWishlist = async () => {
     if (!isLogin) {
       setShowLoginDialog(true);
       return;
     }
-    // TODO: Implement wishlist logic
-    showSnackbar("Added to wishlist!", "success", 3000);
+
+    try {
+      if (isInWishlist) {
+        // Remove from wishlist
+        await wishlistApi.removeFromWishlist(product.id);
+        setIsInWishlist(false);
+        showSnackbar("Removed from wishlist!", "success", 3000);
+      } else {
+        // Add to wishlist
+        await wishlistApi.addToWishlist(product.id);
+        setIsInWishlist(true);
+        showSnackbar("Added to wishlist!", "success", 3000);
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to update wishlist";
+      showSnackbar(errorMessage, "error", 3000);
+    }
   };
 
   const handleCompare = () => {
@@ -233,21 +278,22 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       <Box sx={{ mb: 4, ml: 0.5 }}>
         <Stack direction="row" spacing={0} alignItems="center">
           <Button
-            startIcon={<FavoriteBorderOutlinedIcon />}
+            startIcon={isInWishlist ? <FavoriteIcon sx={{ color: "red" }} /> : <FavoriteBorderOutlinedIcon />}
             variant="text"
-            onClick={handleAddToWishlist}
+            onClick={handleToggleWishlist}
+            disabled={isCheckingWishlist}
             sx={{
               fontWeight: 400,
               textTransform: "none",
-              color: "var(--color-gray2)",
+              color: isInWishlist ? "red" : "var(--color-gray2)",
               "&:hover": {
-                color: "var(--color-primary)",
+                color: isInWishlist ? "darkred" : "var(--color-primary)",
                 backgroundColor: "transparent",
               },
               pl: 0.5,
             }}
           >
-            Add to Wishlist
+            {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
           </Button>
           <Button
             variant="text"
@@ -268,7 +314,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         </Stack>
 
         <Typography variant="body2" color="var(--color-gray2)">
-          Category:{product.categoryName || "Unknown"}
+          Category: {product.categoryName || "Unknown"}
         </Typography>
         <Typography variant="body2" color="var(--color-gray2)" sx={{ mt: 1 }}>
           Tag: {"Our Shop"}

@@ -10,12 +10,13 @@ const PlaceTableForGuest: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { preOrderItems, clearPreOrder } = usePreOrder();
+  const { preOrderItems, clearPreOrder, updateItemQuantity, removeItem } = usePreOrder();
 
   useEffect(() => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem("accessToken");
       const user = localStorage.getItem("user");
+      console.log("Auth status changed. Token:", token, "User:", user);
       setIsLoggedIn(!!(token && user));
     };
 
@@ -53,6 +54,14 @@ const PlaceTableForGuest: React.FC = () => {
     }
   };
 
+  const handleUpdateQuantity = (itemId: string | number, newQuantity: number) => {
+    updateItemQuantity(itemId, newQuantity);
+  };
+
+  const handleRemoveItem = (itemId: string | number) => {
+    removeItem(itemId);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -64,7 +73,13 @@ const PlaceTableForGuest: React.FC = () => {
       {/* Pre-Order Summary - Hiển thị nếu có món đã chọn */}
       {preOrderItems.length > 0 && (
         <div id="pre-order-summary">
-          <PreOrderSummary items={preOrderItems} onEdit={handleEditPreOrder} onClear={handleClearPreOrder} />
+          <PreOrderSummary
+            items={preOrderItems}
+            onEdit={handleEditPreOrder}
+            onClear={handleClearPreOrder}
+            onUpdateQuantity={handleUpdateQuantity}
+            onRemoveItem={handleRemoveItem}
+          />
         </div>
       )}
 

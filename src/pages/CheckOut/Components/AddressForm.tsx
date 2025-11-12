@@ -1,84 +1,109 @@
-import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import React from "react";
+import MyButton from "../../../components/common/Button";
+import CustomInput from "./CustomInput";
+import CustomSelect from "./CustomSelect";
 
 interface AddressFormProps {
   title: string;
   showBillingOption?: boolean;
   onBillingToggle?: () => void;
   isBillingSameAsShipping?: boolean;
+  // optional callback when user saves the form
+  onSave?: (data: {
+    fullName: string;
+    phoneNumber: string;
+    city: string;
+    district: string;
+    ward: string;
+    address: string;
+    isDefault?: boolean;
+  }) => void;
+  onCancel?: () => void;
+  showSaveButton?: boolean;
 }
 
-const AddressForm: React.FC<AddressFormProps> = ({ title }) => {
-  const [selectedCity, setSelectedCity] = useState("");
+const AddressForm: React.FC<AddressFormProps> = ({ title, onSave, onCancel, showSaveButton }) => {
+  const cities = [
+    { label: "TP. Hồ Chí Minh", value: "hcm" },
+    { label: "Hà Nội", value: "hn" },
+    { label: "Đà Nẵng", value: "dn" },
+    { label: "Cần Thơ", value: "ct" },
+  ];
+
+  const [selectedCity, setSelectedCity] = React.useState("");
+
+  const [fullName, setFullName] = React.useState("");
+  const [phoneNumber, setPhoneNumber] = React.useState("");
+  const [ward, setWard] = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [district, setDistrict] = React.useState("");
+  const [isDefault, setIsDefault] = React.useState(false);
 
   return (
-    <div className="bg-white p-6 border border-gray-400">
+    <div className="bg-white p-6 border border-gray-200">
       <h3 className="text-lg font-semibold mb-4">{title}</h3>
 
       <div className="space-y-4">
         {/* Họ và tên */}
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-            <input type="text" className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-orange-500" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-            <input type="text" className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-orange-500" />
-          </div>
-        </div>
+          <CustomInput id="fullName" label="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
 
-        {/* Email + SĐT */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-orange-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone number</label>
-            <input type="tel" className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-orange-500" />
-          </div>
-        </div>
-
-        {/* Địa chỉ */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-          <input type="text" className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-orange-500" />
+          <CustomInput
+            id="phoneNumber"
+            label="Phone number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+          />
         </div>
 
         {/* Thành phố */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-          <div className="relative">
-            <select
-              value={selectedCity}
-              onChange={(e) => setSelectedCity(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-orange-500 appearance-none bg-white text-gray-400"
-            >
-              <option value="">Choose City</option>
-              <option value="hcm">TP. Hồ Chí Minh</option>
-              <option value="hn">Hà Nội</option>
-              <option value="dn">Đà Nẵng</option>
-              <option value="ct">Cần Thơ</option>
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-          </div>
+          <CustomSelect id="city" label="City" value={selectedCity} onChange={setSelectedCity} options={cities} />
         </div>
 
         {/* Quận/Huyện + Mã bưu điện */}
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">District</label>
-            <input type="text" className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-orange-500" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mã bưu điện</label>
-            <input type="text" className="w-full px-3 py-2 border border-gray-300 focus:ring-2 focus:ring-orange-500" />
-          </div>
+          <CustomInput id="district" label="District" value={district} onChange={(e) => setDistrict(e.target.value)} />
+          <CustomInput id="ward" label="Ward" value={ward} onChange={(e) => setWard(e.target.value)} />
         </div>
+        {/* Địa chỉ */}
+        <div>
+          <CustomInput id="address" label="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
+        </div>
+
+        {/* Checkbox Set as default */}
+        {typeof onSave === "function" && showSaveButton && (
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isDefault"
+              checked={isDefault}
+              onChange={(e) => setIsDefault(e.target.checked)}
+              className="ml-0.5 w-4 h-4 text-orange-500  border-gray-300  focus:ring-orange-500"
+            />
+            <label htmlFor="isDefault" className="text-sm text-gray-700 cursor-pointer">
+              Set as default address
+            </label>
+          </div>
+        )}
+
+        {/** Save and Cancel buttons */}
+        {typeof onSave === "function" && showSaveButton && (
+          <div className="pt-1 grid grid-cols-2 gap-3">
+            {onCancel && (
+              <MyButton colorScheme="grey" onClick={onCancel} sx={{ borderRadius: 0 }}>
+                Cancel
+              </MyButton>
+            )}
+            <MyButton
+              colorScheme="orange"
+              onClick={() => onSave({ fullName, phoneNumber, city: selectedCity, district, ward, address, isDefault })}
+              sx={{ gridColumn: onCancel ? "auto" : "span 2", borderRadius: 0 }}
+            >
+              Save address
+            </MyButton>
+          </div>
+        )}
       </div>
     </div>
   );

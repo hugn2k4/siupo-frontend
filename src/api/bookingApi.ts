@@ -1,23 +1,16 @@
 import axiosClient from "../utils/axiosClient";
-
-export interface BookingRequest {
-  fullname: string;
-  phoneNumber: string;
-  email?: string | null;
-  memberInt: number;
-  startedAt: string;
-  note?: string | null;
-}
-
-export interface BookingResponse {
-  success: boolean;
-  message?: string;
-}
-
+import type { BookingGuestRequest } from "../types/requests/book.request";
+import type { BookingGuestResponse } from "../types/responses/book.response";
+import type { PlaceTableCustomerRequest } from "../types/requests/book.request";
+import type { PlaceTableCustomerResponse } from "../types/responses/book.response";
 // Gọi API đặt bàn
 export const bookingApi = {
-  placeTable: async (data: BookingRequest): Promise<BookingResponse> => {
+  placeTableForGuest: async (data: BookingGuestRequest): Promise<BookingGuestResponse> => {
     const response = await axiosClient.post("/place-table-for-guest/place-table", data);
     return response.data;
+  },
+  async placeTableForCustomer(data: PlaceTableCustomerRequest): Promise<PlaceTableCustomerResponse> {
+    const res = await axiosClient.post("/place-tables", data);
+    return res.data;
   },
 };

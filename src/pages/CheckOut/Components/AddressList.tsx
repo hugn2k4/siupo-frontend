@@ -14,97 +14,163 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useSnackbar } from "../../../hooks/useSnackbar";
+import addressService from "../../../services/addressService";
 import type { Address } from "../../../types/models/address";
 import AddressForm from "./AddressForm";
-
-const sampleAddresses: Address[] = [
-  {
-    id: 1,
-    receiverName: "Nguyen Van A",
-    receiverPhone: "0912345678",
-    address: "123 Nguyễn Trãi",
-    ward: "Phường 2",
-    district: "Quận 5",
-    province: "TP. Hồ Chí Minh",
-    isDefault: true,
-  },
-  {
-    id: 2,
-    receiverName: "Tran Thi B",
-    receiverPhone: "0987654321",
-    address: "45 Lê Lợi",
-    ward: "Phường 1",
-    district: "Quận 1",
-    province: "TP. Hồ Chí Minh",
-    isDefault: false,
-  },
-];
 
 type AddressItemProps = {
   onSelect?: (addr: Address | null) => void;
 };
 
 const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
-  const [addresses, setAddresses] = useState<Address[]>(sampleAddresses);
-  const [selected, setSelected] = useState<string | number>(addresses[0]?.id ?? "");
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  // store selected as string: numeric id as string, or special "__new"
+  const [selected, setSelected] = useState<string>("");
+  const { showSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const res = await addressService.getAddresses();
+        if (res.success && res.data) {
+          let fetched = res.data as Address[];
+
+          // mark default if backend returns a separate default endpoint
+          try {
+            const defaultRes = await addressService.getDefaultAddress().catch(() => ({ data: null }));
+            if (defaultRes?.data) {
+              const defaultId = defaultRes.data.id;
+              fetched = fetched.map((addr) => ({ ...addr, isDefault: addr.id === defaultId }));
+            }
+          } catch {
+            // ignore - best effort
+          }
+
+          setAddresses(fetched);
+          // auto-select default if exists, otherwise first address
+          const defaultAddr = fetched.find((a) => a.isDefault) ?? fetched[0];
+          setSelected(defaultAddr ? String(defaultAddr.id) : "");
+          setIsOpen(!defaultAddr);
+          console.log("✅ Addresses with default marked:", fetched);
+        }
+      } catch (error) {
+        console.error("Failed to fetch addresses:", error);
+      }
+    };
+
+    fetchAddresses();
+  }, []);
+
   // Open the address editor if there's no selected address; otherwise collapse when an address is selected
-  const [isOpen, setIsOpen] = useState<boolean>(() => (selected ? false : true));
+  const [isOpen, setIsOpen] = useState<boolean>(true);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelected(event.target.value);
   };
 
-  type NewAddressData = {
-    fullName: string;
-    phoneNumber: string;
-    city: string;
-    district: string;
-    ward: string;
-    address: string;
-    isDefault?: boolean;
-  };
+  const handleSaveNew = async (data: Address) => {
+    try {
+      const res = await addressService.addAddress(data);
+      if (!res || !res.success) {
+        showSnackbar("Thêm địa chỉ thất bại", "error");
+        return;
+      }
 
-  const handleSaveNew = (data: NewAddressData) => {
-    const nextId = Math.max(0, ...addresses.map((a) => a.id!)) + 1;
-    const provinceLabel = data.city && typeof data.city === "string" ? data.city : data.city || "";
+      const created = res.data as Address;
 
-    // Nếu địa chỉ mới được đánh dấu là mặc định, bỏ mặc định của các địa chỉ khác
-    const updatedAddresses = data.isDefault ? addresses.map((addr) => ({ ...addr, isDefault: false })) : addresses;
+      // If marked as default, inform backend and update local list
+      if (data.isDefault) {
+        try {
+          await addressService.setDefaultAddress(created);
+          // update local copy: unset other defaults
+          const createdWithFlag = { ...created, isDefault: true } as Address;
+          setAddresses((prev) => [...prev.map((a) => ({ ...a, isDefault: false })), createdWithFlag]);
+        } catch {
+          // fallback: still append created (ensure boolean flag)
+          const createdWithFlag = { ...created, isDefault: !!created.isDefault } as Address;
+          setAddresses((prev) => [...prev, createdWithFlag]);
+        }
+      } else {
+        const createdWithFlag = { ...created, isDefault: !!created.isDefault } as Address;
+        setAddresses((prev) => [...prev, createdWithFlag]);
+      }
 
-    const newAddr: Address = {
-      id: nextId,
-      receiverName: data.fullName || "",
-      receiverPhone: data.phoneNumber || "",
-      address: data.address || "",
-      ward: data.ward || "",
-      district: data.district || "",
-      province: provinceLabel,
-      isDefault: data.isDefault || false,
-    };
-    setAddresses([...updatedAddresses, newAddr]);
-    setSelected(nextId);
-    // After adding a new address, collapse the address selector to show the selected address
-    setIsOpen(false);
-    // notify parent about new selected address
-    onSelect?.(newAddr);
+      setSelected(String(created.id));
+      setIsOpen(false);
+      onSelect?.(created);
+      showSnackbar("Thêm địa chỉ thành công", "success");
+    } catch (err) {
+      console.error(err);
+      showSnackbar("Thêm địa chỉ thất bại", "error");
+    }
   };
 
   const handleUpdateAddress = (id: number) => {
-    const addrToUpdate = addresses.find((addr) => addr.id === id);
-    console.log("🚀 ~ handleUpdateAddress ~ addrToUpdate:", addrToUpdate);
+    // start editing flow
+    const addrToUpdate = addresses.find((addr) => addr.id === id) ?? null;
+    if (!addrToUpdate) return;
+    setEditingId(id);
+    setIsOpen(true);
+    setSelected(String(id));
+  };
+
+  const [editingId, setEditingId] = useState<number | null>(null);
+
+  const handleSaveUpdate = async (data: Address) => {
+    if (editingId == null) return;
+    try {
+      const payload = { addressId: editingId, updateAddress: data };
+      const res = await addressService.updateAddress(payload);
+      if (!res || !res.success) {
+        showSnackbar("Cập nhật địa chỉ thất bại", "error");
+        return;
+      }
+
+      const updated = res.data as Address;
+
+      // If updated marked default, call setDefaultAddress
+      if (data.isDefault) {
+        try {
+          await addressService.setDefaultAddress(updated);
+        } catch {
+          // ignore
+        }
+      }
+
+      // update local list
+      setAddresses((prev) =>
+        prev.map((a) => (a.id === updated.id ? { ...updated, isDefault: !!updated.isDefault } : a))
+      );
+      setEditingId(null);
+      setSelected(String(updated.id));
+      setIsOpen(false);
+      onSelect?.(updated);
+      showSnackbar("Cập nhật địa chỉ thành công", "success");
+    } catch (err) {
+      console.error(err);
+      showSnackbar("Cập nhật địa chỉ thất bại", "error");
+    }
   };
 
   const handleSetDefault = (id: number) => {
-    setAddresses(
-      addresses.map((addr) => ({
-        ...addr,
-        isDefault: addr.id === id,
-      }))
-    );
+    // optimistically update UI and call API
+    setAddresses((prev) => prev.map((addr) => ({ ...addr, isDefault: addr.id === id })));
+    const addr = addresses.find((a) => a.id === id);
+    if (addr) {
+      addressService
+        .setDefaultAddress(addr)
+        .then(() => {
+          showSnackbar("Set default address", "success");
+        })
+        .catch(() => {
+          showSnackbar("Failed to set default address", "error");
+        });
+    }
   };
 
   // Tìm địa chỉ đang được chọn để hiển thị preview
-  const currentAddress = addresses.find((a) => a.id === selected);
+  const currentAddress = addresses.find((a) => String(a.id) === selected) ?? null;
 
   // Notify parent when selected/address list changes
   useEffect(() => {
@@ -114,7 +180,7 @@ const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
       return;
     }
 
-    const addr = addresses.find((a) => a.id === selected) ?? null;
+    const addr = addresses.find((a) => String(a.id) === selected) ?? null;
     onSelect(addr);
   }, [selected, addresses, onSelect]);
 
@@ -170,8 +236,8 @@ const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
                 sx={{
                   cursor: "pointer",
                   borderRadius: 0,
-                  borderColor: selected === addr.id ? "#f97316" : "grey.300",
-                  borderWidth: selected === addr.id ? 2 : 1,
+                  borderColor: selected === String(addr.id) ? "#f97316" : "grey.300",
+                  borderWidth: selected === String(addr.id) ? 2 : 1,
                   "&:hover": {
                     borderColor: "#fb923c",
                   },
@@ -179,12 +245,12 @@ const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
               >
                 <CardContent sx={{ display: "flex", alignItems: "start", gap: 1.5, p: 2, "&:last-child": { pb: 2 } }}>
                   <Radio
-                    value={addr.id}
-                    checked={selected === addr.id}
+                    value={String(addr.id)}
+                    checked={selected === String(addr.id)}
                     sx={{ p: 0, mt: 0 }}
-                    onClick={() => setSelected(addr.id!)}
+                    onClick={() => setSelected(String(addr.id))}
                   />
-                  <Box sx={{ flex: 1, minWidth: 0 }} onClick={() => setSelected(addr.id!)}>
+                  <Box sx={{ flex: 1, minWidth: 0 }} onClick={() => setSelected(String(addr.id!))}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
                       <Typography variant="body2" fontWeight={600} color="var(--color-gray1)" noWrap>
                         {addr.receiverName}
@@ -302,7 +368,24 @@ const AddressList: React.FC<AddressItemProps> = ({ onSelect }) => {
               title="New shipping address"
               showSaveButton
               onSave={handleSaveNew}
-              onCancel={() => setSelected(addresses[0]?.id || "")}
+              onCancel={() => setSelected(addresses[0]?.id ? String(addresses[0].id) : "")}
+            />
+          </Box>
+        )}
+
+        {/* Hiển thị form khi đang edit */}
+        {editingId != null && (
+          <Box sx={{ mt: 3 }}>
+            <AddressForm
+              title="Edit shipping address"
+              showSaveButton
+              initial={addresses.find((a) => a.id === editingId) ?? null}
+              onSave={handleSaveUpdate}
+              onCancel={() => {
+                setEditingId(null);
+                setSelected(addresses[0]?.id ? String(addresses[0].id) : "");
+                setIsOpen(false);
+              }}
             />
           </Box>
         )}

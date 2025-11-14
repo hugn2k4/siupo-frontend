@@ -1,10 +1,12 @@
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +41,16 @@ function Actions() {
 
   const handleProfile = () => {
     navigate("/account/dashboard");
+    handleMenuClose();
+  };
+
+  const handleWishlist = () => {
+    navigate("/account/wishlist");
+    handleMenuClose();
+  };
+
+  const handleOrder = () => {
+    navigate("/orders");
     handleMenuClose();
   };
 
@@ -115,6 +127,18 @@ function Actions() {
                   <AccountCircleOutlinedIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Profile</ListItemText>
+              </MenuItem>,
+              <MenuItem key="wishlít" onClick={handleWishlist}>
+                <ListItemIcon>
+                  <FavoriteBorderOutlinedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Wishlist</ListItemText>
+              </MenuItem>,
+              <MenuItem key="order" onClick={handleOrder}>
+                <ListItemIcon>
+                  <ShoppingCartOutlinedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Order</ListItemText>
               </MenuItem>,
               <Divider key="divider" />,
               <MenuItem key="logout" onClick={handleLogout}>

@@ -10,26 +10,31 @@ import type { OrderResponse } from "../../types/responses/order.reponse";
 import { formatCurrency } from "../../utils/format";
 
 const OrderSuccessPage: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const stateData = location.state as unknown as { orderId?: number; order?: OrderResponse };
-  const orderId = stateData?.orderId;
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const orderIdFromQuery = searchParams.get("orderId");
+  const stateData = location.state as { orderId?: number; order?: OrderResponse };
+  const orderId = stateData?.orderId || (orderIdFromQuery ? Number(orderIdFromQuery) : undefined);
   const [order, setOrder] = useState<OrderResponse | null>(stateData?.order || null);
   const [loading, setLoading] = useState(!stateData?.order);
   const [productImages, setProductImages] = useState<Record<number, string>>({});
 
   useEffect(() => {
     const fetchOrder = async () => {
+      // If no orderId, nothing to fetch
       if (!orderId) {
         setLoading(false);
         return;
       }
 
-      if (order) {
+      // If we already have the order from state (COD payment), no need to fetch
+      if (stateData?.order) {
         setLoading(false);
         return;
       }
 
+      // Fetch order from API (for MoMo/VNPay redirect cases)
       try {
         const response = await orderService.getOrder(orderId);
         if (response.data) {
@@ -43,7 +48,8 @@ const OrderSuccessPage: React.FC = () => {
     };
 
     fetchOrder();
-  }, [orderId, order]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId]);
 
   // Fetch product images
   useEffect(() => {
@@ -212,9 +218,9 @@ const OrderSuccessPage: React.FC = () => {
               sx={{ borderRadius: 0 }}
               colorScheme="orange"
               endIcon={<ArrowRight size={16} />}
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/orders")}
             >
-              Back to Home
+              View My Orders
             </MyButton>
           </div>
         </div>

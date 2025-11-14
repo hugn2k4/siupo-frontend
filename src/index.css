@@ -29,4 +29,23 @@ body {
   --color-gray3: #828282;
   --color-gray4: #bdbdbd;
   --color-gray5: #e0e0e0;
+
+  /* Semantic action colors */
+  --color-danger: #ef4444;
+  --color-danger-dark: #dc2626;
+  --color-danger-light: #fef2f2;
+
+  /* Order status colors */
+  --color-status-pending: #fef3c7;
+  --color-status-pending-text: #92400e;
+  --color-status-confirmed: #dbeafe;
+  --color-status-confirmed-text: #1e40af;
+  --color-status-shipping: #e0e7ff;
+  --color-status-shipping-text: #3730a3;
+  --color-status-delivered: #d1fae5;
+  --color-status-delivered-text: #065f46;
+  --color-status-completed: #d1fae5;
+  --color-status-completed-text: #065f46;
+  --color-status-canceled: #fee2e2;
+  --color-status-canceled-text: #991b1b;
 }

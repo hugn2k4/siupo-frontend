@@ -8,15 +8,18 @@ export type OrderItemResponse = {
   quantity: number;
   price: number;
   subTotal: number;
+  productImageUrl: string;
+  note?: string;
+  reviewed?: boolean;
 };
 
 export type OrderResponse = {
   orderId: number;
-  items: OrderItemResponse[];
+  status: OrderStatus;
   totalPrice: number;
   shippingFee: number;
   vat: number;
-  status: OrderStatus;
+  items: OrderItemResponse[];
   paymentMethod: MethodPayment;
   payUrl?: string;
   qrCodeUrl?: string;

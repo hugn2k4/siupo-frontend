@@ -1,5 +1,6 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Skeleton } from "@mui/material";
 import React, { useEffect, useRef } from "react";
+import { useBanners } from "../../hooks/useBanners";
 
 const MenuItem: React.FC<{ item: { name: string; description: string; price: string; calories?: string } }> = ({
   item,
@@ -13,7 +14,7 @@ const MenuItem: React.FC<{ item: { name: string; description: string; price: str
       setTimeout(() => {
         currentItem.style.transition = "opacity 0.5s ease-in";
         currentItem.style.opacity = "1";
-      }, 100); // Delay 100ms để tạo hiệu ứng tuần tự
+      }, 100);
     }
   }, []);
 
@@ -65,7 +66,6 @@ const MenuItem: React.FC<{ item: { name: string; description: string; price: str
 const menuData = [
   {
     title: "Starter Menu",
-    image: "../../src/assets/images/image_salad.png",
     items: [
       {
         name: "Alder Grilled Chinook Salmon",
@@ -95,7 +95,6 @@ const menuData = [
   },
   {
     title: "Main Course",
-    image: "../../src/assets/images/image_burger.png",
     items: [
       {
         name: "Optic Big Breakfast Combo Menu",
@@ -125,7 +124,6 @@ const menuData = [
   },
   {
     title: "Dessert",
-    image: "../../src/assets/images/image_cupcake.png",
     items: [
       {
         name: "Optic Big Breakfast Combo Menu",
@@ -155,7 +153,6 @@ const menuData = [
   },
   {
     title: "Drinks",
-    image: "../../src/assets/images/image_cocktail.png",
     items: [
       {
         name: "Optic Big Breakfast Combo Menu",
@@ -187,6 +184,7 @@ const menuData = [
 
 const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { banners, loading } = useBanners("Menu");
 
   useEffect(() => {
     const currentSection = sectionRef.current;
@@ -202,6 +200,14 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
   const section = menuData[sectionIndex];
   const isImageLeft = sectionIndex % 2 === 0;
 
+  // Lấy ảnh từ API theo sectionIndex
+  // banners[0] = image_salad (Starter Menu)
+  // banners[1] = image_cupcake (Dessert)
+  // banners[2] = image_cocktail (Drinks)
+  // banners[3] = image_burger (Main Course)
+  const imageMapping = [0, 3, 1, 2]; // Map index của menuData với index của banners
+  const menuImage = banners[imageMapping[sectionIndex]]?.url || "";
+
   return (
     <Box
       sx={{ mb: 6, display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: "center" }}
@@ -210,11 +216,11 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
       {isImageLeft ? (
         <>
           <Box sx={{ flex: 1, pr: { sm: 4 }, mb: { xs: 4, sm: 0 } }}>
-            <img
-              src={section.image}
-              alt={section.title}
-              style={{ width: "100%", maxWidth: "350px", borderRadius: 0 }}
-            />
+            {loading ? (
+              <Skeleton variant="rectangular" width={350} height={350} sx={{ borderRadius: 0 }} />
+            ) : menuImage ? (
+              <img src={menuImage} alt={section.title} style={{ width: "100%", maxWidth: "350px", borderRadius: 0 }} />
+            ) : null}
           </Box>
           <Box sx={{ flex: 2 }}>
             <Typography
@@ -288,11 +294,11 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
             ))}
           </Box>
           <Box sx={{ flex: 1, pl: { sm: 4 }, mb: { xs: 4, sm: 0 } }}>
-            <img
-              src={section.image}
-              alt={section.title}
-              style={{ width: "100%", maxWidth: "350px", borderRadius: 0 }}
-            />
+            {loading ? (
+              <Skeleton variant="rectangular" width={350} height={350} sx={{ borderRadius: 0 }} />
+            ) : menuImage ? (
+              <img src={menuImage} alt={section.title} style={{ width: "100%", maxWidth: "350px", borderRadius: 0 }} />
+            ) : null}
           </Box>
         </>
       )}

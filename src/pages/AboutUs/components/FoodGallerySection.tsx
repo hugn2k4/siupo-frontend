@@ -1,15 +1,22 @@
 import React from "react";
-import aboutus from "../../../assets/images/image_about_us_home.png";
+import { Skeleton } from "@mui/material";
 import MyButton from "../../../components/common/Button";
+import type { BannerProps } from "../../../types/props/BannerProps";
+
 // Food Gallery Section Component
-const FoodGallerySection: React.FC = () => {
+const FoodGallerySection: React.FC<BannerProps> = ({ banners, loading }) => {
+  const aboutUsImage = banners[0]?.url || "";
   return (
     <section className="py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="grid">
             <div className="space-y-4">
-              <img src={aboutus} alt="Food 1" className="w-full object-cover rounded-lg" />
+              {loading ? (
+                <Skeleton variant="rectangular" width="100%" height={400} />
+              ) : aboutUsImage ? (
+                <img src={aboutUsImage} alt="Food 1" className="w-full object-cover rounded-lg" />
+              ) : null}
             </div>
           </div>
           <div>

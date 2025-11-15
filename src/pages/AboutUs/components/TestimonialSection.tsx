@@ -1,5 +1,8 @@
-import AboutusClient from "../../../assets/images/image_about_us_client.png";
-const TestimonialSection: React.FC = () => {
+import type { BannerProps } from "../../../types/props/BannerProps";
+import { Skeleton } from "@mui/material";
+
+const TestimonialSection: React.FC<BannerProps> = ({ banners, loading }) => {
+  const clientImage = banners[3]?.url || "";
   return (
     <section className="py-16 bg-white mt-60">
       <div className="text-center mb-12">
@@ -11,7 +14,11 @@ const TestimonialSection: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center">
           <div className="mb-6">
-            <img src={AboutusClient} alt="Client" className="w-40 h-40 object-cover rounded-full mx-auto" />
+            {loading ? (
+              <Skeleton variant="circular" width={160} height={160} className="mx-auto" />
+            ) : clientImage ? (
+              <img src={clientImage} alt="Client" className="w-40 h-40 object-cover rounded-full mx-auto" />
+            ) : null}
           </div>
 
           <div className="flex justify-center mb-4">

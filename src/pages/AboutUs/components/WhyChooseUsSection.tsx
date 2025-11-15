@@ -1,11 +1,13 @@
 import React from "react";
-import aboutus4 from "../../../assets/images/image_about_us_4.png";
+import type { BannerProps } from "../../../types/props/BannerProps";
+import { Skeleton } from "@mui/material";
 import Student from "../../../assets/images/image_student.png";
 import Person from "../../../assets/images/image_person.png";
 import Coffee from "../../../assets/images/image_coffee.png";
 // import AboutusClient from "../../../assets/images/AboutusClient.png";
 // Why Choose Us Section Component
-const WhyChooseUsSection: React.FC = () => {
+const WhyChooseUsSection: React.FC<BannerProps> = ({ banners, loading }) => {
+  const featureImage = banners[4]?.url || "";
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4">
@@ -18,7 +20,11 @@ const WhyChooseUsSection: React.FC = () => {
         </div>
 
         <div className="mb-12">
-          <img src={aboutus4} alt="Featured dishes" className="w-full h-64 object-cover rounded-lg" />
+          {loading ? (
+            <Skeleton variant="rectangular" width="100%" height={256} />
+          ) : featureImage ? (
+            <img src={featureImage} alt="Featured dishes" className="w-full h-64 object-cover rounded-lg" />
+          ) : null}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

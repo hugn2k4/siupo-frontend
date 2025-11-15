@@ -1,15 +1,21 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Typography, Skeleton } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import ShiningStarsIcon from "../../../assets/icons/shining_stars.svg";
 import SparkleIcon from "../../../assets/icons/sparkle.svg";
-import ImageHero from "../../../assets/images/image_hero.png";
-import ImageHeroMobile from "../../../assets/images/image_hero_mobile.png";
 import MyButton from "../../../components/common/Button";
+import type { Banner } from "../../../types/models/banner";
 
-const Hero = () => {
+interface HeroProps {
+  banners: Banner[];
+  loading: boolean;
+}
+
+const Hero = ({ banners, loading }: HeroProps) => {
   const [hoveredPlace, setHoveredPlace] = useState(false);
-
+  // Lấy banner từ API
+  const heroImage = banners[0]?.url || "";
+  const heroImageMobile = banners[1]?.url || "";
   return (
     <section className="w-full min-h-[90vh] flex flex-col relative overflow-hidden">
       {/* Right side: Hero Image - positioned absolutely to reach screen edge */}
@@ -21,13 +27,17 @@ const Hero = () => {
         viewport={{ once: true, amount: 0.3 }}
         className="absolute top-0 right-0 w-1/2 h-full hidden lg:flex items-start justify-end z-0"
       >
-        <img
-          src={ImageHero}
-          alt="Healthy and delicious food showcase"
-          className="w-auto h-[80vh] object-contain"
-          style={{ maxWidth: "none" }}
-          loading="eager"
-        />
+        {loading ? (
+          <Skeleton variant="rectangular" width="100%" height="80vh" sx={{ borderRadius: 2 }} />
+        ) : heroImage ? (
+          <img
+            src={heroImage}
+            alt="Healthy and delicious food showcase"
+            className="w-auto h-[80vh] object-contain"
+            style={{ maxWidth: "none" }}
+            loading="eager"
+          />
+        ) : null}
       </Box>
 
       <Container maxWidth="xl" className="flex-1 relative">
@@ -183,12 +193,16 @@ const Hero = () => {
             className="flex lg:hidden justify-center items-center px-4 order-1 mt-8"
           >
             <div className="relative w-full max-w-md">
-              <img
-                src={ImageHeroMobile}
-                alt="Healthy and delicious food showcase"
-                className="w-full h-auto object-contain max-h-[50vh]"
-                loading="eager"
-              />
+              {loading ? (
+                <Skeleton variant="rectangular" width="100%" height={300} sx={{ borderRadius: 2 }} />
+              ) : heroImageMobile ? (
+                <img
+                  src={heroImageMobile}
+                  alt="Healthy and delicious food showcase"
+                  className="w-full h-auto object-contain max-h-[50vh]"
+                  loading="eager"
+                />
+              ) : null}
             </div>
           </Box>
         </div>

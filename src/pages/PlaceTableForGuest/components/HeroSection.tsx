@@ -1,7 +1,7 @@
 // import React, { useState } from "react";
 // import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { useBanners } from "../../../hooks/useBanners";
 const HeroSection: React.FC = () => {
   // const [guests, setGuests] = useState("2");
   // const [branch, setBranch] = useState("");
@@ -12,12 +12,18 @@ const HeroSection: React.FC = () => {
   //   // Không thực hiện gì - theo yêu cầu bỏ qua chức năng này
   //   console.log("Chức năng tìm bàn chưa được triển khai");
   // };
+  const { banners, loading } = useBanners("Place table");
+  const backgroundImage = banners[0]?.url || "";
 
   return (
     <section
       className="relative h-96 bg-cover bg-center"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200')`,
+        backgroundImage: loading
+          ? "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4))"
+          : backgroundImage
+            ? `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${backgroundImage}')`
+            : `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200')`,
       }}
     >
       <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4">

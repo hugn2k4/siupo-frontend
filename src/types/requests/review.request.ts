@@ -1,14 +1,13 @@
 export interface CreateReviewRequest {
-  orderId: number;
-  productId: number;
+  orderItemId: number;
   rating: number;
-  comment: string;
-  images?: string[];
+  content: string;
+  imageUrls?: string[];
 }
 
 export interface UpdateReviewRequest {
   reviewId: number;
   rating?: number;
-  comment?: string;
-  images?: string[];
+  content?: string;
+  imageUrls?: string[];
 }

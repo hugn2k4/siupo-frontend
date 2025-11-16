@@ -1,6 +1,17 @@
-import { Box, Button, Dialog, DialogContent, IconButton, Rating, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  IconButton,
+  Rating,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Camera, X } from "lucide-react";
 import React, { useState } from "react";
+import uploadApi from "../../../api/uploadApi";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import type { OrderItemResponse } from "../../../types/responses/order.reponse";
 
@@ -10,14 +21,15 @@ type ReviewDialogProps = {
   orderId: number;
   item: OrderItemResponse;
   productImage?: string;
-  onSubmit: (data: { rating: number; comment: string; images?: string[] }) => Promise<void>;
+  onSubmit: (data: { rating: number; content: string; imageUrls?: string[] }) => Promise<void>;
 };
 
 const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, item, productImage, onSubmit }) => {
   const [rating, setRating] = useState<number>(5);
-  const [comment, setComment] = useState("");
-  const [images, setImages] = useState<string[]>([]);
+  const [content, setContent] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const handleSubmit = async () => {
@@ -26,14 +38,14 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
       return;
     }
 
-    if (comment.trim().length < 10) {
+    if (content.trim().length < 10) {
       showSnackbar("Review must be at least 10 characters", "warning");
       return;
     }
 
     setSubmitting(true);
     try {
-      await onSubmit({ rating, comment, images: images.length > 0 ? images : undefined });
+      await onSubmit({ rating, content, imageUrls: imageUrls.length > 0 ? imageUrls : undefined });
       showSnackbar("Review submitted successfully!", "success");
       handleClose();
     } catch (error) {
@@ -46,29 +58,47 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
 
   const handleClose = () => {
     setRating(5);
-    setComment("");
-    setImages([]);
+    setContent("");
+    setImageUrls([]);
     onClose();
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
-    // Simulate image upload - in real app, upload to server and get URLs
-    for (let i = 0; i < Math.min(files.length, 5 - images.length); i++) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          setImages((prev) => [...prev, e.target!.result as string]);
-        }
-      };
-      reader.readAsDataURL(files[i]);
+    const remainingSlots = 5 - imageUrls.length;
+    if (remainingSlots <= 0) {
+      showSnackbar("Maximum 5 images allowed", "warning");
+      return;
+    }
+
+    const filesToUpload = Array.from(files).slice(0, remainingSlots);
+
+    // Validate file sizes (max 5MB per file)
+    const invalidFiles = filesToUpload.filter((file) => file.size > 5 * 1024 * 1024);
+    if (invalidFiles.length > 0) {
+      showSnackbar("Some files exceed 5MB limit", "error");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const uploadedUrls = await uploadApi.uploadMultiple(filesToUpload);
+      setImageUrls((prev) => [...prev, ...uploadedUrls]);
+      showSnackbar(`${uploadedUrls.length} image(s) uploaded successfully`, "success");
+    } catch (error) {
+      console.error("Failed to upload images:", error);
+      showSnackbar("Failed to upload images. Please try again.", "error");
+    } finally {
+      setUploading(false);
+      // Reset input
+      event.target.value = "";
     }
   };
 
   const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -186,7 +216,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
             </Box>
           </Box>
 
-          {/* Comment */}
+          {/* Content */}
           <Box sx={{ mb: 3 }}>
             <Typography variant="subtitle2" fontWeight={600} color="var(--color-gray1)" gutterBottom>
               Your Review *
@@ -196,8 +226,8 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
               multiline
               rows={4}
               placeholder="Share your experience with this product... (min 10 characters)"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
               sx={{
                 mt: 1,
                 "& .MuiOutlinedInput-root": {
@@ -212,10 +242,10 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
             />
             <Typography
               variant="caption"
-              color={comment.length >= 10 ? "success.main" : "var(--color-gray3)"}
+              color={content.length >= 10 ? "success.main" : "var(--color-gray3)"}
               sx={{ mt: 0.5, display: "block" }}
             >
-              {comment.length}/500 characters {comment.length >= 10 ? "✓" : "(minimum 10)"}
+              {content.length}/500 characters {content.length >= 10 ? "✓" : "(minimum 10)"}
             </Typography>
           </Box>
 
@@ -229,7 +259,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
             </Typography>
 
             <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-              {images.map((image, index) => (
+              {imageUrls.map((image, index) => (
                 <Box
                   key={index}
                   sx={{
@@ -270,9 +300,10 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
                 </Box>
               ))}
 
-              {images.length < 5 && (
+              {imageUrls.length < 5 && (
                 <Button
                   component="label"
+                  disabled={uploading}
                   sx={{
                     width: 80,
                     height: 80,
@@ -289,13 +320,35 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
                       bgcolor: "rgba(var(--color-primary-rgb), 0.04)",
                       color: "var(--color-primary)",
                     },
+                    "&:disabled": {
+                      bgcolor: "grey.100",
+                      borderColor: "grey.300",
+                    },
                   }}
                 >
-                  <Camera size={24} />
-                  <Typography variant="caption" sx={{ mt: 0.5 }}>
-                    Add
-                  </Typography>
-                  <input type="file" hidden accept="image/*" multiple onChange={handleImageUpload} />
+                  {uploading ? (
+                    <>
+                      <CircularProgress size={24} sx={{ color: "var(--color-primary)" }} />
+                      <Typography variant="caption" sx={{ mt: 0.5 }}>
+                        Uploading...
+                      </Typography>
+                    </>
+                  ) : (
+                    <>
+                      <Camera size={24} />
+                      <Typography variant="caption" sx={{ mt: 0.5 }}>
+                        Add
+                      </Typography>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                  />
                 </Button>
               )}
             </Box>
@@ -306,7 +359,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
             <Button
               variant="outlined"
               onClick={handleClose}
-              disabled={submitting}
+              disabled={submitting || uploading}
               sx={{
                 textTransform: "none",
                 borderColor: "grey.300",
@@ -324,7 +377,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
             <Button
               variant="contained"
               onClick={handleSubmit}
-              disabled={submitting || rating === 0 || comment.trim().length < 10}
+              disabled={submitting || uploading || rating === 0 || content.trim().length < 10}
               sx={{
                 textTransform: "none",
                 bgcolor: "var(--color-primary)",
@@ -342,7 +395,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
                 },
               }}
             >
-              {submitting ? "Submitting..." : "Submit Review"}
+              {submitting ? "Submitting..." : uploading ? "Uploading..." : "Submit Review"}
             </Button>
           </Box>
         </Box>

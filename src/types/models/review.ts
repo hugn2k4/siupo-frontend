@@ -1,9 +1,13 @@
 export type Review = {
   id?: number;
-  orderId: number;
+  orderItemId: number;
   productId: number;
+  productName?: string;
   rating: number; // 1-5 stars
-  comment: string;
+  content: string;
+  imageUrls?: string[]; // Review images
+  userName?: string;
+  userId?: number;
   createdAt?: string;
-  images?: string[]; // Review images
+  updatedAt?: string;
 };

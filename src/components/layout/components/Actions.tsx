@@ -3,7 +3,6 @@ import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
@@ -11,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import LoginRequiredDialog from "../../common/LoginRequiredDialog";
+import NotificationPopup from "../../../pages/notificationPopup/notificationPopup";
 
 function Actions() {
   const navigate = useNavigate();
@@ -74,11 +74,7 @@ function Actions() {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-      <Tooltip title="Search" arrow>
-        <IconButton aria-label="Search products" sx={iconButtonSx}>
-          <SearchIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
-        </IconButton>
-      </Tooltip>
+      {isLogin && <NotificationPopup />}
 
       <Tooltip title="Account" arrow>
         <IconButton aria-label="Account" onClick={handleAccountClick} sx={iconButtonSx}>

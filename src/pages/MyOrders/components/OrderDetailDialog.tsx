@@ -10,14 +10,17 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import { CheckCircle2, Clock, MessageCircle, Package, RotateCcw, Star, Truck, X, XCircle } from "lucide-react";
+import { CheckCircle2, Clock, Eye, MessageCircle, Package, RotateCcw, Star, Truck, X, XCircle } from "lucide-react";
 import React, { useState } from "react";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import reviewService from "../../../services/reviewService";
 import { EMethodPayment } from "../../../types/enums/methodPayment.enum";
 import { EOrderStatus } from "../../../types/enums/order.enum";
 import type { OrderItemResponse, OrderResponse } from "../../../types/responses/order.reponse";
+import type { ReviewResponse } from "../../../types/responses/review.response";
 import { formatCurrency } from "../../../utils/format";
 import ReviewDialog from "./ReviewDialog";
+import ViewReviewDialog from "./ViewReviewDialog";
 
 type OrderDetailDialogProps = {
   open: boolean;
@@ -29,7 +32,9 @@ type OrderDetailDialogProps = {
 
 const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onClose, onCancel, onReorder }) => {
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [viewReviewDialogOpen, setViewReviewDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<OrderItemResponse | null>(null);
+  const [selectedReview, setSelectedReview] = useState<ReviewResponse | null>(null);
   const { showSnackbar } = useSnackbar();
 
   const getStatusStep = (status: string): number => {
@@ -63,12 +68,36 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
   const canCancel = order.status === EOrderStatus.PENDING || order.status === EOrderStatus.CONFIRMED;
   const canReview = order.status === EOrderStatus.DELIVERED || order.status === EOrderStatus.COMPLETED;
 
-  const handleSubmitReview = async (data: { rating: number; comment: string; images?: string[] }) => {
-    // TODO: Call reviewService.createReview with data
-    console.log("Submit review:", { orderId: order.orderId, productId: selectedItem?.productId, ...data });
-    showSnackbar("Review submitted successfully!", "success");
-    setReviewDialogOpen(false);
-    setSelectedItem(null);
+  const handleSubmitReview = async (data: { rating: number; content: string; imageUrls?: string[] }) => {
+    if (!selectedItem) return;
+
+    try {
+      await reviewService.createReview({
+        orderItemId: selectedItem.id,
+        rating: data.rating,
+        content: data.content,
+        imageUrls: data.imageUrls,
+      });
+
+      showSnackbar("Review submitted successfully!", "success");
+
+      // Mark item as reviewed in local state
+      if (selectedItem) {
+        selectedItem.reviewed = true;
+      }
+
+      setReviewDialogOpen(false);
+      setSelectedItem(null);
+    } catch (error: unknown) {
+      console.error("Failed to submit review:", error);
+
+      const err = error as { response?: { data?: { message?: string } } };
+
+      const errorMessage = err.response?.data?.message || "Failed to submit review. Please try again.";
+
+      showSnackbar(errorMessage, "error");
+      throw error;
+    }
   };
 
   return (
@@ -233,32 +262,65 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                       <Typography variant="body2" color="var(--color-gray3)" sx={{ mt: 0.5 }}>
                         {formatCurrency(item.price, "USD")} × {item.quantity}
                       </Typography>
-                      {canReview && (
-                        <Button
-                          size="small"
-                          startIcon={<Star size={16} />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedItem(item);
-                            setReviewDialogOpen(true);
-                          }}
-                          sx={{
-                            mt: 1,
-                            textTransform: "none",
-                            color: "var(--color-primary)",
-                            fontWeight: 600,
-                            fontSize: "0.875rem",
-                            p: 0,
-                            minWidth: "auto",
-                            "&:hover": {
-                              bgcolor: "transparent",
-                              textDecoration: "underline",
-                            },
-                          }}
-                        >
-                          Write a review
-                        </Button>
-                      )}
+                      {canReview &&
+                        (item.reviewed ? (
+                          <Button
+                            size="small"
+                            startIcon={<Eye size={16} />}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                const response = await reviewService.getReviewByOrderItemId(item.id);
+                                setSelectedReview(response.data);
+                                setSelectedItem(item);
+                                setViewReviewDialogOpen(true);
+                              } catch (error) {
+                                console.error("Failed to load review:", error);
+                                showSnackbar("Failed to load review", "error");
+                              }
+                            }}
+                            sx={{
+                              mt: 1,
+                              textTransform: "none",
+                              color: "var(--color-success)",
+                              fontWeight: 600,
+                              fontSize: "0.875rem",
+                              p: 0,
+                              minWidth: "auto",
+                              "&:hover": {
+                                bgcolor: "transparent",
+                                textDecoration: "underline",
+                              },
+                            }}
+                          >
+                            View review
+                          </Button>
+                        ) : (
+                          <Button
+                            size="small"
+                            startIcon={<Star size={16} />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedItem(item);
+                              setReviewDialogOpen(true);
+                            }}
+                            sx={{
+                              mt: 1,
+                              textTransform: "none",
+                              color: "var(--color-primary)",
+                              fontWeight: 600,
+                              fontSize: "0.875rem",
+                              p: 0,
+                              minWidth: "auto",
+                              "&:hover": {
+                                bgcolor: "transparent",
+                                textDecoration: "underline",
+                              },
+                            }}
+                          >
+                            Write a review
+                          </Button>
+                        ))}
                     </Box>
                     <Box sx={{ textAlign: "right" }}>
                       <Typography variant="body1" fontWeight={700} color="var(--color-gray1)">
@@ -408,6 +470,22 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
           item={selectedItem}
           productImage={selectedItem.productImageUrl}
           onSubmit={handleSubmitReview}
+        />
+      )}
+
+      {/* View Review Dialog */}
+      {selectedItem && selectedReview && (
+        <ViewReviewDialog
+          open={viewReviewDialogOpen}
+          onClose={() => {
+            setViewReviewDialogOpen(false);
+            setSelectedItem(null);
+            setSelectedReview(null);
+          }}
+          orderId={order.orderId}
+          item={selectedItem}
+          productImage={selectedItem.productImageUrl}
+          review={selectedReview}
         />
       )}
     </>

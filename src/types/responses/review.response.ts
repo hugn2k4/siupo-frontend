@@ -5,3 +5,10 @@ export interface ReviewResponse extends Review {
   userName?: string;
   userAvatar?: string;
 }
+
+export interface OrderReviewsResponse {
+  orderId: number;
+  reviews: ReviewResponse[];
+  totalItems: number;
+  reviewedItems: number;
+}

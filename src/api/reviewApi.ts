@@ -1,6 +1,6 @@
 import type { CreateReviewRequest, UpdateReviewRequest } from "../types/requests/review.request";
 import type { ApiResponse } from "../types/responses/api.response";
-import type { ReviewResponse } from "../types/responses/review.response";
+import type { OrderReviewsResponse, ReviewResponse } from "../types/responses/review.response";
 import axiosClient from "../utils/axiosClient";
 
 const reviewApi = {
@@ -10,8 +10,14 @@ const reviewApi = {
   updateReview: (data: UpdateReviewRequest): Promise<ApiResponse<ReviewResponse>> =>
     axiosClient.put(`/reviews/${data.reviewId}`, data).then((response) => response.data),
 
+  getReviewByOrderItemId: (orderItemId: number): Promise<ApiResponse<ReviewResponse>> =>
+    axiosClient.get(`/reviews/order-items/${orderItemId}`).then((response) => response.data),
+
   getProductReviews: (productId: number): Promise<ApiResponse<ReviewResponse[]>> =>
     axiosClient.get(`/products/${productId}/reviews`).then((response) => response.data),
+
+  getReviewsByOrderId: (orderId: number): Promise<ApiResponse<OrderReviewsResponse>> =>
+    axiosClient.get(`/orders/${orderId}/reviews`).then((response) => response.data),
 
   getMyReviews: (): Promise<ApiResponse<ReviewResponse[]>> =>
     axiosClient.get("/reviews/my-reviews").then((response) => response.data),

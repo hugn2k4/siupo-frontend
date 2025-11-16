@@ -12,8 +12,18 @@ const reviewService = {
     return res;
   },
 
+  getReviewByOrderItemId: async (orderItemId: number) => {
+    const res = await reviewApi.getReviewByOrderItemId(orderItemId);
+    return res;
+  },
+
   getProductReviews: async (productId: number) => {
     const res = await reviewApi.getProductReviews(productId);
+    return res;
+  },
+
+  getReviewsByOrderId: async (orderId: number) => {
+    const res = await reviewApi.getReviewsByOrderId(orderId);
     return res;
   },
 

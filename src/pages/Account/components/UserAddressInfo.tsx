@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userService from "../../../services/userService";
 import type { Address } from "../../../types/models/address";
+import addressService from "../../../services/addressService";
 
 interface UserInfo {
   fullName: string;
@@ -22,7 +23,7 @@ export default function UserAddressInfo() {
         setLoading(true);
         const [userRes, addrRes] = await Promise.all([
           userService.getCurrentUser(),
-          userService.getDefaultAddress().catch(() => ({ data: null })),
+          addressService.getDefaultAddress().catch(() => ({ data: null })),
         ]);
 
         if (userRes.data) {

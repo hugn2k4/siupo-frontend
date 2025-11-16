@@ -70,6 +70,10 @@ const ROUTES_META: Record<string, RouteMeta> = {
     title: "Account",
     breadcrumb: [{ label: "Home", path: "/" }, { label: "WishList" }],
   },
+  "/orders": {
+    title: "My Orders",
+    breadcrumb: [{ label: "Home", path: "/" }, { label: "Orders" }],
+  },
 };
 
 export default ROUTES_META;

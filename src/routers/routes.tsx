@@ -14,6 +14,7 @@ import CheckoutPage from "../pages/CheckOut/CheckoutPage";
 import ChefPage from "../pages/Chef/ChefPage";
 import HomePage from "../pages/Home/HomePage";
 import MenuPage from "../pages/Menu/MenuPage";
+import MyOrdersPage from "../pages/MyOrders/MyOrdersPage";
 import NotFoundPage from "../pages/NotFound/NotFoundPage";
 import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
 import OrderSuccessPage from "../pages/OrderSuccess/OrderSuccessPage";
@@ -63,6 +64,7 @@ const router = createBrowserRouter([
           { path: "account/settings", element: <SettingsPage /> },
           { path: "account/dashboard", element: <DashboardPages /> },
           { path: "/account/wishlist", element: <WishlistPage /> },
+          { path: "/orders", element: <MyOrdersPage /> },
         ],
       },
       { path: "dev", element: <Dev /> },

@@ -18,11 +18,33 @@ const PaymentCallbackPage: React.FC = () => {
   useEffect(() => {
     // Get payment result from URL params
     const resultCode = searchParams.get("resultCode");
-    const orderId = searchParams.get("orderId");
+    const momoOrderId = searchParams.get("orderId"); // Format: ORDER_18_1763158753818
     const message = searchParams.get("message");
+    const orderInfo = searchParams.get("orderInfo"); // Format: "Thanh toán đơn hàng #18"
+
+    // Extract actual order ID from momoOrderId (ORDER_18_xxx -> 18) or orderInfo (#18 -> 18)
+    let actualOrderId: string | null = null;
+
+    if (momoOrderId) {
+      // Try to extract from ORDER_18_xxx format
+      const match = momoOrderId.match(/ORDER_(\d+)_/);
+      if (match) {
+        actualOrderId = match[1];
+      }
+    }
+
+    // Fallback: try to extract from orderInfo
+    if (!actualOrderId && orderInfo) {
+      const match = decodeURIComponent(orderInfo).match(/#(\d+)/);
+      if (match) {
+        actualOrderId = match[1];
+      }
+    }
+
+    console.log("Payment callback:", { resultCode, momoOrderId, actualOrderId, orderInfo, message });
 
     // Store order info
-    setOrderInfo({ orderId, message });
+    setOrderInfo({ orderId: actualOrderId, message });
 
     // Process payment result
     if (resultCode === "0") {
@@ -32,10 +54,10 @@ const PaymentCallbackPage: React.FC = () => {
 
       // Redirect to order success page after 2 seconds
       setTimeout(() => {
-        if (orderId) {
-          navigate("/order-success", { state: { orderId: Number(orderId) } });
+        if (actualOrderId) {
+          navigate(`/order-success?orderId=${actualOrderId}`, { replace: true });
         } else {
-          navigate("/");
+          navigate("/orders", { replace: true });
         }
       }, 2000);
     } else if (resultCode === "1006") {
@@ -72,9 +94,9 @@ const PaymentCallbackPage: React.FC = () => {
   const handleViewOrder = () => {
     const orderId = orderInfo.orderId;
     if (orderId) {
-      navigate("/order-success", { state: { orderId: Number(orderId) } });
+      navigate(`/order-success?orderId=${orderId}`, { replace: true });
     } else {
-      navigate("/");
+      navigate("/orders");
     }
   };
 

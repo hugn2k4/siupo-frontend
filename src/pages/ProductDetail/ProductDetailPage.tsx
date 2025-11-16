@@ -75,7 +75,7 @@ const ProductDetailPage: React.FC = () => {
         <ProductImages imageUrls={product.imageUrls} />
         <ProductInfo product={product} />
       </Box>
-      <ProductTabs description={product.description} rating={product.rating} reviewCount={product.reviewCount} />
+      <ProductTabs productId={product.id} description={product.description} reviewCount={product.reviewCount} />
       <SimilarProducts />
     </Box>
   );

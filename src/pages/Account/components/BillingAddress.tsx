@@ -3,9 +3,9 @@
 import { Edit2, MapPin, Plus, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useSnackbar } from "../../../hooks/useSnackbar";
-import userService from "../../../services/userService";
 import type { Address } from "../../../types/models/address";
 import type { AddressUpdateRequest } from "../../../types/requests/address-update.request";
+import addressService from "../../../services/addressService";
 
 export default function BillingAddress() {
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -29,8 +29,8 @@ export default function BillingAddress() {
       try {
         setLoading(true);
         const [addrRes, defaultRes] = await Promise.all([
-          userService.getAddresses(),
-          userService.getDefaultAddress().catch(() => ({ data: null })),
+          addressService.getAddresses(),
+          addressService.getDefaultAddress().catch(() => ({ data: null })),
         ]);
 
         setAddresses(addrRes.data || []);
@@ -83,7 +83,7 @@ export default function BillingAddress() {
     }
 
     try {
-      const res = await userService.addAddress(formData as Address);
+      const res = await addressService.addAddress(formData as Address);
 
       if (!res.success) {
         showSnackbar("Thêm địa chỉ thất bại", "error");
@@ -93,7 +93,7 @@ export default function BillingAddress() {
       setAddresses((prev) => [...prev, newAddr as Address]);
 
       if (!defaultAddress) {
-        const defaultRes = await userService.getDefaultAddress().catch(() => ({ data: null }));
+        const defaultRes = await addressService.getDefaultAddress().catch(() => ({ data: null }));
         setDefaultAddress(defaultRes.data ?? null);
       }
 
@@ -116,7 +116,7 @@ export default function BillingAddress() {
     };
 
     try {
-      const res = await userService.updateAddress(updateRequest);
+      const res = await addressService.updateAddress(updateRequest);
 
       // Kiểm tra res.data trước khi dùng
       if (!res.data) {
@@ -142,11 +142,11 @@ export default function BillingAddress() {
   // Delete address
   const handleDelete = async (address: Address) => {
     try {
-      await userService.deleteAddress(address.id!);
+      await addressService.deleteAddress(address.id!);
       setAddresses((prev) => prev.filter((a) => !isSameAddress(a, address)));
 
       if (defaultAddress && isSameAddress(defaultAddress, address)) {
-        const updatedDefault = await userService.getDefaultAddress().catch(() => ({ data: null }));
+        const updatedDefault = await addressService.getDefaultAddress().catch(() => ({ data: null }));
         setDefaultAddress(updatedDefault.data ?? null);
       }
 
@@ -159,7 +159,7 @@ export default function BillingAddress() {
 
   const setDefault = async (address: Address) => {
     try {
-      const res = await userService.setDefaultAddress(address);
+      const res = await addressService.setDefaultAddress(address);
       if (!res.data) {
         showSnackbar("Đặt mặc định thất bại: không nhận được dữ liệu", "error");
         return;

@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { CheckCircle2, Clock, Eye, MessageCircle, Package, RotateCcw, Star, Truck, X, XCircle } from "lucide-react";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import reviewService from "../../../services/reviewService";
 import { EMethodPayment } from "../../../types/enums/methodPayment.enum";
@@ -19,6 +20,7 @@ import { EOrderStatus } from "../../../types/enums/order.enum";
 import type { OrderItemResponse, OrderResponse } from "../../../types/responses/order.reponse";
 import type { ReviewResponse } from "../../../types/responses/review.response";
 import { formatCurrency } from "../../../utils/format";
+import ConfirmModal from "../../WishList/components/ConfirmModal";
 import ReviewDialog from "./ReviewDialog";
 import ViewReviewDialog from "./ViewReviewDialog";
 
@@ -35,7 +37,14 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
   const [viewReviewDialogOpen, setViewReviewDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<OrderItemResponse | null>(null);
   const [selectedReview, setSelectedReview] = useState<ReviewResponse | null>(null);
+  const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
   const { showSnackbar } = useSnackbar();
+
+  const navigate = useNavigate();
+  const viewProductDetail = (productId: number) => {
+    navigate(`/shop/${productId}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const getStatusStep = (status: string): number => {
     switch (status) {
@@ -103,7 +112,7 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
   return (
     <>
       <Dialog
-        open={open && !reviewDialogOpen}
+        open={open && !reviewDialogOpen && !viewReviewDialogOpen && !confirmCancelOpen}
         onClose={onClose}
         maxWidth="md"
         fullWidth
@@ -238,7 +247,9 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                           objectFit: "cover",
                           borderRadius: 8,
                           border: "1px solid #E5E7EB",
+                          cursor: "pointer",
                         }}
+                        onClick={() => viewProductDetail(item.productId)}
                       />
                     ) : (
                       <Box
@@ -250,13 +261,21 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+                          cursor: "pointer",
                         }}
+                        onClick={() => viewProductDetail(item.productId)}
                       >
                         <Package size={32} color="#9CA3AF" />
                       </Box>
                     )}
                     <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography variant="body1" fontWeight={600} color="var(--color-gray1)">
+                      <Typography
+                        variant="body1"
+                        fontWeight={600}
+                        color="var(--color-gray1)"
+                        sx={{ cursor: "pointer" }}
+                        onClick={() => viewProductDetail(item.productId)}
+                      >
                         {item.productName}
                       </Typography>
                       <Typography variant="body2" color="var(--color-gray3)" sx={{ mt: 0.5 }}>
@@ -415,10 +434,7 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                 <Button
                   variant="outlined"
                   startIcon={<X size={18} />}
-                  onClick={() => {
-                    onCancel(order.orderId);
-                    onClose();
-                  }}
+                  onClick={() => setConfirmCancelOpen(true)}
                   sx={{
                     textTransform: "none",
                     borderColor: "var(--color-danger)",
@@ -488,6 +504,21 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
           review={selectedReview}
         />
       )}
+
+      {/* Confirm Cancel Dialog */}
+      <ConfirmModal
+        isOpen={confirmCancelOpen}
+        onClose={() => setConfirmCancelOpen(false)}
+        onConfirm={() => {
+          onCancel(order.orderId);
+          onClose();
+        }}
+        title="Cancel Order"
+        message={`Are you sure you want to cancel order #${order.orderId}? This action cannot be undone.`}
+        confirmText="Yes, Cancel Order"
+        cancelText="No, Keep Order"
+        type="danger"
+      />
     </>
   );
 };

@@ -211,14 +211,14 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productId, onReviewCoun
             color="var(--color-gray1)"
             sx={{ mb: 1.5, position: "relative", zIndex: 1 }}
           >
-            Chưa có đánh giá nào
+            No Reviews Yet
           </Typography>
           <Typography
             variant="body1"
             color="var(--color-gray3)"
             sx={{ maxWidth: 400, position: "relative", zIndex: 1 }}
           >
-            Hãy là người đầu tiên đánh giá sản phẩm này và chia sẻ trải nghiệm của bạn với mọi người
+            Be the first to review this product and share your experience with others
           </Typography>
         </Box>
       ) : (

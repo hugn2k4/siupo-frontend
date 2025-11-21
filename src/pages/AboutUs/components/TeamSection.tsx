@@ -1,5 +1,7 @@
 import type { BannerProps } from "../../../types/props/BannerProps";
 import { Skeleton } from "@mui/material";
+import defaultAboutUsStaff from "../../../assets/images/image_about_us_staff.png";
+import defaultBackground from "../../../assets/images/image_about_us_6.png";
 const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
   const teamMembers = [
     { name: "Aida Henry", role: "Kitchen Porter" },
@@ -7,8 +9,8 @@ const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
     { name: "Moana Henry", role: "Kitchen Porter" },
     { name: "Tala William", role: "Head Chef" },
   ];
-  const staffImage = banners[1]?.url || ""; // id: 104 - image_about_us_staff
-  const backgroundImage = banners[2]?.url || "";
+  const staffImage = banners[1]?.url || defaultAboutUsStaff; // id: 104 - image_about_us_staff
+  const backgroundImage = banners[2]?.url || defaultBackground;
   return (
     <section className="relative bg-primary pt-16 pb-78">
       <div

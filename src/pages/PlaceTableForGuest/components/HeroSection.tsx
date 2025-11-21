@@ -2,6 +2,7 @@
 // import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useBanners } from "../../../hooks/useBanners";
+import defaultPlacetable from "../../../assets/images/image_place_table.png";
 const HeroSection: React.FC = () => {
   // const [guests, setGuests] = useState("2");
   // const [branch, setBranch] = useState("");
@@ -13,7 +14,7 @@ const HeroSection: React.FC = () => {
   //   console.log("Chức năng tìm bàn chưa được triển khai");
   // };
   const { banners, loading } = useBanners("Place table");
-  const backgroundImage = banners[0]?.url || "";
+  const backgroundImage = banners[0]?.url || defaultPlacetable;
 
   return (
     <section

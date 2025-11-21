@@ -1,6 +1,10 @@
 import { Box, Typography, Skeleton } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useBanners } from "../../hooks/useBanners";
+import DefaultSalad from "../../assets/images/image_salad.png";
+import DefaultBurger from "../../assets/images/image_burger.png";
+import DefaultCupcake from "../../assets/images/image_cupcake.png";
+import DefaultCocktail from "../../assets/images/image_cocktail.png";
 
 const MenuItem: React.FC<{ item: { name: string; description: string; price: string; calories?: string } }> = ({
   item,
@@ -181,6 +185,7 @@ const menuData = [
     ],
   },
 ];
+const defaultBanners = [DefaultSalad, DefaultBurger, DefaultCupcake, DefaultCocktail];
 
 const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -205,8 +210,8 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
   // banners[1] = image_cupcake (Dessert)
   // banners[2] = image_cocktail (Drinks)
   // banners[3] = image_burger (Main Course)
-  const imageMapping = [0, 3, 1, 2]; // Map index của menuData với index của banners
-  const menuImage = banners[imageMapping[sectionIndex]]?.url || "";
+  const imageMapping = [0, 3, 1, 2]; // map index section → banners API
+  const menuImage = banners[imageMapping[sectionIndex]]?.url || defaultBanners[sectionIndex];
 
   return (
     <Box

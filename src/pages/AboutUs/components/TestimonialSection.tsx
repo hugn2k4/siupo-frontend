@@ -1,8 +1,8 @@
 import type { BannerProps } from "../../../types/props/BannerProps";
 import { Skeleton } from "@mui/material";
-
+import defaultClientImage from "../../../assets/images/image_about_us_client.png";
 const TestimonialSection: React.FC<BannerProps> = ({ banners, loading }) => {
-  const clientImage = banners[3]?.url || "";
+  const clientImage = banners[3]?.url || defaultClientImage;
   return (
     <section className="py-16 bg-white mt-60">
       <div className="text-center mb-12">

@@ -1,6 +1,7 @@
 import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
 import { API_BASE_URL, DEFAULT_HEADERS } from "../config";
+import { handleSessionExpired } from "./authUtils";
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
@@ -42,6 +43,7 @@ axiosClient.interceptors.request.use(
 );
 
 let isRefreshing = false;
+let isSessionExpired = false; // Flag to prevent multiple session expired calls
 let subscribers: ((token: string) => void)[] = [];
 
 function onAccessTokenFetched(newToken: string) {
@@ -74,11 +76,29 @@ axiosClient.interceptors.response.use(
 
     // ----- Handle 401 + Refresh token -----
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Skip retry for refresh-token endpoint itself to avoid infinite loop
+      if (originalRequest.url?.includes("/auth/refresh-token")) {
+        console.error(`❌ [${reqId}] Refresh token expired - Logging out`);
+        isRefreshing = false;
+        subscribers = []; // Clear all waiting requests
+
+        // Only handle session expired once
+        if (!isSessionExpired) {
+          isSessionExpired = true;
+          handleSessionExpired();
+        }
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
           addSubscriber((newToken) => {
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            resolve(axiosClient(originalRequest));
+            if (newToken) {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              resolve(axiosClient(originalRequest));
+            } else {
+              reject(error);
+            }
           });
         });
       }
@@ -90,7 +110,13 @@ axiosClient.interceptors.response.use(
         console.log(`🔄 [${reqId}] Refreshing token...`);
         const res = await axiosClient.post("/auth/refresh-token");
         const newAccessToken = res.data?.data?.accessToken || res.data?.accessToken;
+
+        if (!newAccessToken) {
+          throw new Error("No access token received");
+        }
+
         localStorage.setItem("accessToken", newAccessToken);
+        console.log(`✅ [${reqId}] Token refreshed successfully`);
 
         onAccessTokenFetched(newAccessToken);
         isRefreshing = false;
@@ -99,8 +125,14 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (refreshError) {
         isRefreshing = false;
-        localStorage.removeItem("accessToken");
-        console.error(`❌ [${reqId}] Refresh token failed`);
+        subscribers = []; // Clear all waiting requests
+        console.error(`❌ [${reqId}] Refresh token failed - Session expired`, refreshError);
+
+        // Only handle session expired once
+        if (!isSessionExpired) {
+          isSessionExpired = true;
+          handleSessionExpired();
+        }
         return Promise.reject(refreshError);
       }
     }

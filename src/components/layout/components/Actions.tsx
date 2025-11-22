@@ -6,6 +6,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import { Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ function Actions() {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [showNotificationLoginDialog, setShowNotificationLoginDialog] = useState(false);
   const { isLogin, logout } = useGlobal();
   const { showSnackbar } = useSnackbar();
 
@@ -71,6 +73,13 @@ function Actions() {
     navigate("/cart");
   };
 
+  const handleNotificationClick = () => {
+    if (!isLogin) {
+      setShowNotificationLoginDialog(true);
+    }
+    // Nếu đã login thì NotificationPopup component sẽ xử lý việc mở popup
+  };
+
   const iconButtonSx = {
     color: "white",
     "&:hover": {
@@ -86,7 +95,16 @@ function Actions() {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-      {isLogin && <NotificationPopup />}
+      {/* Hiển thị Notification cho cả người dùng đã đăng nhập và chưa đăng nhập */}
+      {isLogin ? (
+        <NotificationPopup />
+      ) : (
+        <Tooltip title="Notifications" arrow>
+          <IconButton aria-label="Notifications" onClick={handleNotificationClick} sx={iconButtonSx}>
+            <NotificationsOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
+          </IconButton>
+        </Tooltip>
+      )}
 
       <Tooltip title="Account" arrow>
         <IconButton aria-label="Account" onClick={handleAccountClick} sx={iconButtonSx}>
@@ -172,6 +190,14 @@ function Actions() {
         onClose={() => setShowLoginDialog(false)}
         message="You need to login to view your cart. Please sign in or create a new account."
         returnUrl="/cart"
+      />
+
+      {/* Login Required Dialog for Notifications */}
+      <LoginRequiredDialog
+        open={showNotificationLoginDialog}
+        onClose={() => setShowNotificationLoginDialog(false)}
+        message="You need to login to view notifications. Please sign in or create a new account."
+        returnUrl={window.location.pathname}
       />
     </Box>
   );

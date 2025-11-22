@@ -1,5 +1,6 @@
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Badge,
   Box,
@@ -9,8 +10,10 @@ import {
   ListItem,
   ListItemText,
   Popover,
+  Modal,
   Typography,
   alpha,
+  Backdrop,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import notificationApi from "../../api/notificationApi";
@@ -26,39 +29,60 @@ const NotificationDetailDialog = ({ notification, open, onClose }: NotificationD
   if (!notification) return null;
 
   return (
-    <Popover
+    <Modal
       open={open}
       onClose={onClose}
-      anchorOrigin={{
-        vertical: "center",
-        horizontal: "center",
-      }}
-      transformOrigin={{
-        vertical: "center",
-        horizontal: "center",
-      }}
-      sx={{
-        "& .MuiPaper-root": {
-          maxWidth: 500,
-          width: "90%",
-          borderRadius: 2,
-          boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+          sx: {
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+          },
         },
       }}
     >
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-          {notification.title}
-        </Typography>
-        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
-          {new Date(notification.sentAt).toLocaleString("vi-VN")}
-        </Typography>
-        <Divider sx={{ mb: 2 }} />
-        <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
-          {notification.content}
-        </Typography>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          maxWidth: 500,
+          width: "90%",
+          bgcolor: "background.paper",
+          borderRadius: 2,
+          boxShadow: 24,
+          p: 0,
+          outline: "none",
+        }}
+      >
+        <Box sx={{ p: 3, position: "relative" }}>
+          <IconButton
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "grey.500",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, pr: 4 }}>
+            {notification.title}
+          </Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
+            {new Date(notification.sentAt).toLocaleString("vi-VN")}
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+            {notification.content}
+          </Typography>
+        </Box>
       </Box>
-    </Popover>
+    </Modal>
   );
 };
 
@@ -127,8 +151,6 @@ const NotificationPopup = () => {
     }
   };
 
-  const open = Boolean(anchorEl);
-
   return (
     <>
       <IconButton
@@ -148,6 +170,8 @@ const NotificationPopup = () => {
           sx={{
             "& .MuiBadge-badge": {
               animation: unreadCount > 0 ? "pulse 2s infinite" : "none",
+              top: -12,
+              right: -8,
               "@keyframes pulse": {
                 "0%": {
                   transform: "scale(1)",
@@ -165,12 +189,12 @@ const NotificationPopup = () => {
             },
           }}
         >
-          <NotificationsIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
+          <NotificationsOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
         </Badge>
       </IconButton>
 
       <Popover
-        open={open}
+        open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
@@ -210,7 +234,7 @@ const NotificationPopup = () => {
           </Box>
         ) : notifications.length === 0 ? (
           <Box sx={{ p: 3, textAlign: "center" }}>
-            <NotificationsIcon sx={{ fontSize: 48, color: "text.disabled", mb: 1 }} />
+            <NotificationsOutlinedIcon sx={{ fontSize: 48, color: "text.disabled", mb: 1 }} />
             <Typography variant="body2" color="text.secondary">
               Chưa có thông báo nào
             </Typography>
@@ -270,9 +294,26 @@ const NotificationPopup = () => {
                       </Typography>
                     }
                     secondary={
-                      <Typography variant="caption" color="text.secondary">
-                        {new Date(notification.sentAt).toLocaleString("vi-VN")}
-                      </Typography>
+                      <>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            mb: 0.5,
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {notification.content}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {new Date(notification.sentAt).toLocaleString("vi-VN")}
+                        </Typography>
+                      </>
                     }
                   />
 

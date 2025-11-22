@@ -18,7 +18,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, cartQuantity, onAdd, 
       : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400";
 
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
+    <div className="bg-white  shadow-md overflow-hidden hover:shadow-xl transition">
       <div className="relative">
         <img src={thumbnail} alt={item.name} className="w-full h-40 object-cover" />
         {!isAvailable && (
@@ -31,19 +31,19 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, cartQuantity, onAdd, 
         <h3 className="font-bold text-gray-800 text-lg mb-1">{item.name}</h3>
         <p className="text-gray-500 text-sm mb-2 line-clamp-2">{item.description}</p>
         <div className="flex items-center justify-between">
-          <span className="text-amber-600 font-bold text-lg">{item.price.toLocaleString("vi-VN")}$</span>
+          <span className="text-primary font-bold text-lg">{item.price.toLocaleString("vi-VN")}$</span>
           {cartQuantity > 0 ? (
             <div className="flex items-center space-x-3">
               <button
                 onClick={onRemove}
-                className="w-8 h-8 rounded-full bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 transition"
+                className="w-8 h-8 l bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 transition"
               >
                 −
               </button>
               <span className="font-bold text-lg min-w-[20px] text-center">{cartQuantity}</span>
               <button
                 onClick={onAdd}
-                className="w-8 h-8 rounded-full bg-amber-600 text-white font-bold hover:bg-amber-700 transition"
+                className="w-8 h-8 l bg-primary text-white font-bold hover:bg-amber-700 transition"
               >
                 +
               </button>
@@ -52,14 +52,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({ item, cartQuantity, onAdd, 
             <button
               onClick={onAdd}
               disabled={!isAvailable}
-              className="bg-amber-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-amber-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="bg-primary text-white px-4 py-2 l font-semibold hover:bg-amber-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               Add
             </button>
           )}
         </div>
         {cartQuantity > 0 && (
-          <button onClick={onAddNote} className="w-full mt-2 text-amber-600 text-sm font-semibold hover:text-amber-700">
+          <button onClick={onAddNote} className="w-full mt-2 text-primary text-sm font-semibold hover:text-amber-700">
             📝 Add note
           </button>
         )}

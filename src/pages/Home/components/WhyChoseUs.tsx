@@ -1,4 +1,3 @@
-import React from "react";
 import { Truck, Clock, UtensilsCrossed, Factory } from "lucide-react";
 
 const WhyChooseUs = () => {

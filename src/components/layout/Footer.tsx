@@ -25,7 +25,7 @@ const Footer = () => {
         bgcolor: "black",
         color: "white",
         width: "100%",
-        mt: 4,
+        // mt: 4,
       }}
     >
       {/* Section 1: Support + Subscribe */}

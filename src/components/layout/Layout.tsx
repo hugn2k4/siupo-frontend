@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { useLocation, matchPath } from "react-router-dom";
+import { matchPath, useLocation } from "react-router-dom";
 import ROUTES_META from "../../config/routesMeta";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -22,6 +22,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         minHeight: "100dvh",
         display: "flex",
         flexDirection: "column",
+        paddingTop: { xs: "64px", md: "80px" }, // Match Header height
       }}
     >
       <Header />

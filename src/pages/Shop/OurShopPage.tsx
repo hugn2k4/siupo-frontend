@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react";
+// src/pages/OurShopPage.tsx
+import { useState, useCallback, useMemo, useRef } from "react";
 import { Box, IconButton, Drawer, useMediaQuery, useTheme } from "@mui/material";
 import FilterSidebar from "./components/FilterSidebar";
 import ProductList from "./components/ProductList";
@@ -16,35 +17,42 @@ function OurShopPage() {
     searchName: null,
     categoryIds: [],
     minPrice: 0,
-    maxPrice: 1000000,
+    maxPrice: 200,
   });
 
   const [mobileOpen, setMobileOpen] = useState(false);
-
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md")); // < 900px
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+
+  const prevFiltersRef = useRef<string>("");
+  const filterKey = `${filters.searchName || ""}|${filters.categoryIds.join(",")}|${filters.minPrice}|${filters.maxPrice}`;
+
+  const productListProps = useMemo(
+    () => ({
+      searchName: filters.searchName,
+      categoryIds: filters.categoryIds,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+    }),
+    [filterKey]
+  );
 
   const handleFilterChange = useCallback(
     (newFilters: FilterState) => {
+      const newKey = `${newFilters.searchName || ""}|${newFilters.categoryIds.join(",")}|${newFilters.minPrice}|${newFilters.maxPrice}`;
+      if (newKey === prevFiltersRef.current) return;
+      prevFiltersRef.current = newKey;
       setFilters(newFilters);
-      if (isMobile) setMobileOpen(false); // Đóng drawer sau khi lọc
+      if (isMobile) setMobileOpen(false);
     },
     [isMobile]
   );
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-  const drawer = (
-    <Box sx={{ width: 280, p: 2 }}>
-      <FilterSidebar onFilterChange={handleFilterChange} />
-    </Box>
-  );
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
   return (
     <>
-      {/* Nút Filter chỉ hiện trên Mobile */}
+      {/* Mobile Filter Button */}
       {isMobile && (
         <Box
           sx={{
@@ -53,56 +61,47 @@ function OurShopPage() {
             zIndex: 1100,
             bgcolor: "background.paper",
             p: 1,
-            borderBottom: "1px solid #e0e0e0",
             textAlign: "right",
+            borderBottom: "1px solid #e0e0e0",
           }}
         >
           <IconButton
             onClick={handleDrawerToggle}
-            sx={{
-              bgcolor: "#FF9F0D",
-              color: "white",
-              "&:hover": { bgcolor: "#e68a00" },
-            }}
+            sx={{ bgcolor: "#FF9F0D", color: "white", "&:hover": { bgcolor: "#e68a00" } }}
           >
             <FilterListIcon />
           </IconButton>
         </Box>
       )}
 
+      {/* LAYOUT CHÍNH – DÙNG GRID */}
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          width: "100%",
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "0 20px",
-          gap: 3,
-          flexWrap: "nowrap",
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", lg: "1fr 320px" },
+          gap: { xs: 0, lg: 4 },
+          maxWidth: "1400px",
+          mx: "auto",
+          px: { xs: 2, lg: 4 },
+          minHeight: "100vh",
+          alignItems: "start",
+          pt: { xs: 7, sm: 8, lg: 1 },
         }}
       >
-        {/* Product List */}
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <ProductList
-            searchName={filters.searchName}
-            categoryIds={filters.categoryIds}
-            minPrice={filters.minPrice}
-            maxPrice={filters.maxPrice}
-          />
+        {/* Product List – luôn giữ chỗ */}
+        <Box sx={{ minHeight: "800px" }}>
+          <ProductList {...productListProps} />
         </Box>
 
-        {/* Desktop: Sidebar luôn hiển thị */}
+        {/* Desktop Sidebar – cố định tuyệt đối */}
         {!isMobile && (
           <Box
             sx={{
-              width: "250px",
-              flexShrink: 0,
               position: "sticky",
-              top: 20,
-              alignSelf: "flex-start",
+              top: 24,
+              alignSelf: "start",
+              width: "100%",
+              maxWidth: 250,
             }}
           >
             <FilterSidebar onFilterChange={handleFilterChange} />
@@ -110,21 +109,17 @@ function OurShopPage() {
         )}
       </Box>
 
-      {/* Mobile: Drawer từ bên phải */}
+      {/* Mobile Drawer */}
       <Drawer
         anchor="right"
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{ keepMounted: true }}
-        sx={{
-          display: { xs: "block", md: "none" },
-          "& .MuiDrawer-paper": {
-            width: 280,
-            boxSizing: "border-box",
-          },
-        }}
+        sx={{ "& .MuiDrawer-paper": { width: 320, boxSizing: "border-box" } }}
       >
-        {drawer}
+        <Box sx={{ width: 320, p: 3, pt: 6 }}>
+          <FilterSidebar onFilterChange={handleFilterChange} />
+        </Box>
       </Drawer>
     </>
   );

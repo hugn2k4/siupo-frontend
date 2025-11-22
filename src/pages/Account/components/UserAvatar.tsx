@@ -37,7 +37,7 @@ export default function UserAvatar() {
           style={{ borderColor: "#ffffff" }}
         >
           <img
-            src="https://randomuser.me/api/portraits/women/44.jpg"
+            src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
             alt="User avatar"
             className="w-full h-full object-cover"
           />

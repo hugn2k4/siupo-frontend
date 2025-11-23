@@ -12,6 +12,7 @@ import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog"
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import cartService from "../../../services/cartService";
+import reviewApi from "../../../api/reviewApi";
 import { EProductStatus } from "../../../types/enums/product.enum";
 import type { ProductDetailResponse } from "../../../types/responses/product.response";
 import { wishlistApi } from "../../../api/wishListApi";
@@ -26,6 +27,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [isCheckingWishlist, setIsCheckingWishlist] = useState(true);
 
+  // State cho reviews
+  const [averageRating, setAverageRating] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
+  const [loadingReviews, setLoadingReviews] = useState(true);
+
   const { isLogin } = useGlobal();
   const { showSnackbar } = useSnackbar();
 
@@ -33,7 +39,40 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const qtySize = 48;
 
   const displayStatus = isAvailable ? "Available" : "Unavailable";
-  const displayPrice = new Intl.NumberFormat("vi-VN").format(product.price) + " VND";
+  const displayPrice = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(product.price);
+  // Fetch reviews khi component mount
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (!product?.id) return;
+
+      try {
+        setLoadingReviews(true);
+        const response = await reviewApi.getProductReviews(product.id);
+
+        if (response && response.data) {
+          const reviewsData = Array.isArray(response.data) ? response.data : [];
+          setReviewCount(reviewsData.length);
+
+          // Tính rating trung bình
+          if (reviewsData.length > 0) {
+            const totalRating = reviewsData.reduce((sum, review) => sum + (review.rating || 0), 0);
+            const avgRating = totalRating / reviewsData.length;
+            setAverageRating(avgRating);
+          } else {
+            setAverageRating(0);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        setReviewCount(0);
+        setAverageRating(0);
+      } finally {
+        setLoadingReviews(false);
+      }
+    };
+
+    fetchReviews();
+  }, [product?.id]);
 
   // Check if product is in wishlist when component mounts or login status changes
   useEffect(() => {
@@ -47,7 +86,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       try {
         setIsCheckingWishlist(true);
         const wishlist = await wishlistApi.getWishlist();
-        // Check if product exists in wishlist items array
         const isProductInWishlist = wishlist?.items?.some(
           (item: { productId: number }) => item.productId === product.id
         );
@@ -86,12 +124,10 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
 
     try {
       if (isInWishlist) {
-        // Remove from wishlist
         await wishlistApi.removeFromWishlist(product.id);
         setIsInWishlist(false);
         showSnackbar("Removed from wishlist!", "success", 3000);
       } else {
-        // Add to wishlist
         await wishlistApi.addToWishlist(product.id);
         setIsInWishlist(true);
         showSnackbar("Added to wishlist!", "success", 3000);
@@ -107,7 +143,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       setShowLoginDialog(true);
       return;
     }
-    // TODO: Implement compare logic
     showSnackbar("Added to compare list!", "success", 3000);
   };
 
@@ -173,15 +208,22 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         </Typography>
       </Box>
 
+      {/* Rating Section - Sử dụng dữ liệu từ API */}
       <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 4 }}>
-        <Rating name="product-rating" value={product.rating || 0} precision={0.5} readOnly size="small" />
+        <Rating
+          name="product-rating"
+          value={loadingReviews ? 0 : averageRating}
+          precision={0.5}
+          readOnly
+          size="small"
+        />
         <Divider orientation="vertical" flexItem />
         <Typography variant="body2" color="text.secondary">
-          {(product.rating || 0).toFixed(1)} Rating
+          {loadingReviews ? "..." : averageRating.toFixed(1)} Rating
         </Typography>
         <Divider orientation="vertical" flexItem />
         <Typography variant="body2" color="text.secondary">
-          {product.reviewCount || 0} Review
+          {loadingReviews ? "..." : reviewCount} Review{reviewCount !== 1 ? "s" : ""}
         </Typography>
       </Stack>
 
@@ -196,7 +238,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             "&:hover .qtyCell": { bgcolor: isAvailable ? "action.hover" : undefined },
           }}
         >
-          {/* Left square: decrement */}
           <Box
             className="qtyCell"
             role="button"
@@ -221,7 +262,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             <RemoveIcon fontSize="small" />
           </Box>
 
-          {/* Middle square: quantity */}
           <Box
             className="qtyCell"
             sx={{
@@ -236,7 +276,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             <Typography>{quantity}</Typography>
           </Box>
 
-          {/* Right square: increment */}
           <Box
             className="qtyCell"
             role="button"
@@ -344,7 +383,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       </Box>
       <Divider sx={{ borderStyle: "solid", borderColor: "divider", my: 2 }} />
 
-      {/* Login Required Dialog */}
       <LoginRequiredDialog
         open={showLoginDialog}
         onClose={() => setShowLoginDialog(false)}

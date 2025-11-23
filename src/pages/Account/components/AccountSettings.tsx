@@ -18,7 +18,7 @@ export default function AccountSettings() {
   const [phone, setPhone] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [gender, setGender] = useState<"MALE" | "FEMALE" | "OTHER">("FEMALE");
-  const [image, setImage] = useState("https://randomuser.me/api/portraits/women/44.jpg");
+  const [image, setImage] = useState("https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 

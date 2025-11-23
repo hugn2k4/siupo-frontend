@@ -13,7 +13,7 @@ const NoteModal: React.FC<NoteModalProps> = ({ item, currentNote, onSave, onClos
 
   return (
     <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50 p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white  w-full max-w-md p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold text-gray-800">Note for dish</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition">
@@ -35,14 +35,14 @@ const NoteModal: React.FC<NoteModalProps> = ({ item, currentNote, onSave, onClos
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="Example: Less spicy, no ice, extra vegetables..."
-          className="w-full border border-gray-300 rounded-xl p-3 h-32 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+          className="w-full border border-gray-300  p-3 h-32 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
           autoFocus
         />
 
         <div className="flex space-x-3 mt-6">
           <button
             onClick={onClose}
-            className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-full font-semibold hover:bg-gray-300 transition"
+            className="flex-1 bg-gray-200 text-gray-800 py-3 font-semibold hover:bg-gray-300 transition"
           >
             Cancel
           </button>
@@ -51,7 +51,7 @@ const NoteModal: React.FC<NoteModalProps> = ({ item, currentNote, onSave, onClos
               onSave(note);
               onClose();
             }}
-            className="flex-1 bg-amber-600 text-white py-3 rounded-full font-semibold hover:bg-amber-700 transition"
+            className="flex-1 bg-primary text-white py-3 font-semibold hover:bg-amber-700 transition"
           >
             Save
           </button>

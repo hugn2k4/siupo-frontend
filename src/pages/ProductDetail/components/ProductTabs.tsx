@@ -57,11 +57,11 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ productId, description, revie
             <div>
               <h4 className="font-bold text-gray-900 mb-4">Key Benefits</h4>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Maecenas ullamcorper est et massa mattis condimentum.</li>
-                <li>Vestibulum sed massa vel ipsum imperdiet malesuada id tempus nisl.</li>
-                <li>Etiam non massa et felis tempor feugiat congue ac vitae.</li>
-                <li>Mauris sagittis diam magna, in blandit turpis.</li>
+                <li>Fresh and high-quality ingredients that ensure great taste and nutrition.</li>
+                <li>Rich, satisfying flavor that appeals to a wide range of customers.</li>
+                <li>Nutritious and balanced, providing essential vitamins and energy.</li>
+                <li>Prepared with care and hygiene, ensuring safety and peace of mind.</li>
+                <li>Versatile and convenient, suitable for any meal of the day.</li>
               </ul>
             </div>
           </div>

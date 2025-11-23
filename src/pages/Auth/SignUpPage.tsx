@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
+import { useSnackbar } from "../../hooks/useSnackbar";
 import { authService } from "../../services/authService";
 import type { RegisterRequest } from "../../types/requests/auth.request";
 import AuthFormWrapper from "./components/AuthFormWrapper";
 import AuthTextField from "./components/AuthTextField";
 import OTPPopup from "./components/OTPPopup";
 import SocialLoginButtons from "./components/SocialLoginButtons";
-import { useSnackbar } from "../../hooks/useSnackbar";
 
 type SignUpFormData = {
   email: string;
@@ -27,12 +27,8 @@ export default function SignUpPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [openOTP, setOpenOTP] = useState(false);
   const [otpAttempts, setOtpAttempts] = useState(0);
-  const {
-    control,
-    handleSubmit,
-    watch,
-    formState: { isLoading },
-  } = useForm<SignUpFormData>({
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { control, handleSubmit, watch } = useForm<SignUpFormData>({
     defaultValues: {
       email: "",
       password: "",
@@ -42,6 +38,7 @@ export default function SignUpPage() {
     },
   });
   const onSubmit = async (data: SignUpFormData) => {
+    setIsSubmitting(true);
     const request: RegisterRequest = {
       email: data.email,
       password: data.password,
@@ -67,6 +64,8 @@ export default function SignUpPage() {
     } catch (error: unknown) {
       console.error("❌ Register error:", error);
       showSnackbar("Something went wrong. Please try again later.", "error", 4000);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -241,8 +240,8 @@ export default function SignUpPage() {
             type="submit"
             colorScheme="orange"
             fullWidth
-            disabled={isLoading}
-            isLoading={isLoading}
+            disabled={isSubmitting}
+            isLoading={isSubmitting}
             sx={{ mt: 3, mb: 3, borderRadius: 0, textTransform: "none" }}
           >
             Sign Up

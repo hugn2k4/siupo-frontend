@@ -6,11 +6,13 @@ import Navbar from "./components/Navbar";
 const Header = () => {
   return (
     <AppBar
-      position="static"
+      position="fixed"
       component="header"
       sx={{
         bgcolor: "black",
         boxShadow: "none",
+        top: 0,
+        zIndex: (theme) => theme.zIndex.appBar,
       }}
     >
       <Container maxWidth="xl">

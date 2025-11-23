@@ -2,23 +2,35 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Divider,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
-import LoginRequiredDialog from "../../common/LoginRequiredDialog";
 import NotificationPopup from "../../../pages/notificationPopup/notificationPopup";
+import LoginRequiredDialog from "../../common/LoginRequiredDialog";
 
 function Actions() {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
-  const { isLogin, logout } = useGlobal();
+  const { isLogin, logout, user } = useGlobal();
   const { showSnackbar } = useSnackbar();
 
   const handleAccountClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -71,6 +83,12 @@ function Actions() {
     navigate("/cart");
   };
 
+  const handleNotificationClick = () => {
+    if (!isLogin) {
+      setShowLoginDialog(true);
+    }
+  };
+
   const iconButtonSx = {
     color: "white",
     "&:hover": {
@@ -85,12 +103,64 @@ function Actions() {
   };
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-      {isLogin && <NotificationPopup />}
+    <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.25, md: 0.5 } }}>
+      {/* Notification */}
+      {isLogin ? (
+        <NotificationPopup />
+      ) : (
+        <Tooltip title="Notification" arrow>
+          <IconButton aria-label="Notification" sx={iconButtonSx} onClick={handleNotificationClick}>
+            <NotificationsIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
+          </IconButton>
+        </Tooltip>
+      )}
 
+      {/* Cart */}
+      <Tooltip title="Cart" arrow>
+        <IconButton aria-label="View cart" sx={iconButtonSx} onClick={handleCartClick}>
+          <ShoppingBagOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
+        </IconButton>
+      </Tooltip>
+
+      {/* User Name - Only show on desktop when logged in */}
+      {isLogin && user && (
+        <Typography
+          variant="body2"
+          sx={{
+            display: { xs: "none", md: "block" },
+            color: "white",
+            fontWeight: 500,
+            maxWidth: 200,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {user.fullName || user.email}
+        </Typography>
+      )}
+
+      {/* Account Icon/Avatar */}
       <Tooltip title="Account" arrow>
         <IconButton aria-label="Account" onClick={handleAccountClick} sx={iconButtonSx}>
-          <PersonOutlineOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
+          {isLogin && user ? (
+            <Avatar
+              src={user.avatarUrl}
+              alt={user.fullName || user.email}
+              sx={{
+                width: { xs: 28, md: 36 },
+                height: { xs: 28, md: 36 },
+                bgcolor: "var(--color-primary)",
+                fontSize: { xs: 13, md: 16 },
+                fontWeight: 600,
+                border: "2px solid white",
+              }}
+            >
+              {(user.fullName || user.email || "U").charAt(0).toUpperCase()}
+            </Avatar>
+          ) : (
+            <PersonOutlineOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
+          )}
         </IconButton>
       </Tooltip>
 
@@ -159,12 +229,6 @@ function Actions() {
               </MenuItem>,
             ]}
       </Menu>
-
-      <Tooltip title="Cart" arrow>
-        <IconButton aria-label="View cart" sx={iconButtonSx} onClick={handleCartClick}>
-          <ShoppingBagOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
-        </IconButton>
-      </Tooltip>
 
       {/* Login Required Dialog for Cart */}
       <LoginRequiredDialog

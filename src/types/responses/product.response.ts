@@ -9,6 +9,7 @@ export interface ProductResponse {
   status: "AVAILABLE" | "UNAVAILABLE";
   createdAt: string;
   updatedAt: string;
+  wishlist: boolean;
 }
 
 export interface CategoryResponse {

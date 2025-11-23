@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutDashboard, History, Heart, ShoppingBag, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Heart, Settings, LogOut } from "lucide-react";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 
@@ -14,9 +14,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/account/dashboard" },
-  { icon: History, label: "Order History", path: "/account/orders" },
   { icon: Heart, label: "Wishlist", path: "/account/wishlist" },
-  { icon: ShoppingBag, label: "Shopping Cart", path: "/cart" },
   { icon: Settings, label: "Settings", path: "/account/settings" },
 ];
 

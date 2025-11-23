@@ -41,7 +41,7 @@ interface FilterSidebarProps {
 const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
   const [searchName, setSearchName] = useState<string | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-  const [priceRange, setPriceRange] = useState<number[]>([0, 1000000]);
+  const [priceRange, setPriceRange] = useState<number[]>([0, 200]);
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [latestProducts, setLatestProducts] = useState<LatestProductWithRating[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);

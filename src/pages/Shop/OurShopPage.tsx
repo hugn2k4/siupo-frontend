@@ -17,7 +17,7 @@ function OurShopPage() {
     searchName: null,
     categoryIds: [],
     minPrice: 0,
-    maxPrice: 200,
+    maxPrice: 1000000,
   });
 
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -114,7 +114,7 @@ function OurShopPage() {
         anchor="right"
         open={mobileOpen}
         onClose={handleDrawerToggle}
-        ModalProps={{ keepMounted: true }}
+        ModalProps={{ keepMounted: false }}
         sx={{ "& .MuiDrawer-paper": { width: 320, boxSizing: "border-box" } }}
       >
         <Box sx={{ width: 320, p: 3, pt: 6 }}>

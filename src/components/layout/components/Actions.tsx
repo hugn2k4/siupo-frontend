@@ -31,6 +31,7 @@ function Actions() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const { isLogin, logout, user } = useGlobal();
+  const [showNotificationLoginDialog, setShowNotificationLoginDialog] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const handleAccountClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -85,7 +86,7 @@ function Actions() {
 
   const handleNotificationClick = () => {
     if (!isLogin) {
-      setShowLoginDialog(true);
+      setShowNotificationLoginDialog(true);
     }
   };
 
@@ -236,6 +237,14 @@ function Actions() {
         onClose={() => setShowLoginDialog(false)}
         message="You need to login to view your cart. Please sign in or create a new account."
         returnUrl="/cart"
+      />
+
+      {/* Login Required Dialog for Notifications */}
+      <LoginRequiredDialog
+        open={showNotificationLoginDialog}
+        onClose={() => setShowNotificationLoginDialog(false)}
+        message="You need to login to view notifications. Please sign in or create a new account."
+        returnUrl={window.location.pathname}
       />
     </Box>
   );

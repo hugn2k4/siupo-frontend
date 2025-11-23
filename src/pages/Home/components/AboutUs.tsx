@@ -1,6 +1,7 @@
 import { Box, Typography, Skeleton } from "@mui/material";
 import { motion } from "framer-motion";
 import MyButton from "../../../components/common/Button";
+import DefaultAboutUs from "../../../assets/images/image_about_us_home.png";
 import type { Banner } from "../../../types/models/banner";
 
 interface AboutUsProps {
@@ -10,7 +11,7 @@ interface AboutUsProps {
 
 function AboutUs({ banners, loading }: AboutUsProps) {
   // Lấy banner từ API
-  const aboutUsImage = banners[0]?.url || "";
+  const aboutUsImage = banners[0]?.url || DefaultAboutUs;
 
   return (
     <section className="w-full min-h-screen flex flex-col relative">

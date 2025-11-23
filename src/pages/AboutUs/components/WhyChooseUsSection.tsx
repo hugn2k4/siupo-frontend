@@ -4,10 +4,11 @@ import { Skeleton } from "@mui/material";
 import Student from "../../../assets/images/image_student.png";
 import Person from "../../../assets/images/image_person.png";
 import Coffee from "../../../assets/images/image_coffee.png";
+import defaultFeatureImage from "../../../assets/images/image_about_us_4.png";
 // import AboutusClient from "../../../assets/images/AboutusClient.png";
 // Why Choose Us Section Component
 const WhyChooseUsSection: React.FC<BannerProps> = ({ banners, loading }) => {
-  const featureImage = banners[4]?.url || "";
+  const featureImage = banners[4]?.url || defaultFeatureImage;
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4">

@@ -1,99 +1,105 @@
-import { Box, Container, Typography } from "@mui/material";
-import { motion } from "framer-motion";
+import { Container, Typography, Box } from "@mui/material";
 import React from "react";
 
 import chef1 from "../../assets/images/image_chef_1.png";
 import chef2 from "../../assets/images/image_chef_2.png";
 import chef3 from "../../assets/images/image_chef_3.png";
-import chef4 from "../../assets/images/image_chef_4.png";
-import chef5 from "../../assets/images/image_chef_5.png";
-import chef6 from "../../assets/images/image_chef_1.png";
-import chef7 from "../../assets/images/image_chef_1.png";
-import chef8 from "../../assets/images/image_chef_1.png";
-import chef9 from "../../assets/images/image_chef_1.png";
-import chef10 from "../../assets/images/image_chef_1.png";
-import chef11 from "../../assets/images/image_chef_1.png";
-import chef12 from "../../assets/images/image_chef_1.png";
-import ChefCard from "./ChefCard";
 
-interface Chef {
-  name: string;
-  image: string;
-  role: "Head Chef" | "Sous Chef";
-}
+const chefs = [
+  {
+    name: "LE CONG HUNG",
+    role: "EXECUTIVE HEAD CHEF",
+    desc: "Leading our kitchen with 15 years of mastery and creativity.",
+    image: chef1,
+  },
+  {
+    name: "VO THI KIM ANH",
+    role: "MASTER PASTRY CHEF",
+    desc: "The artist behind every exquisite dessert.",
+    image: chef2,
+  },
+  {
+    name: "TRAN NHAT MINH",
+    role: "GRILL MASTER",
+    desc: "King of fire and smoke — perfection in every sear.",
+    image: chef3,
+  },
+];
 
 const ChefPage: React.FC = () => {
-  const chefs: Chef[] = [
-    { name: "Tahmina Rumi", image: chef1, role: "Head Chef" },
-    { name: "Jorina Begum", image: chef2, role: "Sous Chef" },
-    { name: "M. Mohammad", image: chef3, role: "Head Chef" },
-    { name: "Munna Kathy", image: chef4, role: "Sous Chef" },
-    { name: "Bisnu Devgon", image: chef5, role: "Head Chef" },
-    { name: "William Rum", image: chef6, role: "Sous Chef" },
-    { name: "Motin Mollafs", image: chef7, role: "Head Chef" },
-    { name: "Kets William Roy", image: chef8, role: "Sous Chef" },
-    { name: "Mahmu Khodli", image: chef9, role: "Head Chef" },
-    { name: "Ataur Rahman", image: chef10, role: "Sous Chef" },
-    { name: "Monalisa Holly", image: chef11, role: "Head Chef" },
-    { name: "John Doe", image: chef12, role: "Sous Chef" },
-  ];
-
   return (
-    <section className="w-full min-h-[80vh] flex flex-col relative py-12" style={{}}>
-      <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 4 } }}>
-        {" "}
-        {/* Padding trái/phải */}
+    <Box sx={{ bgcolor: "#fffcf6", py: { xs: 10, md: 14 } }}>
+      <Container maxWidth="lg">
+        {/* 3 ảnh sát nhau, cao hơn, KHÔNG hover */}
         <Box
           sx={{
-            textAlign: "center",
+            display: "flex",
+            gap: 0, // sát nhau 100%
+            flexWrap: { xs: "wrap", md: "nowrap" },
+            justifyContent: "center",
             mb: 8,
           }}
         >
-          <Typography
-            component={motion.div}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-            variant="h3"
-            fontWeight="700"
-            sx={{
-              fontFamily: "Miniver",
-              fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem", lg: "3rem" },
-              lineHeight: { xs: 1.3, md: 1.2 },
-            }}
-          >
-            Meet Our Talented Chefs
-          </Typography>
+          {chefs.map((chef, i) => (
+            <Box key={i} sx={{ flex: "1", minWidth: 260 }}>
+              <img
+                src={chef.image}
+                alt={chef.name}
+                style={{
+                  width: "100%",
+                  height: "540px", // dài hơn, hiển thị đầy đủ
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+            </Box>
+          ))}
         </Box>
+
+        {/* Tên + chức danh + mô tả */}
         <Box
           sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr", // 1 cột trên mobile
-              sm: "repeat(2, 1fr)", // 2 cột trên tablet
-              md: "repeat(4, 1fr)", // 4 cột trên desktop
-            },
-            gap: 0, //khoảng cách giữa các thẻ
-            justifyContent: "center", // Căn giữa theo chiều ngang
-            margin: "0 auto", // Căn giữa toàn bộ grid
-            maxWidth: "100%", // Giới hạn chiều rộng tối đa
-            width: "fit-content", // Chiều rộng tự động dựa trên nội dung
+            display: "flex",
+            gap: { xs: 3, md: 4 },
+            flexWrap: { xs: "wrap", md: "nowrap" },
+            justifyContent: "center",
+            textAlign: "center",
           }}
         >
-          {chefs.map((chef, index) => (
-            <ChefCard
-              key={index}
-              chef={chef}
-              imageWidth="80%" // Tùy chỉnh độ rộng hình ảnh
-              fontSizeName="1rem" // Tùy chỉnh kích thước chữ tên
-              fontSizeRole="16px" // Tùy chỉnh kích thước chữ vai trò
-              index={index}
-            />
+          {chefs.map((chef, i) => (
+            <Box key={i} sx={{ flex: "1", minWidth: 260, px: 2 }}>
+              <Typography
+                sx={{
+                  fontSize: { xs: "1.6rem", md: "1.8rem" },
+                  fontWeight: 600,
+                  color: "#333",
+                  mb: 0.5,
+                  letterSpacing: "1px",
+                  fontFamily: '"Playfair Display", serif',
+                }}
+              >
+                {chef.name}
+              </Typography>
+
+              <Typography
+                sx={{
+                  color: "#b8975c",
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                  letterSpacing: "2.5px",
+                  textTransform: "uppercase",
+                  mb: 1.5,
+                }}
+              >
+                {chef.role}
+              </Typography>
+
+              <Typography sx={{ color: "#666", fontSize: "0.92rem", lineHeight: 1.7 }}>{chef.desc}</Typography>
+            </Box>
           ))}
         </Box>
       </Container>
-    </section>
+    </Box>
   );
 };
 

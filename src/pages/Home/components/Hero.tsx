@@ -4,6 +4,8 @@ import { useState } from "react";
 import ShiningStarsIcon from "../../../assets/icons/shining_stars.svg";
 import SparkleIcon from "../../../assets/icons/sparkle.svg";
 import MyButton from "../../../components/common/Button";
+import DefaultHero from "../../../assets/images/image_hero.png";
+import DefaultHeroMobile from "../../../assets/images/image_hero_mobile.png";
 import type { Banner } from "../../../types/models/banner";
 
 interface HeroProps {
@@ -14,8 +16,8 @@ interface HeroProps {
 const Hero = ({ banners, loading }: HeroProps) => {
   const [hoveredPlace, setHoveredPlace] = useState(false);
   // Lấy banner từ API
-  const heroImage = banners[0]?.url || "";
-  const heroImageMobile = banners[1]?.url || "";
+  const heroImage = banners[0]?.url || DefaultHero;
+  const heroImageMobile = banners[1]?.url || DefaultHeroMobile;
   return (
     <section className="w-full min-h-[90vh] flex flex-col relative overflow-hidden">
       {/* Right side: Hero Image - positioned absolutely to reach screen edge */}

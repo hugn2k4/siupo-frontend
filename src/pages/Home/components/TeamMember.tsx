@@ -12,7 +12,7 @@ const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
   const staffImage = banners[1]?.url || defaultAboutUsStaff; // id: 104 - image_about_us_staff
   const backgroundImage = banners[2]?.url || defaultBackground;
   return (
-    <section className="relative bg-primary pt-16 pb-78">
+    <section className="relative bg-green-primary pt-16 pb-78">
       <div
         className="absolute inset-0 opacity-20"
         style={{
@@ -24,7 +24,7 @@ const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
 
       <div className="max-w-6xl mx-auto px-4 text-center">
         <h2 className="text-4xl font-bold text-white mb-4">Team Member</h2>
-        <p className="text-orange-100 max-w-2xl mx-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <p className="text-green-100 max-w-2xl mx-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       </div>
 
       {/* Grid nổi lên */}

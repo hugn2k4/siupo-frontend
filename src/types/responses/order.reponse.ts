@@ -24,4 +24,5 @@ export type OrderResponse = {
   payUrl?: string;
   qrCodeUrl?: string;
   deeplink?: string;
+  createdAt: string;
 };

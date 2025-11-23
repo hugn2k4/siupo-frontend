@@ -21,11 +21,11 @@ export default function WishlistEmpty() {
       </p>
 
       <button
-        onClick={() => navigate("/menu")}
+        onClick={() => navigate("/shop")}
         className="px-8 py-3 rounded-lg font-semibold text-white transition-all hover:opacity-90"
         style={{ backgroundColor: "#FF9F0D" }}
       >
-        Browse Menu
+        Browse Shop
       </button>
     </div>
   );

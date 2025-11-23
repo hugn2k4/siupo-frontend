@@ -11,7 +11,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ title, price, originalPrice, image = imageDefault }) => {
   return (
-    <div className="relative group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div className="cursor-pointer relative group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       {/* Hình ảnh */}
       <div className="w-full h-48 bg-gray-200 overflow-hidden relative">
         <img
@@ -25,13 +25,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ title, price, originalPrice, 
 
         {/* Overlay nút khi hover */}
         <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="bg-white p-3 rounded-md hover:bg-primary hover:text-white transition shadow">
+          <button className="cursor-pointer bg-white p-3 rounded-md hover:bg-primary hover:text-white transition shadow">
             <Share2 size={18} />
           </button>
-          <button className="bg-white p-3 rounded-md hover:bg-primary hover:text-white transition shadow">
+          <button className="cursor-pointer bg-white p-3 rounded-md hover:bg-primary hover:text-white transition shadow">
             <ShoppingBag size={18} />
           </button>
-          <button className="bg-white p-3 rounded-md hover:bg-primary hover:text-white transition shadow">
+          <button className="cursor-pointer bg-white p-3 rounded-md hover:bg-primary hover:text-white transition shadow">
             <Heart size={18} />
           </button>
         </div>

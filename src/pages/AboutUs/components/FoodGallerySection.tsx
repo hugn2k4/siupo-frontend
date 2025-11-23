@@ -2,10 +2,10 @@ import React from "react";
 import { Skeleton } from "@mui/material";
 import MyButton from "../../../components/common/Button";
 import type { BannerProps } from "../../../types/props/BannerProps";
-
+import defaultAboutUs from "../../../assets/images/image_about_us_home.png";
 // Food Gallery Section Component
 const FoodGallerySection: React.FC<BannerProps> = ({ banners, loading }) => {
-  const aboutUsImage = banners[0]?.url || "";
+  const aboutUsImage = banners[0]?.url || defaultAboutUs;
   return (
     <section className="py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4">

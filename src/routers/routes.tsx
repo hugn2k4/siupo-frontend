@@ -7,6 +7,7 @@ import SettingsPage from "../pages/Account/SettingsPage";
 import RequestForgotPassword from "../pages/Auth/components/RequestForgotPassword";
 import SetNewPassword from "../pages/Auth/components/SetNewPassword";
 import ForgotPasswordPage from "../pages/Auth/ForgotPasswordPage";
+import OAuth2CallbackPage from "../pages/Auth/OAuth2CallbackPage";
 import SignInPage from "../pages/Auth/SignInPage";
 import SignUpPage from "../pages/Auth/SignUpPage";
 import Cart from "../pages/Cart/Cart";
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
         children: [
           { path: "signin", element: <SignInPage /> },
           { path: "signup", element: <SignUpPage /> },
+          { path: "auth/oauth2/callback", element: <OAuth2CallbackPage /> },
           {
             path: "forgot-password",
             element: <ForgotPasswordPage />,

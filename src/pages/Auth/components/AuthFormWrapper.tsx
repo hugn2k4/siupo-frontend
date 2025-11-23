@@ -11,9 +11,17 @@ const AuthFormWrapper: React.FC<AuthFormWrapperProps> = ({ children }) => {
 
   useEffect(() => {
     if (formRef.current) {
-      formRef.current.scrollIntoView({
+      const element = formRef.current;
+      const headerHeight = window.innerWidth >= 900 ? 80 : 64; // Header height
+      const elementRect = element.getBoundingClientRect();
+      const absoluteElementTop = elementRect.top + window.pageYOffset;
+
+      // Calculate scroll position: center of viewport minus half of header
+      const scrollPosition = absoluteElementTop - window.innerHeight / 2 + elementRect.height / 2 - headerHeight / 2;
+
+      window.scrollTo({
+        top: scrollPosition,
         behavior: "smooth",
-        block: "center",
       });
     }
   }, []);

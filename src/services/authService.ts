@@ -1,4 +1,5 @@
 import authApi from "../api/authApi";
+import userApi from "../api/userApi";
 import type { ForgotPasswordRequest, LoginRequest, RegisterRequest } from "../types/requests/auth.request";
 
 export const authService = {
@@ -47,5 +48,13 @@ export const authService = {
   setNewPassword: async (data: ForgotPasswordRequest) => {
     const res = await authApi.setNewPassword(data);
     return res;
+  },
+
+  getCurrentUser: async () => {
+    const res = await userApi.getCurrentUser();
+    if (res.success && res.data) {
+      return res.data;
+    }
+    return null;
   },
 };

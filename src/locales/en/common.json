@@ -62,6 +62,11 @@
     "passwordMismatch": "Passwords do not match",
     "invalidPhone": "Invalid phone number"
   },
+  "notFound": {
+    "title": "Oops! Looks like something going wrong",
+    "description": "Page cannot be found! We'll have it figured out in no time.\nMeanwhile, check out these fresh ideas:",
+    "goHome": "Go to Home"
+  },
   "time": {
     "justNow": "Just now",
     "minutesAgo": "{{count}} minutes ago",

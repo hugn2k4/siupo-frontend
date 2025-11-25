@@ -87,6 +87,11 @@
     "shop": "Cửa Hàng",
     "wishlist": "Yêu Thích"
   },
+  "notFound": {
+    "description": "Không tìm thấy trang! Chúng tôi sẽ khắc phục sớm nhất.\nTrong lúc chờ đợi, hãy xem những gợi ý mới này:",
+    "goHome": "Về Trang Chủ",
+    "title": "Rất tiếc! Có vẻ như có gì đó không đúng"
+  },
   "time": {
     "daysAgo": "{{count}} ngày trước",
     "hoursAgo": "{{count}} giờ trước",

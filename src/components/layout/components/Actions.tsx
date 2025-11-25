@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { useTranslation } from "../../../hooks/useTranslation";
-import NotificationPopup from "../../../pages/notificationPopup/notificationPopup";
+import NotificationPopup from "../../../pages/NotificationPopup/notificationPopup";
 import LanguageSwitcher from "../../common/LanguageSwitcher";
 import LoginRequiredDialog from "../../common/LoginRequiredDialog";
 
@@ -139,8 +139,12 @@ function Actions() {
             gap: 1,
             cursor: "pointer",
             transition: "all 0.2s ease",
+            p: { xs: 1, md: 1.5 },
             "&:hover": {
               "& .MuiTypography-root": {
+                color: "var(--color-primary)",
+              },
+              "& .MuiSvgIcon-root": {
                 color: "var(--color-primary)",
               },
             },

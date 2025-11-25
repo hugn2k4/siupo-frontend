@@ -1,32 +1,32 @@
 {
-  "hero": {
-    "subtitle": "Thức Ăn Lành Mạnh & Ngon Miệng",
-    "title1": "Tận Hưởng Cuộc Sống Khỏe Mạnh",
-    "title2": "& Thức Ăn Ngon.",
-    "description": "Khám phá nhiều món ăn lành mạnh và ngon miệng được chế biến để nuôi dưỡng cơ thể và làm hài lòng vị giác của bạn. Từ salad tươi ngon đến các món bowl bổ dưỡng, mỗi món ăn đều được chế biến với tình yêu và nguyên liệu chất lượng, giúp bạn tận hưởng lối sống cân bằng và đầy hương vị.",
-    "showMore": "Xem Thêm",
-    "placeOrder": "Đặt Hàng"
-  },
-  "stats": {
-    "yearsOfExperience": "Năm Kinh Nghiệm",
-    "happyCustomers": "Khách Hàng Hài Lòng",
-    "masterChefs": "Đầu Bếp Chuyên Nghiệp",
-    "popularDishes": "Món Ăn Phổ Biến"
-  },
   "aboutSection": {
+    "description": "Ăn uống tốt không chỉ là để no bụng — mà là cung cấp cho cơ thể những chất dinh dưỡng cần thiết để luôn khỏe mạnh và tràn đầy năng lượng. Một chế độ ăn cân bằng gồm rau củ, ngũ cốc, protein và chất béo lành mạnh giúp bạn tận hưởng cả sức khỏe và hương vị trong khi hỗ trợ sức khỏe lâu dài.",
     "heading": "Về Chúng Tôi",
-    "title": "Nơi Hội Tụ Tinh Hoa & Truyền Thống",
-    "description": "Chúng tôi phục vụ các món ăn Việt Nam chính gốc với phong cách hiện đại, chỉ sử dụng nguyên liệu tươi ngon nhất và công thức truyền thống được truyền qua nhiều thế hệ."
+    "title": "Thức ăn là một phần quan trọng của chế độ ăn cân bằng"
+  },
+  "chefSection": {
+    "heading": "Đội Ngũ",
+    "title": "Gặp Gỡ Đầu Bếp Chuyên Nghiệp",
+    "viewAllChefs": "Xem Tất Cả Đầu Bếp"
+  },
+  "hero": {
+    "description": "Khám phá nhiều món ăn lành mạnh và ngon miệng được chế biến để nuôi dưỡng cơ thể và làm hài lòng vị giác của bạn. Từ salad tươi ngon đến các món bowl bổ dưỡng, mỗi món ăn đều được chế biến với tình yêu và nguyên liệu chất lượng, giúp bạn tận hưởng lối sống cân bằng và đầy hương vị.",
+    "placeOrder": "Đặt Hàng",
+    "showMore": "Xem Thêm",
+    "subtitle": "Thức Ăn Lành Mạnh & Ngon Miệng",
+    "title1": "Tận hưởng cuộc sống khỏe mạnh",
+    "title2": "& Thức Ăn Ngon."
   },
   "menuSection": {
     "heading": "Thực Đơn",
     "title": "Khám Phá Những Món Ăn Tuyệt Vời",
     "viewAllMenu": "Xem Tất Cả Thực Đơn"
   },
-  "chefSection": {
-    "heading": "Đội Ngũ",
-    "title": "Gặp Gỡ Đầu Bếp Chuyên Nghiệp",
-    "viewAllChefs": "Xem Tất Cả Đầu Bếp"
+  "stats": {
+    "happyCustomers": "Khách Hàng Hài Lòng",
+    "masterChefs": "Đầu Bếp Chuyên Nghiệp",
+    "popularDishes": "Món Ăn Phổ Biến",
+    "yearsOfExperience": "Năm Kinh Nghiệm"
   },
   "testimonials": {
     "heading": "Đánh Giá",

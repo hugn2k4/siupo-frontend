@@ -33,5 +33,23 @@
   "team": {
     "title": "Đội Ngũ Của Chúng Tôi",
     "description": "Đội ngũ đầu bếp và nhân viên tài năng của chúng tôi luôn tận tâm mang đến trải nghiệm ẩm thực đặc biệt."
+  },
+  "whyChooseUs": {
+    "title": "Tại Sao Chọn Chúng Tôi",
+    "description": "Chúng tôi tự hào mang đến cho bạn những trải nghiệm ẩm thực tốt nhất với sự kết hợp hoàn hảo giữa chất lượng, dịch vụ và không gian.",
+    "features": {
+      "bestChef": {
+        "title": "Đầu Bếp Chuyên Nghiệp",
+        "description": "Đội ngũ đầu bếp giàu kinh nghiệm với nhiều năm thành tựu trong lĩnh vực ẩm thực, luôn sáng tạo và đam mê với nghề."
+      },
+      "qualityFood": {
+        "title": "120+ Món Ăn Chất Lượng",
+        "description": "Thực đơn phong phú với hơn 120 món ăn đa dạng, từ truyền thống đến hiện đại, đáp ứng mọi khẩu vị."
+      },
+      "cleanEnvironment": {
+        "title": "Môi Trường Sạch Sẽ",
+        "description": "Không gian nhà hàng sạch sẽ, thoải mái và an toàn, đảm bảo vệ sinh thực phẩm theo tiêu chuẩn cao nhất."
+      }
+    }
   }
 }

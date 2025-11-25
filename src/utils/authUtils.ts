@@ -2,6 +2,7 @@
  * Authentication utility functions
  * Handles logout and session expiration
  */
+import { logger } from "./logger";
 
 let globalLogoutHandler: (() => void) | null = null;
 let globalShowSnackbar:
@@ -19,7 +20,7 @@ export const registerAuthHandlers = (
 ) => {
   globalLogoutHandler = logout;
   globalShowSnackbar = showSnackbar;
-  console.log("✅ Auth handlers registered successfully");
+  logger.log("✅ Auth handlers registered successfully");
 };
 
 /**
@@ -32,38 +33,38 @@ export const registerAuthHandlers = (
 export const handleSessionExpired = () => {
   // Prevent multiple calls
   if (isSessionExpiring) {
-    console.log("⏭️ handleSessionExpired already in progress, skipping...");
+    logger.log("⏭️ handleSessionExpired already in progress, skipping...");
     return;
   }
 
   isSessionExpiring = true;
-  console.log("🚪 handleSessionExpired called");
+  logger.log("🚪 handleSessionExpired called");
 
   // Clear tokens
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
   localStorage.removeItem("user");
-  console.log("🗑️ Tokens cleared from localStorage");
+  logger.log("🗑️ Tokens cleared from localStorage");
 
   // Show notification if available
   const notificationDuration = 2000; // 2 seconds
   if (globalShowSnackbar) {
-    console.log("📢 Showing session expired notification");
+    logger.log("📢 Showing session expired notification");
     globalShowSnackbar("Your session has expired. Please login again.", "warning", notificationDuration);
   } else {
-    console.warn("⚠️ globalShowSnackbar not available");
+    logger.warn("⚠️ globalShowSnackbar not available");
   }
 
   // Trigger logout if available
   if (globalLogoutHandler) {
-    console.log("👋 Calling global logout handler");
+    logger.log("👋 Calling global logout handler");
     globalLogoutHandler();
   } else {
-    console.warn("⚠️ globalLogoutHandler not available");
+    logger.warn("⚠️ globalLogoutHandler not available");
   }
 
   // Redirect to home page after notification duration
-  console.log(`🏠 Redirecting to home page in ${notificationDuration}ms...`);
+  logger.log(`🏠 Redirecting to home page in ${notificationDuration}ms...`);
   setTimeout(() => {
     window.location.href = "/";
   }, notificationDuration);

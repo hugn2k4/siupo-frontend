@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import { useTranslation } from "../../../hooks/useTranslation";
-import NotificationPopup from "../../../pages/NotificationPopup/notificationPopup";
+import NotificationPopup from "../../../pages/NotificationPopup/NotificationPopup";
 import LanguageSwitcher from "../../common/LanguageSwitcher";
 import LoginRequiredDialog from "../../common/LoginRequiredDialog";
 

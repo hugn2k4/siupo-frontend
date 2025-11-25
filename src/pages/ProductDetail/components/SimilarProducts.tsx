@@ -68,13 +68,13 @@ const SimilarProducts: React.FC = () => {
     <div className="mt-16">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold text-gray-900">Similar Products</h2>
-        {/* Có thể bỏ nút prev/next nếu không dùng carousel */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <ProductCard
             key={product.id}
+            id={product.id}
             title={product.name}
             price={new Intl.NumberFormat("en-US", {
               style: "currency",

@@ -1,0 +1,53 @@
+{
+  "dashboard": {
+    "title": "Tài Khoản Của Tôi",
+    "welcome": "Chào mừng trở lại, {{name}}!",
+    "overview": "Tổng Quan Tài Khoản"
+  },
+  "orders": {
+    "title": "Đơn Hàng Của Tôi",
+    "orderNumber": "Đơn Hàng #{{number}}",
+    "date": "Ngày",
+    "status": "Trạng Thái",
+    "total": "Tổng",
+    "viewDetails": "Xem Chi Tiết",
+    "noOrders": "Bạn chưa có đơn hàng nào",
+    "statuses": {
+      "pending": "Chờ Xác Nhận",
+      "confirmed": "Đã Xác Nhận",
+      "preparing": "Đang Chuẩn Bị",
+      "delivering": "Đang Giao",
+      "completed": "Hoàn Thành",
+      "cancelled": "Đã Hủy"
+    }
+  },
+  "wishlist": {
+    "title": "Danh Sách Yêu Thích",
+    "empty": "Danh sách yêu thích của bạn đang trống",
+    "addToCart": "Thêm Vào Giỏ",
+    "remove": "Xóa"
+  },
+  "settings": {
+    "title": "Cài Đặt Tài Khoản",
+    "profile": "Thông Tin Cá Nhân",
+    "fullName": "Họ và Tên",
+    "email": "Email",
+    "phone": "Số Điện Thoại",
+    "gender": "Giới Tính",
+    "birthday": "Ngày Sinh",
+    "save": "Lưu Thay Đổi",
+    "changePassword": "Đổi Mật Khẩu",
+    "currentPassword": "Mật Khẩu Hiện Tại",
+    "newPassword": "Mật Khẩu Mới",
+    "confirmPassword": "Xác Nhận Mật Khẩu",
+    "updateSuccess": "Cập nhật thông tin thành công"
+  },
+  "address": {
+    "title": "Địa Chỉ Thanh Toán",
+    "default": "Địa Chỉ Mặc Định",
+    "add": "Thêm Địa Chỉ Mới",
+    "edit": "Sửa Địa Chỉ",
+    "delete": "Xóa Địa Chỉ",
+    "setDefault": "Đặt Làm Mặc Định"
+  }
+}

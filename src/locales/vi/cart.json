@@ -1,0 +1,24 @@
+{
+  "title": "Giỏ Hàng",
+  "empty": "Giỏ hàng của bạn đang trống",
+  "continueShopping": "Tiếp Tục Mua Sắm",
+  "item": {
+    "product": "Sản Phẩm",
+    "remove": "Xóa",
+    "quantity": "Số Lượng",
+    "price": "Giá",
+    "total": "Tổng"
+  },
+  "summary": {
+    "title": "Tóm Tắt Giỏ Hàng",
+    "subtotal": "Tạm Tính",
+    "shipping": "Phí Vận Chuyển",
+    "total": "Tổng Cộng",
+    "checkout": "Tiến Hành Thanh Toán"
+  },
+  "messages": {
+    "addSuccess": "Đã thêm vào giỏ hàng",
+    "removeSuccess": "Đã xóa khỏi giỏ hàng",
+    "updateSuccess": "Đã cập nhật giỏ hàng"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "title": "Liên Hệ",
+  "subtitle": "Chúng Tôi Rất Mong Nhận Được Phản Hồi Từ Bạn",
+  "form": {
+    "name": "Họ và Tên",
+    "email": "Email Của Bạn",
+    "phone": "Số Điện Thoại",
+    "subject": "Tiêu Đề",
+    "message": "Nội Dung",
+    "send": "Gửi Tin Nhắn",
+    "sending": "Đang gửi..."
+  },
+  "info": {
+    "title": "Thông Tin Liên Hệ",
+    "address": "Địa Chỉ",
+    "phone": "Điện Thoại",
+    "email": "Email",
+    "hours": "Giờ Mở Cửa"
+  },
+  "success": "Cảm ơn bạn đã gửi tin nhắn. Chúng tôi sẽ phản hồi sớm nhất!",
+  "error": "Gửi tin nhắn thất bại. Vui lòng thử lại."
+}

@@ -2,10 +2,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import menu from "../../../config/menuConfig";
 
 function Navbar() {
+  const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -56,7 +58,7 @@ function Navbar() {
             }}
             aria-current={location.pathname === item.path ? "page" : undefined}
           >
-            {item.label}
+            {t(item.translationKey)}
           </Box>
         ))}
       </Box>
@@ -128,7 +130,7 @@ function Navbar() {
                 aria-current={location.pathname === item.path ? "page" : undefined}
               >
                 <ListItemText
-                  primary={item.label}
+                  primary={t(item.translationKey)}
                   primaryTypographyProps={{
                     sx: {
                       color: "white",

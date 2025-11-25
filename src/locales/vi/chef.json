@@ -1,0 +1,15 @@
+{
+  "title": "Đầu Bếp Của Chúng Tôi",
+  "subtitle": "Gặp Gỡ Những Bậc Thầy Đằng Sau Bữa Ăn Của Bạn",
+  "card": {
+    "experience": "{{years}} năm kinh nghiệm",
+    "speciality": "Chuyên Môn",
+    "viewProfile": "Xem Hồ Sơ"
+  },
+  "profile": {
+    "biography": "Tiểu Sử",
+    "achievements": "Thành Tựu",
+    "signature": "Món Ăn Đặc Trưng",
+    "philosophy": "Triết Lý Nấu Ăn"
+  }
+}

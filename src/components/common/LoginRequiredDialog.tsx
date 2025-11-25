@@ -1,6 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Dialog, IconButton, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "../../hooks/useTranslation";
 import MyButton from "./Button";
 
 interface LoginRequiredDialogProps {
@@ -10,13 +11,11 @@ interface LoginRequiredDialogProps {
   returnUrl?: string;
 }
 
-const LoginRequiredDialog: React.FC<LoginRequiredDialogProps> = ({
-  open,
-  onClose,
-  message = "You need to login to perform this action. Please sign in or create a new account.",
-  returnUrl,
-}) => {
+const LoginRequiredDialog: React.FC<LoginRequiredDialogProps> = ({ open, onClose, message, returnUrl }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const defaultMessage = t("messages.loginRequired");
 
   const handleSignIn = () => {
     navigate("/signin", {
@@ -49,19 +48,19 @@ const LoginRequiredDialog: React.FC<LoginRequiredDialogProps> = ({
         </IconButton>
 
         <Typography variant="h6" component="div" sx={{ mb: 2 }}>
-          Login Required
+          {t("messages.loginRequiredTitle")}
         </Typography>
 
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          {message}
+          {message || defaultMessage}
         </Typography>
 
         <Stack direction="row" spacing={2}>
           <MyButton fullWidth colorScheme="orange" onClick={handleSignIn} sx={{ borderRadius: 0 }}>
-            Sign In
+            {t("actions.login")}
           </MyButton>
           <MyButton fullWidth colorScheme="orange" onClick={handleSignUp} sx={{ borderRadius: 0 }}>
-            Sign Up
+            {t("actions.signup")}
           </MyButton>
         </Stack>
       </Box>

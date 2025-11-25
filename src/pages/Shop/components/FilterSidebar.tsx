@@ -4,6 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Checkbox,
+  CircularProgress,
   FormControlLabel,
   FormGroup,
   IconButton,
@@ -12,10 +13,9 @@ import {
   Slider,
   TextField,
   Typography,
-  CircularProgress,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { useEffect, useState, useRef, memo } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import categoryService from "../../../services/categoryService";
 import productService from "../../../services/productService";
 import reviewService from "../../../services/reviewService";
@@ -151,7 +151,7 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
       viewport={{ once: true, amount: 0 }}
       sx={{
         mt: "110px",
-
+        mb: 12,
         // Thay bằng:
         // mt: 0,
         padding: 2.5,

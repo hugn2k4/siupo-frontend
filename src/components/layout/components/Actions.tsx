@@ -23,10 +23,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import { useTranslation } from "../../../hooks/useTranslation";
 import NotificationPopup from "../../../pages/notificationPopup/notificationPopup";
+import LanguageSwitcher from "../../common/LanguageSwitcher";
 import LoginRequiredDialog from "../../common/LoginRequiredDialog";
 
 function Actions() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
@@ -69,7 +72,7 @@ function Actions() {
 
   const handleLogout = () => {
     logout();
-    showSnackbar("Logout successful", "success");
+    showSnackbar(t("messages.logoutSuccess"), "success");
     handleMenuClose();
     setTimeout(() => {
       navigate("/");
@@ -105,11 +108,14 @@ function Actions() {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.25, md: 0.5 } }}>
+      {/* Language Switcher */}
+      <LanguageSwitcher />
+
       {/* Notification */}
       {isLogin ? (
         <NotificationPopup />
       ) : (
-        <Tooltip title="Notification" arrow>
+        <Tooltip title={t("navigation.notification")} arrow>
           <IconButton aria-label="Notification" sx={iconButtonSx} onClick={handleNotificationClick}>
             <NotificationsIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
           </IconButton>
@@ -117,33 +123,48 @@ function Actions() {
       )}
 
       {/* Cart */}
-      <Tooltip title="Cart" arrow>
+      <Tooltip title={t("navigation.cart")} arrow>
         <IconButton aria-label="View cart" sx={iconButtonSx} onClick={handleCartClick}>
           <ShoppingBagOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
         </IconButton>
       </Tooltip>
 
-      {/* User Name - Only show on desktop when logged in */}
-      {isLogin && user && (
-        <Typography
-          variant="body2"
+      {/* User Name & Avatar - Grouped together */}
+      <Tooltip title={t("navigation.account")} arrow>
+        <Box
+          onClick={handleAccountClick}
           sx={{
-            display: { xs: "none", md: "block" },
-            color: "white",
-            fontWeight: 500,
-            maxWidth: 200,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            "&:hover": {
+              "& .MuiTypography-root": {
+                color: "var(--color-primary)",
+              },
+            },
           }}
         >
-          {user.fullName || user.email}
-        </Typography>
-      )}
+          {/* User Name - Only show on desktop when logged in */}
+          {isLogin && user && (
+            <Typography
+              variant="body2"
+              sx={{
+                display: { xs: "none", md: "block" },
+                color: "white",
+                fontWeight: 500,
+                maxWidth: 200,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {user.fullName || user.email}
+            </Typography>
+          )}
 
-      {/* Account Icon/Avatar */}
-      <Tooltip title="Account" arrow>
-        <IconButton aria-label="Account" onClick={handleAccountClick} sx={iconButtonSx}>
+          {/* Account Icon/Avatar */}
           {isLogin && user ? (
             <Avatar
               src={user.avatarUrl}
@@ -160,9 +181,9 @@ function Actions() {
               {(user.fullName || user.email || "U").charAt(0).toUpperCase()}
             </Avatar>
           ) : (
-            <PersonOutlineOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
+            <PersonOutlineOutlinedIcon sx={{ fontSize: { xs: 20, md: 24 }, color: "white" }} />
           )}
-        </IconButton>
+        </Box>
       </Tooltip>
 
       {/* Account Menu */}
@@ -193,26 +214,26 @@ function Actions() {
                 <ListItemIcon>
                   <AccountCircleOutlinedIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Profile</ListItemText>
+                <ListItemText>{t("navigation.profile")}</ListItemText>
               </MenuItem>,
               <MenuItem key="wishlít" onClick={handleWishlist}>
                 <ListItemIcon>
                   <FavoriteBorderOutlinedIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Wishlist</ListItemText>
+                <ListItemText>{t("navigation.wishlist")}</ListItemText>
               </MenuItem>,
               <MenuItem key="order" onClick={handleOrder}>
                 <ListItemIcon>
                   <ShoppingCartOutlinedIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Order</ListItemText>
+                <ListItemText>{t("navigation.orders")}</ListItemText>
               </MenuItem>,
               <Divider key="divider" />,
               <MenuItem key="logout" onClick={handleLogout}>
                 <ListItemIcon>
                   <LogoutIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Logout</ListItemText>
+                <ListItemText>{t("actions.logout")}</ListItemText>
               </MenuItem>,
             ]
           : [
@@ -220,13 +241,13 @@ function Actions() {
                 <ListItemIcon>
                   <LoginIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Login</ListItemText>
+                <ListItemText>{t("actions.login")}</ListItemText>
               </MenuItem>,
               <MenuItem key="signup" onClick={handleSignUp}>
                 <ListItemIcon>
                   <PersonAddIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Sign up</ListItemText>
+                <ListItemText>{t("actions.signup")}</ListItemText>
               </MenuItem>,
             ]}
       </Menu>
@@ -235,7 +256,7 @@ function Actions() {
       <LoginRequiredDialog
         open={showLoginDialog}
         onClose={() => setShowLoginDialog(false)}
-        message="You need to login to view your cart. Please sign in or create a new account."
+        message={t("messages.loginRequiredCart")}
         returnUrl="/cart"
       />
 
@@ -243,7 +264,7 @@ function Actions() {
       <LoginRequiredDialog
         open={showNotificationLoginDialog}
         onClose={() => setShowNotificationLoginDialog(false)}
-        message="You need to login to view notifications. Please sign in or create a new account."
+        message={t("messages.loginRequiredNotification")}
         returnUrl={window.location.pathname}
       />
     </Box>

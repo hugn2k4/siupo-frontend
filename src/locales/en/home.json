@@ -1,0 +1,35 @@
+{
+  "hero": {
+    "subtitle": "Healthy & Tasty Food",
+    "title1": "Enjoy Healthy Life",
+    "title2": "& Tasty Food.",
+    "description": "Discover a variety of healthy and delicious meals crafted to nourish your body and delight your taste buds. From fresh salads to wholesome bowls, every dish is made with love and quality ingredients, helping you enjoy a balanced and flavorful lifestyle.",
+    "showMore": "Show More",
+    "placeOrder": "Place an Order"
+  },
+  "stats": {
+    "yearsOfExperience": "Years of Experience",
+    "happyCustomers": "Happy Customers",
+    "masterChefs": "Master Chefs",
+    "popularDishes": "Popular Dishes"
+  },
+  "aboutSection": {
+    "heading": "About Us",
+    "title": "Where Excellence Meets Tradition",
+    "description": "We serve authentic Vietnamese dishes with a modern twist, using only the freshest ingredients and traditional recipes passed down through generations."
+  },
+  "menuSection": {
+    "heading": "Our Menu",
+    "title": "Explore Our Delicious Dishes",
+    "viewAllMenu": "View All Menu"
+  },
+  "chefSection": {
+    "heading": "Our Team",
+    "title": "Meet Our Master Chefs",
+    "viewAllChefs": "View All Chefs"
+  },
+  "testimonials": {
+    "heading": "Testimonials",
+    "title": "What Our Customers Say"
+  }
+}

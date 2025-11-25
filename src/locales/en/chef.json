@@ -1,0 +1,15 @@
+{
+  "title": "Our Chefs",
+  "subtitle": "Meet the Masters Behind Your Meals",
+  "card": {
+    "experience": "{{years}} years experience",
+    "speciality": "Speciality",
+    "viewProfile": "View Profile"
+  },
+  "profile": {
+    "biography": "Biography",
+    "achievements": "Achievements",
+    "signature": "Signature Dishes",
+    "philosophy": "Cooking Philosophy"
+  }
+}

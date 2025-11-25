@@ -1,78 +1,139 @@
 interface RouteMeta {
   title: string;
-  breadcrumb: { label: string; path?: string }[];
+  titleKey?: string; // Translation key for title
+  breadcrumb: { label: string; labelKey?: string; path?: string }[];
   backgroundImage?: string;
 }
 
 const ROUTES_META: Record<string, RouteMeta> = {
   "/menu": {
     title: "Our Menu",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Menu " }],
+    titleKey: "navigation.menu",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Menu", labelKey: "navigation.menu" },
+    ],
   },
   "/about": {
     title: "About Us",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "About" }],
+    titleKey: "navigation.about",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "About", labelKey: "navigation.about" },
+    ],
   },
   "/cart": {
-    title: "Shoping Cart",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Cart" }],
+    title: "Shopping Cart",
+    titleKey: "navigation.cart",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Cart", labelKey: "navigation.cart" },
+    ],
   },
   "/checkout": {
     title: "Checkout",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Cart", path: "/cart" }, { label: "Checkout" }],
+    titleKey: "navigation.checkout",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Cart", labelKey: "navigation.cart", path: "/cart" },
+      { label: "Checkout", labelKey: "navigation.checkout" },
+    ],
   },
   "/shop": {
     title: "Our Shop",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop" }],
+    titleKey: "navigation.shop",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Shop", labelKey: "navigation.shop" },
+    ],
   },
   "/chef": {
     title: "Our Chef",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Chef" }],
+    titleKey: "navigation.chef",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Chef", labelKey: "navigation.chef" },
+    ],
   },
   "/404": {
     title: "404 Error",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "404" }],
+    breadcrumb: [{ label: "Home", labelKey: "navigation.home", path: "/" }, { label: "404" }],
   },
   "/signin": {
     title: "Sign In",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Sign In" }],
+    titleKey: "actions.login",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Sign In", labelKey: "actions.login" },
+    ],
   },
   "/signup": {
     title: "Sign Up",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Sign Up" }],
+    titleKey: "actions.signup",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Sign Up", labelKey: "actions.signup" },
+    ],
   },
   "/forgot-password": {
     title: "Forgot Password",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "SignIn", path: "/signin" }, { label: "Forgot Password" }],
+    titleKey: "forgotPassword.title",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Sign In", labelKey: "actions.login", path: "/signin" },
+      { label: "Forgot Password", labelKey: "forgotPassword.title" },
+    ],
   },
   "/forgot-password/set-new-password": {
     title: "Set New Password",
+    titleKey: "setNewPassword.title",
     breadcrumb: [
-      { label: "Home", path: "/" },
-      { label: "SignIn", path: "/signin" },
-      { label: "Forgot Password", path: "/forgot-password" },
-      { label: "Set New Password" },
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Sign In", labelKey: "actions.login", path: "/signin" },
+      { label: "Forgot Password", labelKey: "forgotPassword.title", path: "/forgot-password" },
+      { label: "Set New Password", labelKey: "setNewPassword.title" },
     ],
   },
   "/shop/:productId": {
     title: "Product Detail",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Shop", path: "/shop" }, { label: "Product Detail" }],
+    titleKey: "navigation.productDetail",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Shop", labelKey: "navigation.shop", path: "/shop" },
+      { label: "Product Detail", labelKey: "navigation.productDetail" },
+    ],
   },
   "/account/dashboard": {
     title: "Account",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Account" }],
+    titleKey: "navigation.account",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Account", labelKey: "navigation.account" },
+    ],
   },
   "/account/settings": {
-    title: "Account",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Account" }],
+    title: "Account Settings",
+    titleKey: "navigation.settings",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Account", labelKey: "navigation.account" },
+    ],
   },
   "/account/wishlist": {
-    title: "Account",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "WishList" }],
+    title: "Wishlist",
+    titleKey: "navigation.wishlist",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Wishlist", labelKey: "navigation.wishlist" },
+    ],
   },
   "/orders": {
     title: "My Orders",
-    breadcrumb: [{ label: "Home", path: "/" }, { label: "Orders" }],
+    titleKey: "navigation.orders",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Orders", labelKey: "navigation.orders" },
+    ],
   },
 };
 

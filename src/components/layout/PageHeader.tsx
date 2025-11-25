@@ -1,6 +1,7 @@
 import { Box, Breadcrumbs, Link as MuiLink, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import ImageBanner from "../../assets/images/image_banner.png";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface PageHeaderProps {
   title: string;
@@ -8,11 +9,13 @@ interface PageHeaderProps {
   breadcrumb?: { label: string; path?: string }[];
 }
 
-export default function PageHeader({
-  title,
-  backgroundImage,
-  breadcrumb = [{ label: "Home", path: "/" }],
-}: PageHeaderProps) {
+export default function PageHeader({ title, backgroundImage, breadcrumb = [] }: PageHeaderProps) {
+  const { t } = useTranslation();
+
+  // Default breadcrumb with translated Home
+  const defaultBreadcrumb = [{ label: t("navigation.home"), path: "/" }];
+  const finalBreadcrumb = breadcrumb.length > 0 ? breadcrumb : defaultBreadcrumb;
+
   return (
     <Box
       sx={{
@@ -50,7 +53,7 @@ export default function PageHeader({
           separator=">"
           sx={{ justifyContent: "center", display: "flex", color: "white" }}
         >
-          {breadcrumb.map((item, index) =>
+          {finalBreadcrumb.map((item, index) =>
             item.path ? (
               <MuiLink key={index} component={Link} to={item.path} underline="hover" color="inherit">
                 {item.label}

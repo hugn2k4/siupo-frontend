@@ -1,4 +1,4 @@
-import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Select, Typography, Skeleton } from "@mui/material";
+import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,17 +7,17 @@ import productService from "../../../services/productService";
 import type { ProductResponse } from "../../../types/responses/product.response";
 
 // Icons MUI
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FirstPageOutlinedIcon from "@mui/icons-material/FirstPageOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LastPageOutlinedIcon from "@mui/icons-material/LastPageOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import { wishlistApi } from "../../../api/wishListApi";
 import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import cartService from "../../../services/cartService";
-import { wishlistApi } from "../../../api/wishListApi";
 
 interface ProductListProps {
   searchName: string | null;
@@ -43,6 +43,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
   const [error, setError] = useState<string | null>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const { isLogin } = useGlobal();
+  const [isParentHovered, setIsParentHovered] = useState(false);
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
@@ -368,6 +369,8 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                 cursor: "pointer",
                 mx: "auto",
               }}
+              onMouseEnter={() => setIsParentHovered(true)}
+              onMouseLeave={() => setIsParentHovered(false)}
               onClick={() => handleProductClick(product.id)}
             >
               <Box
@@ -429,8 +432,10 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                   }}
                 >
                   <Box
+                    className="overlay-icons-info"
                     sx={{
-                      bgcolor: "#fff",
+                      bgcolor: isParentHovered ? "#FF9F0D" : "#fff",
+                      "& svg": { color: isParentHovered ? "#fff" : "#FF9F0D" },
                       p: 1,
                       display: "flex",
                       alignItems: "center",
@@ -458,12 +463,21 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                       cursor: "pointer",
                       boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                       transition: "all 0.2s ease",
-                      "&:hover": { bgcolor: "#FF9F0D", "& svg": { color: "#fff" } },
+                      "&:hover": {
+                        bgcolor: "#FF9F0D",
+                        "& svg": { color: "#fff" },
+                        "& .overlay-icons-info": {
+                          bgcolor: "#fff",
+                          "& svg": { color: "#FF9F0D" },
+                        },
+                      },
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleAddToCart(product.id);
                     }}
+                    onMouseEnter={() => setIsParentHovered(false)}
+                    onMouseLeave={() => setIsParentHovered(true)}
                   >
                     <ShoppingCartOutlinedIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />
                   </Box>
@@ -481,6 +495,8 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                       transition: "all 0.2s ease",
                       "&:hover": { bgcolor: "#FF9F0D", "& svg": { color: "#fff" } },
                     }}
+                    onMouseEnter={() => setIsParentHovered(false)}
+                    onMouseLeave={() => setIsParentHovered(true)}
                   >
                     {product.wishlist ? (
                       <FavoriteIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />

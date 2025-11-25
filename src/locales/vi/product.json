@@ -1,0 +1,29 @@
+{
+  "detail": {
+    "category": "Danh Mục",
+    "availability": "Tình Trạng",
+    "inStock": "Còn Hàng",
+    "outOfStock": "Hết Hàng",
+    "sku": "Mã Sản Phẩm",
+    "description": "Mô Tả",
+    "ingredients": "Thành Phần",
+    "nutrition": "Thông Tin Dinh Dưỡng",
+    "addToCart": "Thêm Vào Giỏ",
+    "buyNow": "Mua Ngay",
+    "quantity": "Số Lượng",
+    "price": "Giá"
+  },
+  "reviews": {
+    "title": "Đánh Giá Của Khách Hàng",
+    "rating": "Đánh Giá",
+    "writeReview": "Viết Đánh Giá",
+    "noReviews": "Chưa có đánh giá",
+    "verified": "Đã Mua Hàng",
+    "helpful": "Hữu Ích",
+    "reportAbuse": "Báo Cáo Vi Phạm"
+  },
+  "related": {
+    "title": "Sản Phẩm Liên Quan",
+    "viewAll": "Xem Tất Cả"
+  }
+}

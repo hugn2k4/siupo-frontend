@@ -1,7 +1,8 @@
-import { Box, Typography, Skeleton } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
-import MyButton from "../../../components/common/Button";
 import DefaultAboutUs from "../../../assets/images/image_about_us_home.png";
+import MyButton from "../../../components/common/Button";
+import { useTranslation } from "../../../hooks/useTranslation";
 import type { Banner } from "../../../types/models/banner";
 
 interface AboutUsProps {
@@ -10,6 +11,7 @@ interface AboutUsProps {
 }
 
 function AboutUs({ banners, loading }: AboutUsProps) {
+  const { t } = useTranslation("home");
   // Lấy banner từ API
   const aboutUsImage = banners[0]?.url || DefaultAboutUs;
 
@@ -100,7 +102,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
                 fontSize: { xs: "1rem", md: "1.125rem" },
               }}
             >
-              About us
+              {t("aboutSection.heading")}
               <Box
                 sx={{
                   position: "absolute",
@@ -129,7 +131,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
                 lineHeight: { xs: 1.3, md: 1.2 },
               }}
             >
-              Food is an important part Of a balanced Diet
+              {t("aboutSection.title")}
             </Typography>
 
             <Typography
@@ -145,9 +147,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
                 lineHeight: { xs: 1.6, md: 1.7 },
               }}
             >
-              Eating well is not just about feeling full — it's about fueling your body with the right nutrients to stay
-              strong and energized. A balanced diet of vegetables, grains, proteins, and healthy fats helps you enjoy
-              both wellness and flavor while supporting long-term health.
+              {t("aboutSection.description")}
             </Typography>
             <Box
               component={motion.div}
@@ -164,7 +164,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
                 pb: { xs: 4, lg: 20 },
               }}
             >
-              <MyButton colorScheme="green">Show More</MyButton>
+              <MyButton colorScheme="green">{t("hero.showMore")}</MyButton>
 
               <MyButton isWatch />
             </Box>

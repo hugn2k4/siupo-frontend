@@ -1,0 +1,53 @@
+{
+  "dashboard": {
+    "title": "My Account",
+    "welcome": "Welcome back, {{name}}!",
+    "overview": "Account Overview"
+  },
+  "orders": {
+    "title": "My Orders",
+    "orderNumber": "Order #{{number}}",
+    "date": "Date",
+    "status": "Status",
+    "total": "Total",
+    "viewDetails": "View Details",
+    "noOrders": "You have no orders yet",
+    "statuses": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "preparing": "Preparing",
+      "delivering": "Delivering",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "empty": "Your wishlist is empty",
+    "addToCart": "Add to Cart",
+    "remove": "Remove"
+  },
+  "settings": {
+    "title": "Account Settings",
+    "profile": "Profile Information",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "gender": "Gender",
+    "birthday": "Birthday",
+    "save": "Save Changes",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "updateSuccess": "Profile updated successfully"
+  },
+  "address": {
+    "title": "Billing Address",
+    "default": "Default Address",
+    "add": "Add New Address",
+    "edit": "Edit Address",
+    "delete": "Delete Address",
+    "setDefault": "Set as Default"
+  }
+}

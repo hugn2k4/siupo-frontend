@@ -5,6 +5,7 @@ import AuthHandlerInitializer from "./components/AuthHandlerInitializer.tsx";
 import { GlobalProvider } from "./contexts/GlobalProvider.tsx";
 import { PreOrderProvider } from "./contexts/PreOrderContext";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
+import "./i18n/config"; // Initialize i18n before rendering
 import "./index.css";
 import router from "./routers/routes.tsx";
 

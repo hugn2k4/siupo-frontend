@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { useTranslation } from "../../hooks/useTranslation";
 import cartService from "../../services/cartService";
 import type { CartItem } from "../../types/models/cartItem";
 import { formatCurrency } from "../../utils/format";
@@ -12,6 +13,7 @@ import CouponSection from "./components/CouponSection";
 import OrderSummary from "./components/OrderSummary";
 
 const Cart: React.FC = () => {
+  const { t } = useTranslation("cart");
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -84,9 +86,9 @@ const Cart: React.FC = () => {
 
     try {
       await cartService.removeCartItem(id.toString());
-      showSnackbar("Item removed from cart", "success");
+      showSnackbar(t("messages.removeSuccess"), "success");
     } catch {
-      showSnackbar("Failed to remove item", "error");
+      showSnackbar(t("messages.updateSuccess"), "error");
       setCartItems(prevItems);
       setSelectedItems(prevSelectedItems);
     }
@@ -232,7 +234,7 @@ const Cart: React.FC = () => {
               color="var(--color-gray2)"
               sx={{ fontSize: "0.875rem", ml: 1 }}
             >
-              Product
+              {t("item.product")}
             </Typography>
             <Typography
               variant="body2"
@@ -240,7 +242,7 @@ const Cart: React.FC = () => {
               color="var(--color-gray2)"
               sx={{ fontSize: "0.875rem", textAlign: "center" }}
             >
-              Price
+              {t("item.price")}
             </Typography>
             <Typography
               variant="body2"
@@ -311,7 +313,7 @@ const Cart: React.FC = () => {
           >
             <Box>
               <Typography variant="body2" color="var(--color-gray3)" sx={{ mb: 0.5, fontSize: "0.875rem" }}>
-                Total Amount
+                {t("summary.total")}
               </Typography>
               <Typography variant="h6" fontWeight={600} color="var(--color-primary)">
                 {formatCurrency(total, "USD")}
@@ -329,7 +331,7 @@ const Cart: React.FC = () => {
                 fontSize: "0.875rem",
               }}
             >
-              Checkout
+              {t("summary.checkout")}
             </MyButton>
           </Box>
 

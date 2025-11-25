@@ -1,0 +1,22 @@
+{
+  "error": "Failed to send message. Please try again.",
+  "form": {
+    "email": "Your Email",
+    "message": "Message",
+    "name": "Your Name",
+    "phone": "Phone Number",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "subject": "Subject"
+  },
+  "info": {
+    "address": "Address",
+    "email": "Email",
+    "hours": "Opening Hours",
+    "phone": "Phone",
+    "title": "Get In Touch"
+  },
+  "subtitle": "We'd Love to Hear From You",
+  "success": "Thank you for your message. We'll get back to you soon!",
+  "title": "Contact Us"
+}

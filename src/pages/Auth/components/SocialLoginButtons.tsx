@@ -3,8 +3,10 @@ import { Box } from "@mui/material";
 import GoogleColorIcon from "../../../assets/icons/GoogleColorIcon";
 import MyButton from "../../../components/common/Button";
 import { BACKEND_BASE_URL } from "../../../config";
+import useTranslation from "../../../hooks/useTranslation";
 
 const SocialLoginButtons = () => {
+  const { t } = useTranslation("auth");
   const handleGoogleLogin = () => {
     // Redirect to backend OAuth2 Google authorization endpoint
     window.location.href = `${BACKEND_BASE_URL}/oauth2/authorization/google`;
@@ -19,7 +21,7 @@ const SocialLoginButtons = () => {
         sx={{ px: 0, py: 1.5, borderRadius: 0, textTransform: "none", fontWeight: "regular" }}
         onClick={handleGoogleLogin}
       >
-        Sign in with Google
+        {t("signIn.googleLogin")}
       </MyButton>
       <MyButton
         fullWidth
@@ -28,7 +30,7 @@ const SocialLoginButtons = () => {
         sx={{ py: 1.5, borderRadius: 0, textTransform: "none", fontWeight: "regular" }}
         disabled
       >
-        Sign in with Apple
+        {t("signIn.appleLogin")}
       </MyButton>
     </Box>
   );

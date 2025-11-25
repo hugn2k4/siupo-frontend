@@ -1,11 +1,12 @@
-import { Box, Container, Typography, Skeleton } from "@mui/material";
+import { Box, Container, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import ShiningStarsIcon from "../../../assets/icons/shining_stars.svg";
 import SparkleIcon from "../../../assets/icons/sparkle.svg";
-import MyButton from "../../../components/common/Button";
 import DefaultHero from "../../../assets/images/image_hero.png";
 import DefaultHeroMobile from "../../../assets/images/image_hero_mobile.png";
+import MyButton from "../../../components/common/Button";
+import { useTranslation } from "../../../hooks/useTranslation";
 import type { Banner } from "../../../types/models/banner";
 
 interface HeroProps {
@@ -14,6 +15,7 @@ interface HeroProps {
 }
 
 const Hero = ({ banners, loading }: HeroProps) => {
+  const { t } = useTranslation("home");
   const [hoveredPlace, setHoveredPlace] = useState(false);
   // Lấy banner từ API
   const heroImage = banners[0]?.url || DefaultHero;
@@ -73,7 +75,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
                   fontSize: { xs: "0.9rem", sm: "1rem", md: "1.125rem" },
                 }}
               >
-                Healthy & Tasty Food
+                {t("hero.subtitle")}
                 <img
                   src={SparkleIcon}
                   alt="sparkle"
@@ -107,7 +109,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
                   lineHeight: { xs: 1.3, md: 1.2 },
                 }}
               >
-                Enjoy Healthy Life
+                {t("hero.title1")}
               </Typography>
               <Box
                 sx={{
@@ -130,7 +132,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
                     lineHeight: { xs: 1.3, md: 1.2 },
                   }}
                 >
-                  & Tasty Food.
+                  {t("hero.title2")}
                 </Typography>
                 <img
                   src={ShiningStarsIcon}
@@ -151,9 +153,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
                   lineHeight: { xs: 1.6, md: 1.7 },
                 }}
               >
-                Discover a variety of healthy and delicious meals crafted to nourish your body and delight your taste
-                buds. From fresh salads to wholesome bowls, every dish is made with love and quality ingredients,
-                helping you enjoy a balanced and flavorful lifestyle.
+                {t("hero.description")}
               </Typography>
               <Box
                 sx={{
@@ -171,7 +171,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
                   disableDefaultHover
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 >
-                  Show More
+                  {t("hero.showMore")}
                 </MyButton>
                 <MyButton
                   colorScheme="lightGreen"
@@ -179,7 +179,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
                   onMouseLeave={() => setHoveredPlace(false)}
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 >
-                  Place an Order
+                  {t("hero.placeOrder")}
                 </MyButton>
               </Box>
             </Box>

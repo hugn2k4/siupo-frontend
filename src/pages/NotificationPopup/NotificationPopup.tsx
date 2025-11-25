@@ -1,7 +1,9 @@
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import CloseIcon from "@mui/icons-material/Close";
 import {
+  alpha,
+  Backdrop,
   Badge,
   Box,
   Divider,
@@ -9,14 +11,12 @@ import {
   List,
   ListItem,
   ListItemText,
-  Popover,
   Modal,
+  Popover,
   Typography,
-  alpha,
-  Backdrop,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import notificationApi from "../../api/notificationApi";
+import notificationApi from "../../api/notificationApi.ts";
 import type { Notification } from "../../types/models/notification.ts";
 
 interface NotificationDetailDialogProps {

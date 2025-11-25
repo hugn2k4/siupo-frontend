@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { matchPath, useLocation } from "react-router-dom";
 import ROUTES_META from "../../config/routesMeta";
+import { useRouteMeta } from "../../hooks/useRouteMeta";
 import Footer from "./Footer";
 import Header from "./Header";
 import PageHeader from "./PageHeader";
@@ -14,7 +15,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const matchedKey = Object.keys(ROUTES_META).find((route) => matchPath({ path: route, end: true }, pathname));
 
-  const meta = matchedKey ? ROUTES_META[matchedKey] : null;
+  const meta = useRouteMeta(matchedKey || pathname);
 
   return (
     <Box

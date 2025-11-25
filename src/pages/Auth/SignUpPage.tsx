@@ -5,6 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { useTranslation } from "../../hooks/useTranslation";
 import { authService } from "../../services/authService";
 import type { RegisterRequest } from "../../types/requests/auth.request";
 import AuthFormWrapper from "./components/AuthFormWrapper";
@@ -21,6 +22,7 @@ type SignUpFormData = {
 };
 
 export default function SignUpPage() {
+  const { t } = useTranslation("auth");
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -56,14 +58,14 @@ export default function SignUpPage() {
           setOtpAttempts(0);
           setOpenOTP(true);
         } else {
-          showSnackbar(res.message || "Registration failed. Please try again.", "error", 4000);
+          showSnackbar(res.message || t("signUp.registerError"), "error", 4000);
         }
       } else {
-        showSnackbar(res.message || "Registration failed. Please try again.", "error", 4000);
+        showSnackbar(res.message || t("signUp.registerError"), "error", 4000);
       }
     } catch (error: unknown) {
       console.error("❌ Register error:", error);
-      showSnackbar("Something went wrong. Please try again later.", "error", 4000);
+      showSnackbar(t("signUp.registerError"), "error", 4000);
     } finally {
       setIsSubmitting(false);
     }
@@ -73,7 +75,7 @@ export default function SignUpPage() {
     try {
       const res = await authService.confirm({ email: watch("email"), otp: otp });
       if (res.success) {
-        showSnackbar(res.message || "Email verified successfully!", "success", 3000);
+        showSnackbar(res.message || t("signUp.verifySuccess"), "success", 3000);
         setOtpAttempts(0);
         setOpenOTP(false);
         navigate("/signin");
@@ -92,15 +94,15 @@ export default function SignUpPage() {
     try {
       const email = watch("email");
       if (!email) {
-        showSnackbar("Please enter email first", "error", 3000);
+        showSnackbar(t("signUp.emailRequired"), "error", 3000);
         return;
       }
 
       const res = await authService.resendOTP(email);
       if (res.success) {
-        showSnackbar(res.message || "OTP sent successfully!", "success", 3000);
+        showSnackbar(res.message || t("signUp.otpSent"), "success", 3000);
       } else {
-        showSnackbar(res.message || "Failed to send OTP", "error", 4000);
+        showSnackbar(res.message || t("signUp.otpFailed"), "error", 4000);
       }
     } catch (error: unknown) {
       console.error("❌ Resend OTP error:", error);
@@ -118,8 +120,8 @@ export default function SignUpPage() {
         onVerify={handleVerifyOTP}
         onResendOTP={handleResendOTP}
         email={watch("email")}
-        title="Verify Your Email"
-        description="Please enter the verification code we sent to your email address."
+        title={t("otp.title")}
+        description={t("otp.description")}
         maxAttempts={5}
         initialAttempts={otpAttempts}
         onAttemptsChange={setOtpAttempts}
@@ -127,22 +129,22 @@ export default function SignUpPage() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <AuthFormWrapper>
           <Typography variant="h4" component="h1" sx={{ mb: 4, fontWeight: 500, textAlign: "start" }}>
-            Sign Up
+            {t("signUp.title")}
           </Typography>
           <Controller
             name="email"
             control={control}
             rules={{
-              required: "Email is required",
+              required: t("signUp.emailRequired"),
               pattern: {
                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Invalid email format",
+                message: t("signUp.emailInvalid"),
               },
             }}
             render={({ field, fieldState }) => (
               <AuthTextField
                 {...field}
-                label="Email"
+                label={t("signUp.email")}
                 type="email"
                 startIcon={<Email sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
                 error={!!fieldState.error}
@@ -154,13 +156,13 @@ export default function SignUpPage() {
             name="password"
             control={control}
             rules={{
-              required: "Password is required",
-              minLength: { value: 6, message: "Password must be at least 6 characters" },
+              required: t("signUp.passwordRequired"),
+              minLength: { value: 6, message: t("signUp.passwordMinLength") },
             }}
             render={({ field, fieldState }) => (
               <AuthTextField
                 {...field}
-                label="Password"
+                label={t("signUp.password")}
                 type={showPassword ? "text" : "password"}
                 startIcon={<Lock sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
                 endIcon={
@@ -177,13 +179,13 @@ export default function SignUpPage() {
             name="confirmPassword"
             control={control}
             rules={{
-              required: "Please confirm your password",
-              validate: (value) => value === watch("password") || "Passwords do not match",
+              required: t("signUp.confirmPasswordRequired"),
+              validate: (value) => value === watch("password") || t("signUp.passwordMismatch"),
             }}
             render={({ field, fieldState }) => (
               <AuthTextField
                 {...field}
-                label="Confirm Password"
+                label={t("signUp.confirmPassword")}
                 type={showConfirmPassword ? "text" : "password"}
                 startIcon={<Lock sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
                 endIcon={
@@ -200,12 +202,12 @@ export default function SignUpPage() {
             name="fullName"
             control={control}
             rules={{
-              required: "Name is required",
+              required: t("signUp.fullNameRequired"),
             }}
             render={({ field, fieldState }) => (
               <AuthTextField
                 {...field}
-                label="Name"
+                label={t("signUp.fullName")}
                 type="text"
                 startIcon={<Person sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
                 error={!!fieldState.error}
@@ -218,16 +220,16 @@ export default function SignUpPage() {
             name="phoneNumber"
             control={control}
             rules={{
-              required: "Phone number is required",
+              required: t("signUp.phoneRequired"),
               pattern: {
                 value: /^[0-9]{10,15}$/,
-                message: "Invalid phone number",
+                message: t("signUp.phoneInvalid"),
               },
             }}
             render={({ field, fieldState }) => (
               <AuthTextField
                 {...field}
-                label="Phone"
+                label={t("signUp.phone")}
                 type="tel"
                 startIcon={<Phone sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
                 error={!!fieldState.error}
@@ -244,17 +246,17 @@ export default function SignUpPage() {
             isLoading={isSubmitting}
             sx={{ mt: 3, mb: 3, borderRadius: 0, textTransform: "none" }}
           >
-            Sign Up
+            {t("signUp.submit")}
           </MyButton>
 
-          <Divider sx={{ mb: 3 }}>OR</Divider>
+          <Divider sx={{ mb: 3 }}>{t("signUp.divider")}</Divider>
 
           <SocialLoginButtons />
 
           <Typography variant="body2" sx={{ textAlign: "center", color: "text.secondary" }}>
-            Already have an account?{" "}
+            {t("signUp.haveAccount")}{" "}
             <Link component={RouterLink} to="/signin" sx={{ color: "var(--color-primary)", fontWeight: 600 }}>
-              Sign in
+              {t("signUp.signinLink")}
             </Link>
           </Typography>
         </AuthFormWrapper>

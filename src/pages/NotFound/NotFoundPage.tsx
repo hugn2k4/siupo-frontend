@@ -1,8 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import MyButton from "../../components/common/Button";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export default function NotFoundPage() {
+  const { t } = useTranslation();
   return (
     <Box
       sx={{
@@ -38,7 +40,7 @@ export default function NotFoundPage() {
           px: { xs: 1, sm: 0 },
         }}
       >
-        Oops! Look likes something going wrong
+        {t("notFound.title")}
       </Typography>
       <Typography
         variant="body1"
@@ -51,8 +53,7 @@ export default function NotFoundPage() {
           maxWidth: { xs: "100%", sm: 500 },
         }}
       >
-        Page Cannot be found! we'll have it figured out in no time .{"\n"}
-        Menwhile, cheek out these fresh ideas:
+        {t("notFound.description")}
       </Typography>
       <Box component={Link} to="/" sx={{ textDecoration: "none" }}>
         <MyButton
@@ -62,7 +63,7 @@ export default function NotFoundPage() {
             maxWidth: { xs: "280px", sm: "none" },
           }}
         >
-          Go to home
+          {t("notFound.goHome")}
         </MyButton>
       </Box>
     </Box>

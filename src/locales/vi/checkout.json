@@ -1,0 +1,47 @@
+{
+  "address": {
+    "addNew": "Thêm Địa Chỉ Mới",
+    "address": "Địa Chỉ Chi Tiết",
+    "delete": "Xóa",
+    "district": "Quận/Huyện",
+    "edit": "Sửa",
+    "email": "Email",
+    "fullName": "Họ và Tên",
+    "phone": "Số Điện Thoại",
+    "province": "Tỉnh/Thành Phố",
+    "save": "Lưu Địa Chỉ",
+    "selectAddress": "Chọn Địa Chỉ",
+    "setDefault": "Đặt làm địa chỉ mặc định",
+    "title": "Địa Chỉ Giao Hàng",
+    "ward": "Phường/Xã"
+  },
+  "payment": {
+    "cod": "Thanh Toán Khi Nhận Hàng",
+    "momo": "MoMo",
+    "title": "Phương Thức Thanh Toán",
+    "vnpay": "VNPay"
+  },
+  "steps": {
+    "payment": "Thanh Toán",
+    "review": "Xem Lại",
+    "shipping": "Giao Hàng"
+  },
+  "summary": {
+    "discount": "Giảm Giá",
+    "placeOrder": "Đặt Hàng",
+    "shipping": "Phí Vận Chuyển",
+    "subtotal": "Tạm Tính",
+    "title": "Tóm Tắt Đơn Hàng",
+    "total": "Tổng Cộng"
+  },
+  "title": "Thanh Toán",
+  "voucher": {
+    "applied": "đã áp dụng",
+    "apply": "Áp Dụng",
+    "availableVouchers": "Mã Giảm Giá Khả Dụng",
+    "invalid": "Mã giảm giá không hợp lệ hoặc đã hết hạn",
+    "placeholder": "Nhập mã giảm giá",
+    "remove": "Gỡ Bỏ",
+    "title": "Mã Giảm Giá"
+  }
+}

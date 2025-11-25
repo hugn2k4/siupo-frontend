@@ -6,6 +6,7 @@ import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import QueryBuilderOutlinedIcon from "@mui/icons-material/QueryBuilderOutlined";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { Box, Button, IconButton, Link as MuiLink, Stack, TextField, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import menu from "../../config/menuConfig";
 
@@ -19,6 +20,8 @@ import img6 from "../../assets/gallery/gallery_image_6.png";
 const images = [img1, img2, img3, img4, img5, img6];
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -51,14 +54,9 @@ const Footer = () => {
             }}
           >
             <Typography variant="h6" fontWeight="bold" sx={{ fontSize: { xs: "1.1rem", md: "1.25rem" } }}>
-              <Box component="span" sx={{ color: "var(--color-primary)" }}>
-                St
-              </Box>
-              ill You Need Our Support ?
+              {t("footer.support.title")}
             </Typography>
-            <Typography sx={{ fontSize: { xs: "0.9rem", md: "1rem" } }}>
-              Don't wait make a smart & logical quote here. It's pretty easy.
-            </Typography>
+            <Typography sx={{ fontSize: { xs: "0.9rem", md: "1rem" } }}>{t("footer.support.subtitle")}</Typography>
           </Box>
 
           {/* Input + Button */}
@@ -73,7 +71,7 @@ const Footer = () => {
           >
             <TextField
               variant="outlined"
-              placeholder="Enter your email"
+              placeholder={t("footer.support.placeholder")}
               size="small"
               sx={{
                 flex: { xs: 1, sm: 2 },
@@ -112,7 +110,7 @@ const Footer = () => {
                 fontWeight: 400,
               }}
             >
-              Subscribe Now
+              {t("footer.support.button")}
             </Button>
           </Box>
         </Box>
@@ -146,10 +144,10 @@ const Footer = () => {
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            Siupo
+            {t("footer.company.title")}
           </Typography>
           <Typography variant="subtitle2" sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
-            Subscribe our newsletter and get discount 25%off
+            {t("footer.company.description")}
           </Typography>
           <Stack direction="row" spacing={1} sx={{ justifyContent: { xs: "center", sm: "flex-start" } }}>
             <IconButton aria-label="facebook">
@@ -175,13 +173,13 @@ const Footer = () => {
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            Contact us
+            {t("footer.contact.title")}
           </Typography>
           <Stack spacing={1.5} sx={{ alignItems: { xs: "center", sm: "flex-start" } }}>
             <Stack direction="row" spacing={1} alignItems="center">
               <PhoneOutlinedIcon sx={{ fontSize: { xs: 18, md: 20 } }} />
               <Typography variant="body2" sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
-                0123 456 789
+                {t("footer.contact.phone")}
               </Typography>
             </Stack>
             <Stack direction="row" spacing={1} alignItems="flex-start">
@@ -193,19 +191,19 @@ const Footer = () => {
                   maxWidth: { xs: 280, sm: "none" },
                 }}
               >
-                1 Vo Van Ngan Street, Thu Duc City, Ho Chi Minh City
+                {t("footer.contact.address")}
               </Typography>
             </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <MailOutlineOutlinedIcon sx={{ fontSize: { xs: 18, md: 20 } }} />
               <Typography variant="body2" sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
-                hcl2k4@gmail.com
+                {t("footer.contact.email")}
               </Typography>
             </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <QueryBuilderOutlinedIcon sx={{ fontSize: { xs: 18, md: 20 } }} />
               <Typography variant="body2" sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
-                Sun - Sat / 10:00 AM - 8:00 PM
+                {t("footer.contact.hours")}
               </Typography>
             </Stack>
           </Stack>
@@ -222,7 +220,7 @@ const Footer = () => {
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            Links
+            {t("footer.links.title")}
           </Typography>
           <Stack spacing={1} sx={{ alignItems: { xs: "center", sm: "flex-start" } }}>
             {menu.map((item) => (
@@ -255,7 +253,7 @@ const Footer = () => {
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: "bold", textAlign: { xs: "center", sm: "left" } }}>
-            Instagram Gallery
+            {t("footer.gallery.title")}
           </Typography>
           <Box
             sx={{
@@ -271,7 +269,7 @@ const Footer = () => {
                 key={index}
                 component="img"
                 src={src}
-                alt={`Ảnh ${index + 1}`}
+                alt={t("footer.gallery.imageAlt", { number: index + 1 })}
                 sx={{
                   width: { xs: 75, sm: 65, md: 100 },
                   height: { xs: 75, sm: 65, md: 100 },
@@ -310,15 +308,15 @@ const Footer = () => {
             fontSize: { xs: "0.875rem", md: "1rem" },
           }}
         >
-          Copyright © 2025 Nhà hàng của bạn. All rights reserved.
+          {t("footer.bottom.copyright")}
         </Typography>
 
         <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: { xs: 1, sm: 2 } }}>
-          {["Privacy Policy", "Term of Use", "Partner"].map((text) => (
+          {["privacyPolicy", "termOfUse", "partner"].map((key) => (
             <Typography
-              key={text}
+              key={key}
               component="p"
-              onClick={() => console.log(`${text} clicked`)}
+              onClick={() => console.log(`${key} clicked`)}
               sx={{
                 cursor: "pointer",
                 "&:hover": { color: "var(--color-primary)" },
@@ -328,7 +326,7 @@ const Footer = () => {
                 m: 0,
               }}
             >
-              {text}
+              {t(`footer.bottom.${key}`)}
             </Typography>
           ))}
         </Box>

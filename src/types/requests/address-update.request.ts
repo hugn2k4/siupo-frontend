@@ -1,7 +1,6 @@
-// src/types/dto/address-update.request.ts
-import type { AddressDTO } from "../dto/address.dto";
+import type { Address } from "../models/address";
 
 export interface AddressUpdateRequest {
-  oldAddress: AddressDTO;
-  newAddress: AddressDTO;
+  addressId: number;
+  updateAddress: Address;
 }

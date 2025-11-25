@@ -1,0 +1,47 @@
+{
+  "title": "Checkout",
+  "steps": {
+    "shipping": "Shipping",
+    "payment": "Payment",
+    "review": "Review"
+  },
+  "address": {
+    "title": "Shipping Address",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "email": "Email Address",
+    "province": "Province/City",
+    "district": "District",
+    "ward": "Ward",
+    "address": "Detailed Address",
+    "setDefault": "Set as default address",
+    "save": "Save Address",
+    "edit": "Edit",
+    "delete": "Delete",
+    "addNew": "Add New Address",
+    "selectAddress": "Select Address"
+  },
+  "voucher": {
+    "title": "Discount Voucher",
+    "placeholder": "Enter discount code",
+    "apply": "Apply",
+    "applied": "applied",
+    "invalid": "Invalid or expired voucher code",
+    "availableVouchers": "Available Vouchers",
+    "remove": "Remove"
+  },
+  "payment": {
+    "title": "Payment Method",
+    "cod": "Cash on Delivery",
+    "vnpay": "VNPay",
+    "momo": "MoMo"
+  },
+  "summary": {
+    "title": "Order Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "discount": "Discount",
+    "total": "Total",
+    "placeOrder": "Place Order"
+  }
+}

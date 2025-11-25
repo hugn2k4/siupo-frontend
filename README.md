@@ -1,225 +1,155 @@
-# 🍽️ Siupo Restaurant - Frontend
+# 🍽️ Siupo Restaurant
 
-Ứng dụng Frontend cho nhà hàng Siupo được xây dựng với công nghệ hiện đại.
+> Modern restaurant web application with seamless ordering, table reservation, and multi-language support
 
-## 🛠️ Công nghệ sử dụng
+[![React](https://img.shields.io/badge/React-19.1.1-61DAFB?logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.1.3-646CFF?logo=vite)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1.12-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 
-- **React 19** - Thư viện UI (19.1.10)
-- **TypeScript** - Ngôn ngữ lập trình (5.8.3)
-- **Vite** - Build tool & dev server (7.1.3)
-- **Tailwind CSS v4** - Framework CSS (4.1.12)
-- **Material-UI (MUI)** - Component library (7.3.1)
-- **React Router Dom** - Routing (7.8.1)
-- **Axios** - HTTP client (1.11.0)
-- **Framer Motion** - Animation library
+---
 
-## 📋 Yêu cầu hệ thống
+## ✨ Features
 
-- **Node.js** >= 18.0.0 cụ thể cài v20.19.4
-- **npm** >= 8.0.0 cụ thể cài 11.5.2
+- 🍽️ **Browse Menu** - Explore dishes with categories and filters
+- 🛒 **Shopping Cart** - Manage orders with real-time updates
+- 📅 **Table Reservation** - Book tables for specific dates
+- 👤 **User Authentication** - Sign up, OAuth2 (Google), password recovery
+- 💳 **Secure Payments** - Multiple payment methods integration
+- 📦 **Order Tracking** - View order history and status
+- 🌐 **Multi-language** - English & Vietnamese support
+- 📱 **Responsive Design** - Mobile-first approach
 
-## 🚀 Cài đặt và chạy dự án
+---
 
-### 1. Clone repository
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js >= 18.0.0 (recommended: v20.19.4)
+- npm >= 8.0.0 (recommended: v11.5.2)
+
+### Installation
 
 ```bash
-git clone <repository-url>
+# Clone repository
+git clone https://github.com/hugn2k4/siupo-frontend.git
 cd siupo-restaurant
-```
 
-### 2. Cài đặt dependencies
-
-```bash
+# Install dependencies
 npm install
-```
 
-### 3. Chạy development server
+# Setup environment variables
+cp .env.example .env
 
-```bash
+# Start development server
 npm run dev
 ```
 
-Ứng dụng sẽ chạy tại: `http://localhost:5173`
+Application will run at `http://localhost:5173`
 
-## 📝 Các lệnh cơ bản
+---
 
-| Lệnh              | Mô tả                    |
-| ----------------- | ------------------------ |
-| `npm run dev`     | Chạy dev server          |
-| `npm run build`   | Build production         |
-| `npm run preview` | Preview bản build        |
-| `npm run lint`    | Kiểm tra code với ESLint |
+## 📦 Tech Stack
 
-## 📁 Cấu trúc thư mục
+| Category | Technologies |
+|----------|-------------|
+| **Core** | React 19, TypeScript 5.8, Vite 7.1 |
+| **Styling** | Tailwind CSS v4, Material-UI 7.3, Framer Motion |
+| **Routing** | React Router 7.8 |
+| **API** | Axios 1.11 |
+| **i18n** | i18next 25.6, react-i18next 16.3 |
+| **Forms** | React Hook Form 7.64 |
+| **Quality** | ESLint, Prettier, Husky, Commitlint |
+
+---
+
+## 📝 Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Check code quality |
+| `npm run lint:fix` | Fix linting issues |
+| `npm run format` | Format code with Prettier |
+| `npm run type-check` | Check TypeScript types |
+
+---
+
+## 📁 Project Structure
 
 ```
 src/
-├── api/           # API calls
-├── assets/        # Static assets (images, icons)
-├── components/    # React components
-│   ├── common/    # Shared components
-│   └── layout/    # Layout components
-├── config/        # Configuration files
-├── contexts/      # React contexts
-├── features/      # Feature-based components
-├── hooks/         # Custom hooks
-├── pages/         # Page components
-├── services/      # Business logic
-├── types/         # TypeScript type definitions
-└── utils/         # Utility functions
+├── api/              # API integration layer
+├── assets/           # Static assets (images, icons)
+├── components/       # React components
+│   ├── common/       # Reusable components
+│   └── layout/       # Layout components
+├── config/           # App configuration
+├── contexts/         # React Context providers
+├── hooks/            # Custom React hooks
+├── i18n/             # Internationalization config
+├── locales/          # Translation files (en, vi)
+├── pages/            # Page components
+├── routers/          # Routing configuration
+├── services/         # Business logic layer
+├── types/            # TypeScript definitions
+└── utils/            # Utility functions
 ```
 
-## 🔧 Troubleshooting
+---
 
-### Tailwind CSS không hoạt động:
+## 🌐 Environment Variables
 
-1. Kiểm tra file `tailwind.config.ts` có tồn tại
-2. Kiểm tra `src/index.css` có `@import "tailwindcss"`
-3. Restart dev server: `npm run dev`
+Create `.env` file:
 
-### Lỗi TypeScript:
-
-1. Restart TypeScript server trong VS Code
-2. Kiểm tra `tsconfig.json` và `tsconfig.app.json`
-
-## 🌿 Quy trình làm việc với Git
-## 🚦 Quy tắc commit chuẩn (Conventional Commit)
-
-Dự án sử dụng Husky + commitlint để kiểm tra message khi commit. Nếu sai chuẩn, commit sẽ bị chặn.
-
-### Cấu trúc commit message
-
-```
-<type>(scope?): mô tả ngắn gọn
+```env
+VITE_API_BASE_URL=http://localhost:8080/api
+VITE_BACKEND_BASE_URL=http://localhost:8080
 ```
 
-#### Các loại commit phổ biến:
+---
 
-- **feat**: Thêm mới tính năng
-- **fix**: Sửa lỗi
-- **docs**: Cập nhật tài liệu
-- **style**: Chỉnh sửa format/code style, không thay đổi logic
-- **refactor**: Cải thiện cấu trúc code, không thêm tính năng
-- **test**: Thêm/sửa test
-- **chore**: Cập nhật cấu hình, tool, không ảnh hưởng code chính
+## 📖 Documentation
 
-#### Ví dụ commit đúng chuẩn:
+**➡️ [View Full Documentation](./docs/README.md)**
 
-```
-feat(auth): thêm xác thực bằng Google
-fix(home): sửa lỗi load dữ liệu khi reload
-docs: cập nhật README
-style: format lại code
-refactor: tối ưu component Header
-test: thêm unit test cho utils
-chore: nâng cấp phiên bản eslint
-```
+Comprehensive guides organized by topic:
 
-Nếu commit sai chuẩn, bạn sẽ nhận được thông báo lỗi và phải sửa lại message cho đúng mới commit được.
+| Category | Documents |
+|----------|-----------|
+| **Getting Started** | [Overview](./docs/01-overview.md) · [Installation](./docs/02-installation.md) · [Structure](./docs/03-project-structure.md) |
+| **Development** | [i18n](./docs/09-i18n.md) · [API Integration](./docs/10-api.md) · [Components](./docs/07-components.md) |
+| **Workflow** | [Git Workflow](./docs/13-git-workflow.md) · [Code Quality](./docs/14-code-quality.md) |
 
-### Quy trình commit chuẩn:
+📚 [Browse All Docs](./docs/)
 
-1. Thực hiện thay đổi code
-2. Chạy lệnh:
-	```bash
-	git add .
-	git commit -m "feat: thêm chức năng đăng nhập"
-	```
-3. Nếu message đúng chuẩn, commit thành công. Nếu sai, sửa lại cho đúng.
-4. Push lên remote và tạo Pull Request như bình thường.
+---
 
-### Cấu trúc nhánh
+## 🤝 Contributing
 
-```
-main              # Nhánh chính (production)
-├── dev           # Nhánh phát triển
-├── feature/*     # Nhánh tính năng
-├── bugfix/*      # Nhánh sửa bug
-└── hotfix/*      # Nhánh sửa lỗi khẩn cấp
-```
+Please read [DOCUMENTATION.md](./DOCUMENTATION.md) for details on:
+- Git workflow and branching strategy
+- Commit message conventions
+- Code review process
+- Coding standards
 
-### Quy tắc đặt tên nhánh
+---
 
-- **Feature**: `feature/ten-tinh-nang`
-- **Bugfix**: `bugfix/ten-loi`
-- **Hotfix**: `hotfix/ten-loi-khan-cap`
+## 📄 License
 
-Ví dụ:
+This project is proprietary and confidential.
 
-```bash
-feature/user-authentication
-feature/menu-management
-bugfix/navbar-responsive
-hotfix/payment-error
-```
+---
 
-### Workflow cơ bản
+## 👥 Team
 
-#### 1. Bắt đầu tính năng mới
+**Repository:** [siupo-frontend](https://github.com/hugn2k4/siupo-frontend)  
+**Branch:** `feature/change-languae`  
+**Last Updated:** November 25, 2025
 
-```bash
-# Checkout nhánh dev
-git checkout dev
-git pull origin dev
+---
 
-# Tạo nhánh feature mới
-git checkout -b feature/ten-tinh-nang
-
-# Làm việc và commit
-git add .
-git commit -m "feat: thêm tính năng mới"
-```
-
-#### 2. Commit message convention
-
-```bash
-# Format: <type>: <description>
-feat: thêm tính năng đăng nhập
-fix: sửa lỗi responsive navbar
-docs: cập nhật README
-style: format code với prettier
-refactor: tối ưu component Header
-test: thêm unit test cho utils
-```
-
-#### 3. Push và tạo Pull Request
-
-```bash
-# Push nhánh lên remote
-git push origin feature/ten-tinh-nang
-
-# Tạo Pull Request từ feature -> dev
-# Review code → Merge → Xóa nhánh feature
-```
-
-#### 4. Sync với nhánh chính
-
-```bash
-# Cập nhật devp thường xuyên
-git checkout dev
-git pull origin dev
-
-# Rebase feature branch (nếu cần)
-git checkout feature/ten-tinh-nang
-git rebase dev
-```
-
-### Các lệnh Git hữu ích
-
-| Lệnh                                | Mô tả                       |
-| ----------------------------------- | --------------------------- |
-| `git status`                        | Kiểm tra trạng thái file    |
-| `git log --oneline`                 | Xem lịch sử commit ngắn gọn |
-| `git branch -a`                     | Xem tất cả nhánh            |
-| `git checkout -b <branch>`          | Tạo và chuyển nhánh mới     |
-| `git branch -d <branch>`            | Xóa nhánh local             |
-| `git push origin --delete <branch>` | Xóa nhánh remote            |
-
-### Quy tắc làm việc nhóm
-
-1. **Không push trực tiếp lên main/dev**
-2. **Luôn tạo Pull Request để review code**
-3. **Commit thường xuyên với message rõ ràng**
-4. **Pull dev trước khi tạo feature branch mới**
-5. **Xóa feature branch sau khi merge**
-6. **Kiểm tra conflict trước khi merge**
+**Made with ❤️ by Siupo Development Team**

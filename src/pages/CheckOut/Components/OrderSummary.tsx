@@ -87,8 +87,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       onClick={onProceedToPayment}
       endIcon={<ArrowRight size={16} />}
       sx={{ mt: 3, borderRadius: 0 }}
+      disabled={loading}
     >
-      {selectedPaymentMethod === EMethodPayment.COD ? "Place Order" : "Pay Now"}
+      {loading ? "Processing..." : selectedPaymentMethod === EMethodPayment.COD ? "Place Order" : "Pay Now"}
     </MyButton>
 
     {/* Thông tin phương thức thanh toán đã chọn */}

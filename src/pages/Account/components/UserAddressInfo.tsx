@@ -1,7 +1,9 @@
 // src/Account/components/UserAddressInfo.tsx
 import { useEffect, useState } from "react";
-import userApi from "../../../api/userApi";
 import { useNavigate } from "react-router-dom";
+import userService from "../../../services/userService";
+import type { Address } from "../../../types/models/address";
+import addressService from "../../../services/addressService";
 
 interface UserInfo {
   fullName: string;
@@ -9,18 +11,9 @@ interface UserInfo {
   email: string;
 }
 
-interface AddressInfo {
-  addressLine: string;
-  ward: string;
-  district: string;
-  province: string;
-  receiverName: string;
-  receiverPhone: string;
-}
-
 export default function UserAddressInfo() {
   const [user, setUser] = useState<UserInfo | null>(null);
-  const [address, setAddress] = useState<AddressInfo | null>(null);
+  const [address, setAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -29,8 +22,8 @@ export default function UserAddressInfo() {
       try {
         setLoading(true);
         const [userRes, addrRes] = await Promise.all([
-          userApi.getCurrentUser(),
-          userApi.getDefaultAddress().catch(() => ({ data: null })),
+          userService.getCurrentUser(),
+          addressService.getDefaultAddress().catch(() => ({ data: null })),
         ]);
 
         if (userRes.data) {
@@ -44,7 +37,7 @@ export default function UserAddressInfo() {
         if (addrRes.data) {
           const addr = addrRes.data;
           setAddress({
-            addressLine: addr.addressLine,
+            address: addr.address,
             ward: addr.ward,
             district: addr.district,
             province: addr.province,
@@ -63,8 +56,8 @@ export default function UserAddressInfo() {
     fetchData();
   }, []);
 
-  const formatFullAddress = (addr: AddressInfo) => {
-    const parts = [addr.addressLine, addr.ward, addr.district, addr.province];
+  const formatFullAddress = (addr: Address) => {
+    const parts = [addr.address, addr.ward, addr.district, addr.province];
     return parts.filter(Boolean).join(", ");
   };
 

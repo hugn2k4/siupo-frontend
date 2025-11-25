@@ -1,0 +1,26 @@
+{
+  "error": "Failed to send message. Please try again.",
+  "form": {
+    "email": "Your Email",
+    "message": "Message",
+    "name": "Your Name",
+    "phone": "Phone Number",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "subject": "Subject"
+  },
+  "info": {
+    "address": "Address",
+    "addressContent": "1 Vo Van Ngan Street, Linh Chieu Ward, Thu Duc City, Ho Chi Minh City",
+    "email": "Email",
+    "emailContent": "booking@siupo.com",
+    "hours": "Opening Hours",
+    "hoursContent": "Mon - Sun: 10:00 AM - 02:00 AM",
+    "phone": "Phone",
+    "phoneContent": "(+84) 945 396 133",
+    "title": "Get In Touch"
+  },
+  "subtitle": "We'd Love to Hear From You",
+  "success": "Thank you for your message. We'll get back to you soon!",
+  "title": "Contact Us"
+}

@@ -2,27 +2,31 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Dev from "../Dev";
 import AboutUsPage from "../pages/AboutUs/AboutUsPage";
+import DashboardPages from "../pages/Account/DashboardPage";
+import SettingsPage from "../pages/Account/SettingsPage";
 import RequestForgotPassword from "../pages/Auth/components/RequestForgotPassword";
 import SetNewPassword from "../pages/Auth/components/SetNewPassword";
 import ForgotPasswordPage from "../pages/Auth/ForgotPasswordPage";
+import OAuth2CallbackPage from "../pages/Auth/OAuth2CallbackPage";
 import SignInPage from "../pages/Auth/SignInPage";
 import SignUpPage from "../pages/Auth/SignUpPage";
 import Cart from "../pages/Cart/Cart";
 import CheckoutPage from "../pages/CheckOut/CheckoutPage";
 import ChefPage from "../pages/Chef/ChefPage";
+import ContactPage from "../pages/Contact/ContactPage";
 import HomePage from "../pages/Home/HomePage";
 import MenuPage from "../pages/Menu/MenuPage";
+import MyOrdersPage from "../pages/MyOrders/MyOrdersPage";
 import NotFoundPage from "../pages/NotFound/NotFoundPage";
 import OrderAtTable from "../pages/OrderAtTable/OrderAtTable";
 import OrderSuccessPage from "../pages/OrderSuccess/OrderSuccessPage";
+import PaymentCallbackPage from "../pages/PaymentCallback/PaymentCallbackPage";
 import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
 import ProductDetailPage from "../pages/ProductDetail/ProductDetailPage";
 import OurShopPage from "../pages/Shop/OurShopPage";
+import WishlistPage from "../pages/WishList/WishlistPage";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
-import SettingsPage from "../pages/Account/SettingsPage";
-import DashboardPages from "../pages/Account/DashboardPage";
-import WishlistPage from "../pages/WishList/WishlistPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,6 +34,7 @@ const router = createBrowserRouter([
     children: [
       { path: "", element: <HomePage /> },
       { path: "order-success", element: <OrderSuccessPage /> },
+      { path: "payment-callback", element: <PaymentCallbackPage /> },
       { path: "checkout", element: <CheckoutPage /> },
       { path: "menu", element: <MenuPage /> },
       { path: "chef", element: <ChefPage /> },
@@ -44,6 +49,7 @@ const router = createBrowserRouter([
         children: [
           { path: "signin", element: <SignInPage /> },
           { path: "signup", element: <SignUpPage /> },
+          { path: "auth/oauth2/callback", element: <OAuth2CallbackPage /> },
           {
             path: "forgot-password",
             element: <ForgotPasswordPage />,
@@ -61,11 +67,13 @@ const router = createBrowserRouter([
           { path: "account/settings", element: <SettingsPage /> },
           { path: "account/dashboard", element: <DashboardPages /> },
           { path: "/account/wishlist", element: <WishlistPage /> },
+          { path: "/orders", element: <MyOrdersPage /> },
         ],
       },
       { path: "dev", element: <Dev /> },
       { path: "placetable", element: <PlaceTableForGuest /> },
       { path: "orderattable", element: <OrderAtTable /> },
+      { path: "contact", element: <ContactPage /> },
     ],
   },
 ]);

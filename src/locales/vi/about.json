@@ -1,0 +1,55 @@
+{
+  "hero": {
+    "title": "Về Chúng Tôi",
+    "subtitle": "Câu Chuyện & Đam Mê Của Chúng Tôi"
+  },
+  "story": {
+    "title": "Câu Chuyện Của Chúng Tôi",
+    "content": "Được thành lập với niềm đam mê về ẩm thực chính thống và dịch vụ xuất sắc, chúng tôi đã phục vụ cộng đồng trong hơn 20 năm. Nhà hàng của chúng tôi kết hợp công thức truyền thống với kỹ thuật nấu ăn hiện đại để tạo ra những trải nghiệm ẩm thực khó quên."
+  },
+  "mission": {
+    "title": "Sứ Mệnh Của Chúng Tôi",
+    "content": "Mang đến cho khách hàng những món ăn xuất sắc, sự hiếu khách ấm áp và những khoảnh khắc đáng nhớ gắn kết mọi người."
+  },
+  "values": {
+    "title": "Giá Trị Của Chúng Tôi",
+    "quality": {
+      "title": "Chất Lượng",
+      "description": "Chúng tôi tìm nguồn nguyên liệu tốt nhất và duy trì tiêu chuẩn cao nhất trong mọi món ăn."
+    },
+    "authenticity": {
+      "title": "Chính Thống",
+      "description": "Công thức truyền thống được truyền qua nhiều thế hệ, được chuẩn bị với sự chăm sóc và chuyên môn."
+    },
+    "service": {
+      "title": "Dịch Vụ",
+      "description": "Dịch vụ ấm áp, chu đáo khiến mọi khách hàng cảm thấy như người nhà."
+    },
+    "sustainability": {
+      "title": "Bền Vững",
+      "description": "Cam kết với các hoạt động bền vững và hỗ trợ nhà cung cấp địa phương."
+    }
+  },
+  "team": {
+    "title": "Đội Ngũ Của Chúng Tôi",
+    "description": "Đội ngũ đầu bếp và nhân viên tài năng của chúng tôi luôn tận tâm mang đến trải nghiệm ẩm thực đặc biệt."
+  },
+  "whyChooseUs": {
+    "title": "Tại Sao Chọn Chúng Tôi",
+    "description": "Chúng tôi tự hào mang đến cho bạn những trải nghiệm ẩm thực tốt nhất với sự kết hợp hoàn hảo giữa chất lượng, dịch vụ và không gian.",
+    "features": {
+      "bestChef": {
+        "title": "Đầu Bếp Chuyên Nghiệp",
+        "description": "Đội ngũ đầu bếp giàu kinh nghiệm với nhiều năm thành tựu trong lĩnh vực ẩm thực, luôn sáng tạo và đam mê với nghề."
+      },
+      "qualityFood": {
+        "title": "120+ Món Ăn Chất Lượng",
+        "description": "Thực đơn phong phú với hơn 120 món ăn đa dạng, từ truyền thống đến hiện đại, đáp ứng mọi khẩu vị."
+      },
+      "cleanEnvironment": {
+        "title": "Môi Trường Sạch Sẽ",
+        "description": "Không gian nhà hàng sạch sẽ, thoải mái và an toàn, đảm bảo vệ sinh thực phẩm theo tiêu chuẩn cao nhất."
+      }
+    }
+  }
+}

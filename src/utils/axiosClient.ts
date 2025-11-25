@@ -1,6 +1,8 @@
 import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
 import { API_BASE_URL, DEFAULT_HEADERS } from "../config";
+import { handleSessionExpired } from "./authUtils";
+import { logger } from "./logger";
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
@@ -26,8 +28,8 @@ axiosClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Log request with ID
-    console.log(`🔹 [${reqId}] Request:`, {
+    // Log request with ID (only in development)
+    logger.log(`🔹 [${reqId}] Request:`, {
       url: config.url,
       method: config.method?.toUpperCase(),
       data: config.data,
@@ -36,12 +38,13 @@ axiosClient.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error("❌ Request error:", error);
+    logger.error("❌ Request error:", error);
     return Promise.reject(error);
   }
 );
 
 let isRefreshing = false;
+let isSessionExpired = false; // Flag to prevent multiple session expired calls
 let subscribers: ((token: string) => void)[] = [];
 
 function onAccessTokenFetched(newToken: string) {
@@ -59,8 +62,8 @@ axiosClient.interceptors.response.use(
     // Get request ID from headers
     const reqId = response.config.headers["X-Request-ID"] || "?";
 
-    // Log response with matching ID
-    console.log(`✅ [${reqId}] Response:`, {
+    // Log response with matching ID (only in development)
+    logger.log(`✅ [${reqId}] Response:`, {
       url: response.config.url,
       status: response.status,
       data: response.data,
@@ -74,11 +77,29 @@ axiosClient.interceptors.response.use(
 
     // ----- Handle 401 + Refresh token -----
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Skip retry for refresh-token endpoint itself to avoid infinite loop
+      if (originalRequest.url?.includes("/auth/refresh-token")) {
+        logger.error(`❌ [${reqId}] Refresh token expired - Logging out`);
+        isRefreshing = false;
+        subscribers = []; // Clear all waiting requests
+
+        // Only handle session expired once
+        if (!isSessionExpired) {
+          isSessionExpired = true;
+          handleSessionExpired();
+        }
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
           addSubscriber((newToken) => {
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            resolve(axiosClient(originalRequest));
+            if (newToken) {
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              resolve(axiosClient(originalRequest));
+            } else {
+              reject(error);
+            }
           });
         });
       }
@@ -87,10 +108,16 @@ axiosClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        console.log(`🔄 [${reqId}] Refreshing token...`);
+        logger.log(`🔄 [${reqId}] Refreshing token...`);
         const res = await axiosClient.post("/auth/refresh-token");
         const newAccessToken = res.data?.data?.accessToken || res.data?.accessToken;
+
+        if (!newAccessToken) {
+          throw new Error("No access token received");
+        }
+
         localStorage.setItem("accessToken", newAccessToken);
+        logger.log(`✅ [${reqId}] Token refreshed successfully`);
 
         onAccessTokenFetched(newAccessToken);
         isRefreshing = false;
@@ -99,14 +126,20 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (refreshError) {
         isRefreshing = false;
-        localStorage.removeItem("accessToken");
-        console.error(`❌ [${reqId}] Refresh token failed`);
+        subscribers = []; // Clear all waiting requests
+        logger.error(`❌ [${reqId}] Refresh token failed - Session expired`, refreshError);
+
+        // Only handle session expired once
+        if (!isSessionExpired) {
+          isSessionExpired = true;
+          handleSessionExpired();
+        }
         return Promise.reject(refreshError);
       }
     }
 
     // Log error with request ID
-    console.error(`❌ [${reqId}] ${error.response?.status || "ERR"} ${error.config?.url || "Unknown"}`);
+    logger.error(`❌ [${reqId}] ${error.response?.status || "ERR"} ${error.config?.url || "Unknown"}`);
 
     return Promise.reject(error);
   }

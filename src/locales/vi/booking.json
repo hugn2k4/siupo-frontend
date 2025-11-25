@@ -1,0 +1,34 @@
+{
+  "title": "Đặt Bàn",
+  "form": {
+    "name": "Họ và Tên",
+    "phone": "Số Điện Thoại",
+    "email": "Email",
+    "date": "Ngày",
+    "time": "Giờ",
+    "guests": "Số Lượng Khách",
+    "specialRequest": "Yêu Cầu Đặc Biệt",
+    "submit": "Đặt Bàn Ngay",
+    "tableName": "Tên Bàn",
+    "selectTable": "Chọn Bàn"
+  },
+  "preOrder": {
+    "title": "Đặt Món Trước",
+    "optional": "Tùy chọn",
+    "addDish": "Thêm Món",
+    "remove": "Xóa",
+    "total": "Tổng Đặt Trước"
+  },
+  "success": {
+    "title": "Đặt Bàn Thành Công!",
+    "message": "Bàn của bạn đã được đặt. Chúng tôi sẽ gửi xác nhận đến email của bạn.",
+    "viewBooking": "Xem Đặt Bàn",
+    "backToHome": "Về Trang Chủ"
+  },
+  "note": "Lưu ý: Đặt bàn sẽ được giữ trong 15 phút sau giờ đã đặt.",
+  "hero": {
+    "title": "Đặt Bàn Của Bạn",
+    "subtitle": "Trải nghiệm ẩm thực tuyệt vời nhất",
+    "description": "Đặt bàn trước và tận hưởng trải nghiệm ẩm thực liền mạch với hệ thống đặt bàn dễ dàng của chúng tôi."
+  }
+}

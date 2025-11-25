@@ -1,38 +1,19 @@
-// src/services/wishlist.api.ts
-
 import axiosClient from "../utils/axiosClient";
 import type { WishlistResponse } from "../types/models/wishlist";
 
 const API_URL = "/wishlist";
 
 export const wishlistApi = {
-  // Get user's wishlist
-  getWishlist: async (): Promise<WishlistResponse> => {
-    const response = await axiosClient.get(API_URL);
-    return response.data;
-  },
+  getWishlist: (): Promise<WishlistResponse> => axiosClient.get(API_URL).then((res) => res.data),
 
-  // Add product to wishlist
-  addToWishlist: async (productId: number): Promise<WishlistResponse> => {
-    const response = await axiosClient.post(`${API_URL}/items`, { productId });
-    return response.data;
-  },
+  addToWishlist: (productId: number): Promise<WishlistResponse> =>
+    axiosClient.post(`${API_URL}/items`, { productId }).then((res) => res.data),
 
-  // Remove product from wishlist
-  removeFromWishlist: async (productId: number): Promise<WishlistResponse> => {
-    const response = await axiosClient.delete(`${API_URL}/items/${productId}`);
-    return response.data;
-  },
+  removeFromWishlist: (productId: number): Promise<WishlistResponse> =>
+    axiosClient.delete(`${API_URL}/items/${productId}`).then((res) => res.data),
 
-  // Clear entire wishlist
-  clearWishlist: async (): Promise<{ message: string }> => {
-    const response = await axiosClient.delete(`${API_URL}/items`);
-    return response.data;
-  },
+  clearWishlist: (): Promise<{ message: string }> => axiosClient.delete(`${API_URL}/items`).then((res) => res.data),
 
-  // Check if product is in wishlist
-  checkProductInWishlist: async (productId: number): Promise<boolean> => {
-    const response = await axiosClient.get(`${API_URL}/check/${productId}`);
-    return response.data.isInWishlist;
-  },
+  checkProductInWishlist: (productId: number): Promise<boolean> =>
+    axiosClient.get(`${API_URL}/check/${productId}`).then((res) => res.data.isInWishlist),
 };

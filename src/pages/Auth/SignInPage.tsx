@@ -6,6 +6,7 @@ import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
 import { useGlobal } from "../../hooks/useGlobal";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { useTranslation } from "../../hooks/useTranslation";
 import { authService } from "../../services/authService";
 import type { LoginRequest } from "../../types/requests/auth.request";
 import AuthFormWrapper from "./components/AuthFormWrapper";
@@ -19,6 +20,7 @@ type SignInFormData = {
 };
 
 export default function SignInPage() {
+  const { t } = useTranslation("auth");
   const navigate = useNavigate();
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
@@ -48,17 +50,17 @@ export default function SignInPage() {
     try {
       const res = await authService.login(request);
       if (res.success) {
-        showSnackbar("Login successful!", "success", 3000);
+        showSnackbar(t("signIn.loginSuccess"), "success", 3000);
         setGlobal({ isLogin: true, user: res.data?.user || null, accessToken: res.data?.accessToken || null });
 
         // Redirect to the page user was trying to access, or home
         navigate(from, { replace: true });
       } else {
-        showSnackbar(res.message || "Login failed. Please try again.", "error", 4000);
+        showSnackbar(res.message || t("signIn.loginError"), "error", 4000);
       }
     } catch (error: unknown) {
       console.error("❌ Login error:", error);
-      showSnackbar("Something went wrong. Please try again later.", "error", 4000);
+      showSnackbar(t("signIn.loginError"), "error", 4000);
     }
   };
 
@@ -66,22 +68,22 @@ export default function SignInPage() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <AuthFormWrapper>
         <Typography variant="h4" component="h1" sx={{ mb: 4, fontWeight: 500, textAlign: "start" }}>
-          Sign In
+          {t("signIn.title")}
         </Typography>
         <Controller
           name="email"
           control={control}
           rules={{
-            required: "Email is required",
+            required: t("signIn.emailRequired"),
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Invalid email format",
+              message: t("signIn.emailInvalid"),
             },
           }}
           render={({ field, fieldState }) => (
             <AuthTextField
               {...field}
-              label="Email"
+              label={t("signIn.email")}
               type="email"
               startIcon={<Email sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
               error={!!fieldState.error}
@@ -93,13 +95,13 @@ export default function SignInPage() {
           name="password"
           control={control}
           rules={{
-            required: "Password is required",
-            minLength: { value: 6, message: "Password must be at least 6 characters" },
+            required: t("signIn.passwordRequired"),
+            minLength: { value: 6, message: t("signIn.passwordMinLength") },
           }}
           render={({ field, fieldState }) => (
             <AuthTextField
               {...field}
-              label="Password"
+              label={t("signIn.password")}
               type={showPassword ? "text" : "password"}
               startIcon={<Lock sx={{ color: "var(--color-gray3)", fontSize: 20 }} />}
               endIcon={
@@ -129,7 +131,7 @@ export default function SignInPage() {
                     size="small"
                   />
                 }
-                label={<Typography variant="body2">Remember me</Typography>}
+                label={<Typography variant="body2">{t("signIn.rememberMe")}</Typography>}
               />
             )}
           />
@@ -143,7 +145,7 @@ export default function SignInPage() {
               "&:hover": { textDecorationThickness: "2px" },
             }}
           >
-            Forgotten password?
+            {t("signIn.forgotPassword")}
           </Typography>
         </Box>
         <MyButton
@@ -158,17 +160,17 @@ export default function SignInPage() {
             textTransform: "none",
           }}
         >
-          Sign In
+          {t("signIn.submit")}
         </MyButton>
 
-        <Divider sx={{ mb: 3 }}>OR</Divider>
+        <Divider sx={{ mb: 3 }}>{t("signIn.divider")}</Divider>
 
         <SocialLoginButtons />
 
         <Typography variant="body2" sx={{ textAlign: "center", color: "text.secondary" }}>
-          Don&apos;t have an account?{" "}
+          {t("signIn.noAccount")}{" "}
           <Link component={RouterLink} to="/signup" sx={{ color: "var(--color-primary)", fontWeight: 600 }}>
-            Sign up
+            {t("signIn.signUpLink")}
           </Link>
         </Typography>
       </AuthFormWrapper>

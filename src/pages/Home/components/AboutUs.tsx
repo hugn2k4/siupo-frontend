@@ -1,9 +1,20 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
+import DefaultAboutUs from "../../../assets/images/image_about_us_home.png";
 import MyButton from "../../../components/common/Button";
-import ImageAboutUs from "../../../assets/images/image_about_us_home.png";
+import { useTranslation } from "../../../hooks/useTranslation";
+import type { Banner } from "../../../types/models/banner";
 
-function AboutUs() {
+interface AboutUsProps {
+  banners: Banner[];
+  loading: boolean;
+}
+
+function AboutUs({ banners, loading }: AboutUsProps) {
+  const { t } = useTranslation("home");
+  // Lấy banner từ API
+  const aboutUsImage = banners[0]?.url || DefaultAboutUs;
+
   return (
     <section className="w-full min-h-screen flex flex-col relative">
       {/* Flex container */}
@@ -33,16 +44,20 @@ function AboutUs() {
             order: { xs: 2, lg: 1 },
           }}
         >
-          <Box
-            component="img"
-            src={ImageAboutUs}
-            alt="About us food showcase"
-            sx={{
-              width: { xs: "100%", md: "80%", lg: "90%" },
-              maxHeight: { xs: "100%", lg: "90%" },
-              objectFit: "contain",
-            }}
-          />
+          {loading ? (
+            <Skeleton variant="rectangular" width="80%" height="80%" sx={{ borderRadius: 2 }} />
+          ) : aboutUsImage ? (
+            <Box
+              component="img"
+              src={aboutUsImage}
+              alt="About us food showcase"
+              sx={{
+                width: { xs: "100%", md: "80%", lg: "90%" },
+                maxHeight: { xs: "100%", lg: "90%" },
+                objectFit: "contain",
+              }}
+            />
+          ) : null}
         </Box>
 
         {/* Right side*/}
@@ -87,7 +102,7 @@ function AboutUs() {
                 fontSize: { xs: "1rem", md: "1.125rem" },
               }}
             >
-              About us
+              {t("aboutSection.heading")}
               <Box
                 sx={{
                   position: "absolute",
@@ -116,7 +131,7 @@ function AboutUs() {
                 lineHeight: { xs: 1.3, md: 1.2 },
               }}
             >
-              Food is an important part Of a balanced Diet
+              {t("aboutSection.title")}
             </Typography>
 
             <Typography
@@ -132,9 +147,7 @@ function AboutUs() {
                 lineHeight: { xs: 1.6, md: 1.7 },
               }}
             >
-              Eating well is not just about feeling full — it’s about fueling your body with the right nutrients to stay
-              strong and energized. A balanced diet of vegetables, grains, proteins, and healthy fats helps you enjoy
-              both wellness and flavor while supporting long-term health.
+              {t("aboutSection.description")}
             </Typography>
             <Box
               component={motion.div}
@@ -151,7 +164,7 @@ function AboutUs() {
                 pb: { xs: 4, lg: 20 },
               }}
             >
-              <MyButton colorScheme="green">Show More</MyButton>
+              <MyButton colorScheme="green">{t("hero.showMore")}</MyButton>
 
               <MyButton isWatch />
             </Box>

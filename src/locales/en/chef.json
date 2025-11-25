@@ -1,0 +1,38 @@
+{
+  "card": {
+    "experience": "{{years}} years experience",
+    "speciality": "Speciality",
+    "viewProfile": "View Profile"
+  },
+  "chefs": [
+    {
+      "description": "Leading projects with 15 years of experience building systems. Specializing in microservices architecture and performance optimization.",
+      "experience": "15",
+      "name": "Le Cong Hung",
+      "role": "Tech Lead & Architect",
+      "speciality": "System Design & Architecture"
+    },
+    {
+      "description": "The artist behind every exquisite interface. Creating smooth and efficient user experiences.",
+      "experience": "12",
+      "name": "Vo Thi Kim Anh",
+      "role": "Senior Frontend Developer",
+      "speciality": "React, TypeScript & UX/UI"
+    },
+    {
+      "description": "Master of data processing and APIs — perfection in every line of code. Specializing in large-scale backend systems.",
+      "experience": "10",
+      "name": "Tran Nhat Minh",
+      "role": "Backend Engineering Lead",
+      "speciality": "Node.js, Database & Cloud"
+    }
+  ],
+  "profile": {
+    "achievements": "Achievements",
+    "biography": "Biography",
+    "philosophy": "Cooking Philosophy",
+    "signature": "Signature Dishes"
+  },
+  "subtitle": "Meet the Masters Behind Your Meals",
+  "title": "Our Chefs"
+}

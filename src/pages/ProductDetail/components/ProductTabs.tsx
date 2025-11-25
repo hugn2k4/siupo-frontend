@@ -1,13 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import reviewService from "../../../services/reviewService";
+
+import ProductReviews from "./ProductReviews";
 
 interface ProductTabsProps {
+  productId: number;
   description: string;
-  rating: number;
   reviewCount: number;
 }
 
-const ProductTabs: React.FC<ProductTabsProps> = ({ description, rating, reviewCount }) => {
+const ProductTabs: React.FC<ProductTabsProps> = ({ productId, description, reviewCount }) => {
   const [activeTab, setActiveTab] = useState("description");
+  const [actualReviewCount, setActualReviewCount] = useState(reviewCount);
+
+  // Load review count ngay khi component mount
+  useEffect(() => {
+    const loadReviewCount = async () => {
+      try {
+        const response = await reviewService.getProductReviews(productId);
+        if (response && response.data) {
+          const reviewsData = Array.isArray(response.data) ? response.data : [];
+          setActualReviewCount(reviewsData.length);
+        }
+      } catch (error) {
+        console.error("Failed to load review count:", error);
+      }
+    };
+    loadReviewCount();
+  }, [productId]);
 
   return (
     <div className="mt-12">
@@ -26,7 +46,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ description, rating, reviewCo
           }`}
           onClick={() => setActiveTab("reviews")}
         >
-          Reviews ({reviewCount})
+          Reviews ({actualReviewCount || 0})
         </button>
       </div>
 
@@ -37,11 +57,11 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ description, rating, reviewCo
             <div>
               <h4 className="font-bold text-gray-900 mb-4">Key Benefits</h4>
               <ul className="list-disc list-inside space-y-2 text-gray-700">
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Maecenas ullamcorper est et massa mattis condimentum.</li>
-                <li>Vestibulum sed massa vel ipsum imperdiet malesuada id tempus nisl.</li>
-                <li>Etiam non massa et felis tempor feugiat congue ac vitae.</li>
-                <li>Mauris sagittis diam magna, in blandit turpis.</li>
+                <li>Fresh and high-quality ingredients that ensure great taste and nutrition.</li>
+                <li>Rich, satisfying flavor that appeals to a wide range of customers.</li>
+                <li>Nutritious and balanced, providing essential vitamins and energy.</li>
+                <li>Prepared with care and hygiene, ensuring safety and peace of mind.</li>
+                <li>Versatile and convenient, suitable for any meal of the day.</li>
               </ul>
             </div>
           </div>
@@ -49,9 +69,11 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ description, rating, reviewCo
 
         {activeTab === "reviews" && (
           <div>
-            <p className="text-gray-700">
-              Đánh giá trung bình: {rating} ({reviewCount} đánh giá). Nội dung đánh giá sẽ hiển thị ở đây...
-            </p>
+            <ProductReviews
+              productId={productId}
+              reviewCount={reviewCount}
+              onReviewCountUpdate={setActualReviewCount}
+            />
           </div>
         )}
       </div>

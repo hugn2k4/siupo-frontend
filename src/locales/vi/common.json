@@ -1,0 +1,110 @@
+{
+  "actions": {
+    "addToCart": "Thêm Vào Giỏ",
+    "backToHome": "Về Trang Chủ",
+    "buyNow": "Mua Ngay",
+    "cancel": "Hủy",
+    "confirm": "Xác Nhận",
+    "delete": "Xóa",
+    "edit": "Chỉnh Sửa",
+    "loading": "Đang tải...",
+    "login": "Đăng Nhập",
+    "logout": "Đăng Xuất",
+    "order": "Đặt Hàng",
+    "save": "Lưu",
+    "search": "Tìm Kiếm",
+    "signup": "Đăng Ký",
+    "submit": "Gửi",
+    "viewMore": "Xem Thêm"
+  },
+  "app": {
+    "name": "Siupo Restaurant",
+    "slogan": "Ẩm Thực Tuyệt Hảo, Khoảnh Khắc Hoàn Hảo"
+  },
+  "footer": {
+    "bottom": {
+      "copyright": "Bản quyền © 2025 Nhà Hàng Của Bạn. Tất cả quyền được bảo lưu.",
+      "partner": "Đối Tác",
+      "privacyPolicy": "Chính Sách Bảo Mật",
+      "termOfUse": "Điều Khoản Sử Dụng"
+    },
+    "company": {
+      "description": "Đăng ký nhận bản tin và nhận giảm giá 25%",
+      "title": "Siupo"
+    },
+    "contact": {
+      "address": "1 Đường Võ Văn Ngân, Thành Phố Thủ Đức, TP. Hồ Chí Minh",
+      "email": "hcl2k4@gmail.com",
+      "hours": "Thứ Hai - Chủ Nhật / 10:00 SA - 2:00 SA",
+      "phone": "0945 396 133",
+      "title": "Liên hệ chúng tôi"
+    },
+    "gallery": {
+      "imageAlt": "Ảnh {{number}}",
+      "title": "Bộ Sưu Tập Instagram"
+    },
+    "links": {
+      "title": "Liên Kết"
+    },
+    "support": {
+      "button": "Đăng Ký Ngay",
+      "placeholder": "Nhập email của bạn",
+      "subtitle": "Đừng chờ đợi, hãy tạo một báo giá thông minh và hợp lý ở đây. Rất dễ dàng.",
+      "title": "Bạn Vẫn Cần Hỗ Trợ Của Chúng Tôi?"
+    }
+  },
+  "messages": {
+    "addToCartSuccess": "Đã thêm vào giỏ hàng",
+    "deleteSuccess": "Đã xóa thành công",
+    "error": "Lỗi",
+    "info": "Thông Tin",
+    "loginRequired": "Bạn cần đăng nhập để tiếp tục. Vui lòng đăng nhập hoặc tạo tài khoản mới.",
+    "loginRequiredCart": "Bạn cần đăng nhập để xem giỏ hàng. Vui lòng đăng nhập hoặc tạo tài khoản mới.",
+    "loginRequiredNotification": "Bạn cần đăng nhập để xem thông báo. Vui lòng đăng nhập hoặc tạo tài khoản mới.",
+    "loginRequiredTitle": "Bạn cần đăng nhập để tiếp tục",
+    "loginSuccess": "Đăng nhập thành công",
+    "logoutSuccess": "Đăng xuất thành công",
+    "somethingWentWrong": "Đã có lỗi xảy ra, vui lòng thử lại",
+    "success": "Thành Công",
+    "updateSuccess": "Đã cập nhật thành công",
+    "warning": "Cảnh Báo"
+  },
+  "navigation": {
+    "about": "Về Chúng Tôi",
+    "account": "Tài Khoản",
+    "cart": "Giỏ Hàng",
+    "checkout": "Thanh Toán",
+    "chef": "Đầu Bếp",
+    "contact": "Liên Hệ",
+    "home": "Trang Chủ",
+    "menu": "Thực Đơn",
+    "notification": "Thông Báo",
+    "orders": "Đơn Hàng",
+    "placeTable": "Đặt Bàn",
+    "productDetail": "Chi Tiết Sản Phẩm",
+    "profile": "Hồ Sơ",
+    "settings": "Cài Đặt",
+    "shop": "Cửa Hàng",
+    "wishlist": "Yêu Thích"
+  },
+  "notFound": {
+    "description": "Không tìm thấy trang! Chúng tôi sẽ khắc phục sớm nhất.\nTrong lúc chờ đợi, hãy xem những gợi ý mới này:",
+    "goHome": "Về Trang Chủ",
+    "title": "Rất tiếc! Có vẻ như có gì đó không đúng"
+  },
+  "time": {
+    "daysAgo": "{{count}} ngày trước",
+    "hoursAgo": "{{count}} giờ trước",
+    "justNow": "Vừa xong",
+    "minutesAgo": "{{count}} phút trước",
+    "monthsAgo": "{{count}} tháng trước",
+    "weeksAgo": "{{count}} tuần trước"
+  },
+  "validation": {
+    "invalidEmail": "Email không hợp lệ",
+    "invalidPhone": "Số điện thoại không hợp lệ",
+    "passwordMismatch": "Mật khẩu không khớp",
+    "passwordTooShort": "Mật khẩu phải có ít nhất 6 ký tự",
+    "required": "Trường này là bắt buộc"
+  }
+}

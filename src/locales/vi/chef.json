@@ -1,0 +1,38 @@
+{
+  "title": "Đầu Bếp Của Chúng Tôi",
+  "subtitle": "Gặp Gỡ Những Bậc Thầy Đằng Sau Bữa Ăn Của Bạn",
+  "card": {
+    "experience": "{{years}} năm kinh nghiệm",
+    "speciality": "Chuyên Môn",
+    "viewProfile": "Xem Hồ Sơ"
+  },
+  "profile": {
+    "biography": "Tiểu Sử",
+    "achievements": "Thành Tựu",
+    "signature": "Món Ăn Đặc Trưng",
+    "philosophy": "Triết Lý Nấu ăn"
+  },
+  "chefs": [
+    {
+      "name": "Lê Công Hùng",
+      "role": "Tech Lead & Architect",
+      "description": "Dẫn dắt dự án với 15 năm kinh nghiệm xây dựng hệ thống. Chuyên thiết kế kiến trúc microservices và tối ưu hiệu suất.",
+      "experience": "15",
+      "speciality": "System Design & Architecture"
+    },
+    {
+      "name": "Võ Thị Kim Anh",
+      "role": "Senior Frontend Developer",
+      "description": "Nghệ sĩ đằng sau mỗi giao diện tinh tế. Chuyên tạo nên trải nghiệm người dùng mượt mà và hiệu quả.",
+      "experience": "12",
+      "speciality": "React, TypeScript & UX/UI"
+    },
+    {
+      "name": "Trần Nhật Minh",
+      "role": "Backend Engineering Lead",
+      "description": "Bậc thầy xử lý dữ liệu và API — sự hoàn hảo trong từng dòng code. Chuyên xây dựng hệ thống backend quy mô lớn.",
+      "experience": "10",
+      "speciality": "Node.js, Database & Cloud"
+    }
+  ]
+}

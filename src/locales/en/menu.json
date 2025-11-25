@@ -1,0 +1,33 @@
+{
+  "title": "Our Menu",
+  "subtitle": "Explore Our Delicious Offerings",
+  "categories": {
+    "all": "All",
+    "appetizers": "Appetizers",
+    "mainCourse": "Main Course",
+    "desserts": "Desserts",
+    "beverages": "Beverages"
+  },
+  "filter": {
+    "title": "Filter",
+    "priceRange": "Price Range",
+    "dietary": "Dietary",
+    "vegetarian": "Vegetarian",
+    "vegan": "Vegan",
+    "glutenFree": "Gluten Free",
+    "spicy": "Spicy"
+  },
+  "sort": {
+    "title": "Sort By",
+    "popular": "Most Popular",
+    "priceLowToHigh": "Price: Low to High",
+    "priceHighToLow": "Price: High to Low",
+    "newest": "Newest"
+  },
+  "item": {
+    "addToCart": "Add to Cart",
+    "viewDetails": "View Details",
+    "calories": "{{count}} cal",
+    "servingSize": "Serving Size"
+  }
+}

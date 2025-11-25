@@ -1,27 +1,23 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-  CircularProgress,
-  Alert,
-} from "@mui/material";
+import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import imageDefault from "../../../assets/gallery/gallery_burger.png";
 import productService from "../../../services/productService";
 import type { ProductResponse } from "../../../types/responses/product.response";
-import { useNavigate } from "react-router-dom";
 
 // Icons MUI
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FirstPageOutlinedIcon from "@mui/icons-material/FirstPageOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LastPageOutlinedIcon from "@mui/icons-material/LastPageOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import { wishlistApi } from "../../../api/wishListApi";
+import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
+import { useGlobal } from "../../../hooks/useGlobal";
+import { useSnackbar } from "../../../hooks/useSnackbar";
+import cartService from "../../../services/cartService";
 
 interface ProductListProps {
   searchName: string | null;
@@ -45,6 +41,10 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const { isLogin } = useGlobal();
+  const [isParentHovered, setIsParentHovered] = useState(false);
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const mapSortBy = (uiSort: string): string => {
@@ -95,8 +95,11 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
         } else {
           result = await productService.getProducts(currentPage, mapShowCount(showCount), mapSortBy(sortBy));
         }
+
+        // Sử dụng trực tiếp thuộc tính wishlist từ backend
         setProducts(result.products);
         setTotalPages(result.totalPages);
+
         if (result.error) {
           setError(result.error);
         }
@@ -118,10 +121,56 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
     navigate(`/shop/${productId}`);
   };
 
+  const handleAddToCart = async (productId: number) => {
+    if (!isLogin) {
+      setShowLoginDialog(true);
+      return;
+    }
+    try {
+      await cartService.addToCart({ productId: productId, quantity: 1 });
+      showSnackbar("Product added to cart!", "success", 3000);
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      showSnackbar("Failed to add product to cart!", "error", 3000);
+    }
+  };
+
+  const handleToggleWishlist = async (e: React.MouseEvent, productId: number) => {
+    e.stopPropagation();
+
+    if (!isLogin) {
+      setShowLoginDialog(true);
+      return;
+    }
+
+    const productIndex = products.findIndex((p) => p.id === productId);
+    if (productIndex === -1) return;
+
+    const currentStatus = products[productIndex].wishlist;
+
+    try {
+      if (currentStatus) {
+        await wishlistApi.removeFromWishlist(productId);
+        showSnackbar("Removed from wishlist!", "info", 2000);
+      } else {
+        await wishlistApi.addToWishlist(productId);
+        showSnackbar("Added to wishlist!", "success", 2000);
+      }
+
+      const updatedProducts = [...products];
+      updatedProducts[productIndex] = {
+        ...updatedProducts[productIndex],
+        wishlist: !currentStatus,
+      };
+      setProducts(updatedProducts);
+    } catch {
+      showSnackbar("Failed to update wishlist!", "error", 3000);
+    }
+  };
+
   const renderPagination = () => {
     const pages = [];
 
-    // Nút Previous (First Page)
     pages.push(
       <Button
         key="prev"
@@ -139,22 +188,14 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          "&:hover": {
-            bgcolor: "#f3f4f6",
-            color: "#6b7280",
-          },
-          "&.Mui-disabled": {
-            opacity: 0.5,
-            cursor: "not-allowed",
-            color: "#d1d5db",
-          },
+          "&:hover": { bgcolor: "#f3f4f6", color: "#6b7280" },
+          "&.Mui-disabled": { opacity: 0.5, cursor: "not-allowed", color: "#d1d5db" },
         }}
       >
         <FirstPageOutlinedIcon sx={{ fontSize: 20 }} />
       </Button>
     );
 
-    // Các trang số
     for (let i = 0; i < totalPages; i++) {
       pages.push(
         <Button
@@ -183,7 +224,6 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       );
     }
 
-    // Nút Next (Last Page)
     pages.push(
       <Button
         key="next"
@@ -201,15 +241,8 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          "&:hover": {
-            bgcolor: "#f3f4f6",
-            color: "#6b7280",
-          },
-          "&.Mui-disabled": {
-            opacity: 0.5,
-            cursor: "not-allowed",
-            color: "#d1d5db",
-          },
+          "&:hover": { bgcolor: "#f3f4f6", color: "#6b7280" },
+          "&.Mui-disabled": { opacity: 0.5, cursor: "not-allowed", color: "#d1d5db" },
         }}
       >
         <LastPageOutlinedIcon sx={{ fontSize: 20 }} />
@@ -226,49 +259,15 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true, amount: 0.3 }}
-      sx={{
-        flex: 1,
-        p: { xs: 2, md: 3 },
-        minWidth: 0,
-      }}
+      sx={{ flex: 1, p: { xs: 2, md: 3 }, minWidth: 0 }}
     >
       {/* Sort and Show controls */}
-      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mb: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mb: 4, mt: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Typography variant="body1">Sort By:</Typography>
           <FormControl sx={{ minWidth: 200 }}>
             <InputLabel sx={{ display: "none" }}>Sort By</InputLabel>
-            <Select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              disabled={loading}
-              sx={{
-                height: 35,
-                borderColor: "grey.500",
-                color: "grey.700",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "grey.500",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "grey.700",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "grey.700",
-                },
-                "& .MuiSelect-icon": {
-                  color: "grey.700",
-                },
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    "& .MuiMenuItem-root": {
-                      color: "grey.700",
-                    },
-                  },
-                },
-              }}
-            >
+            <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)} disabled={loading} sx={{ height: 35 }}>
               <MenuItem value="id,asc">Default</MenuItem>
               <MenuItem value="newest">Newest</MenuItem>
               <MenuItem value="price-low">Price: Low to High</MenuItem>
@@ -284,32 +283,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
               value={showCount}
               onChange={(e) => setShowCount(e.target.value)}
               disabled={loading}
-              sx={{
-                height: 35,
-                borderColor: "grey.500",
-                color: "grey.700",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "grey.500",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "grey.700",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "grey.700",
-                },
-                "& .MuiSelect-icon": {
-                  color: "grey.700",
-                },
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    "& .MuiMenuItem-root": {
-                      color: "grey.700",
-                    },
-                  },
-                },
-              }}
+              sx={{ height: 35 }}
             >
               <MenuItem value={12}>12 per page</MenuItem>
               <MenuItem value={15}>15 per page</MenuItem>
@@ -319,28 +293,53 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
         </Box>
       </Box>
 
-      {/* Loading and Error states */}
-      {loading && (
-        <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
-          <CircularProgress />
-        </Box>
-      )}
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
-
-      {/* Product Grid - RESPONSIVE GRID + WIDTH CARD */}
-      {!loading && !error && (
+      {/* Loading / Error / Empty / Products */}
+      {loading ? (
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr", // Mobile: 1 cột
-              sm: "repeat(2, 1fr)", // Tablet: 2 cột
-              md: "repeat(3, 1fr)", // Desktop: 3 cột
-            },
+            gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" },
+            gap: 2,
+            mt: 2,
+            minHeight: "1000px",
+          }}
+        >
+          {[...Array(15)].map((_, i) => (
+            <Box
+              key={`skeleton-${i}`}
+              sx={{
+                width: { xs: "100%", md: 265 },
+                height: 265,
+                mx: "auto",
+                bgcolor: "#fff",
+                borderRadius: 0,
+                overflow: "hidden",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+              }}
+            >
+              <Skeleton variant="rectangular" width="100%" height={210} animation="wave" />
+              <Box sx={{ p: 1 }}>
+                <Skeleton width="80%" height={24} animation="wave" />
+                <Skeleton width="50%" height={28} sx={{ mt: 1 }} animation="wave" />
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      ) : error ? (
+        <Alert severity="error" sx={{ mt: 4 }}>
+          {error}
+        </Alert>
+      ) : products.length === 0 ? (
+        <Box sx={{ textAlign: "center", py: 12, minWidth: { xs: "unset", lg: "826px" } }}>
+          <Typography variant="h6" color="text.secondary">
+            Không tìm thấy sản phẩm nào
+          </Typography>
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" },
             gap: 2,
             mb: 3,
             mt: 2,
@@ -362,19 +361,18 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                 "&:hover": {
                   boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
                   transform: "translateY(-4px)",
-                  "& .overlay-icons": {
-                    opacity: 1,
-                  },
+                  "& .overlay-icons": { opacity: 1 },
                 },
                 transition: "all 0.3s ease",
-                width: { xs: "100%", md: 265 }, // Mobile: full width, Desktop: 265px
+                width: { xs: "100%", md: 265 },
                 height: 265,
                 cursor: "pointer",
-                mx: "auto", // Căn giữa trên mobile
+                mx: "auto",
               }}
+              onMouseEnter={() => setIsParentHovered(true)}
+              onMouseLeave={() => setIsParentHovered(false)}
               onClick={() => handleProductClick(product.id)}
             >
-              {/* Image Container */}
               <Box
                 sx={{
                   position: "relative",
@@ -418,7 +416,6 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                   </Box>
                 )}
 
-                {/* Overlay Icons */}
                 <Box
                   className="overlay-icons"
                   sx={{
@@ -431,14 +428,14 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                     opacity: 0,
                     transition: "opacity 0.3s ease",
                     pointerEvents: "none",
-                    "& > *": {
-                      pointerEvents: "auto",
-                    },
+                    "& > *": { pointerEvents: "auto" },
                   }}
                 >
                   <Box
+                    className="overlay-icons-info"
                     sx={{
-                      bgcolor: "#fff",
+                      bgcolor: isParentHovered ? "#FF9F0D" : "#fff",
+                      "& svg": { color: isParentHovered ? "#fff" : "#FF9F0D" },
                       p: 1,
                       display: "flex",
                       alignItems: "center",
@@ -446,10 +443,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                       cursor: "pointer",
                       boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                       transition: "all 0.2s ease",
-                      "&:hover": {
-                        bgcolor: "#f5f5f5",
-                        transform: "scale(1.1)",
-                      },
+                      "&:hover": { bgcolor: "#FF9F0D", "& svg": { color: "#fff" } },
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -461,29 +455,6 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
 
                   <Box
                     sx={{
-                      bgcolor: "#FF9F0D",
-                      p: 1,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                      transition: "all 0.2s ease",
-                      "&:hover": {
-                        bgcolor: "#e68a00",
-                        transform: "scale(1.1)",
-                      },
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log("Add to cart:", product.id);
-                    }}
-                  >
-                    <ShoppingCartOutlinedIcon sx={{ color: "#fff", fontSize: 20 }} />
-                  </Box>
-
-                  <Box
-                    sx={{
                       bgcolor: "#fff",
                       p: 1,
                       display: "flex",
@@ -493,26 +464,54 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                       boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                       transition: "all 0.2s ease",
                       "&:hover": {
-                        bgcolor: "#f5f5f5",
-                        transform: "scale(1.1)",
+                        bgcolor: "#FF9F0D",
+                        "& svg": { color: "#fff" },
+                        "& .overlay-icons-info": {
+                          bgcolor: "#fff",
+                          "& svg": { color: "#FF9F0D" },
+                        },
                       },
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log("Favorite:", product.id);
+                      handleAddToCart(product.id);
                     }}
+                    onMouseEnter={() => setIsParentHovered(false)}
+                    onMouseLeave={() => setIsParentHovered(true)}
                   >
-                    <FavoriteBorderOutlinedIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />
+                    <ShoppingCartOutlinedIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />
+                  </Box>
+
+                  <Box
+                    onClick={(e) => handleToggleWishlist(e, product.id)}
+                    sx={{
+                      bgcolor: "#fff",
+                      p: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                      transition: "all 0.2s ease",
+                      "&:hover": { bgcolor: "#FF9F0D", "& svg": { color: "#fff" } },
+                    }}
+                    onMouseEnter={() => setIsParentHovered(false)}
+                    onMouseLeave={() => setIsParentHovered(true)}
+                  >
+                    {product.wishlist ? (
+                      <FavoriteIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />
+                    ) : (
+                      <FavoriteBorderOutlinedIcon sx={{ color: "#FF9F0D", fontSize: 20 }} />
+                    )}
                   </Box>
                 </Box>
               </Box>
 
-              {/* Product Info */}
               <Box sx={{ p: 0, textAlign: "left", px: 1, pb: 1 }}>
                 <Typography variant="body2" color="#333333" sx={{ mt: 1, mb: 0.5, fontSize: 14, fontWeight: "bold" }}>
                   {product.name}
                 </Typography>
-                <Typography variant="body2" color="#FF9F0D" sx={{ fontSize: 13 }}>
+                <Typography variant="body2" color="#FF9F0D" sx={{ fontSize: 12 }}>
                   ${product.price.toFixed(2)}
                 </Typography>
               </Box>
@@ -521,12 +520,13 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
         </Box>
       )}
 
-      {/* Pagination - GIỮ NGUYÊN 100% */}
       {!loading && !error && totalPages > 1 && (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 3, pt: 1.5, gap: 1, borderTop: "1px solid #e5e7eb" }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4, flexWrap: "wrap", gap: 1 }}>
           {renderPagination()}
         </Box>
       )}
+
+      <LoginRequiredDialog open={showLoginDialog} onClose={() => setShowLoginDialog(false)} />
     </Box>
   );
 };

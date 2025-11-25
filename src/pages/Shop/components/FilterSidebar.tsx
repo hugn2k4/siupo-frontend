@@ -1,7 +1,10 @@
+// src/components/FilterSidebar.tsx
+
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Checkbox,
+  CircularProgress,
   FormControlLabel,
   FormGroup,
   IconButton,
@@ -12,9 +15,19 @@ import {
   Typography,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import categoryService from "../../../services/categoryService";
+import productService from "../../../services/productService";
+import reviewService from "../../../services/reviewService";
 import type { CategoryResponse } from "../../../types/responses/category.response";
+import type { ProductResponse } from "../../../types/responses/product.response";
+import type { ReviewResponse } from "../../../types/responses/review.response";
+
+// Dùng để mở rộng ProductResponse thêm rating + reviewCount
+interface LatestProductWithRating extends ProductResponse {
+  rating: number;
+  reviewCount: number;
+}
 
 interface FilterSidebarProps {
   onFilterChange: (filters: {
@@ -25,39 +38,86 @@ interface FilterSidebarProps {
   }) => void;
 }
 
-const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
+const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
   const [searchName, setSearchName] = useState<string | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-  const [priceRange, setPriceRange] = useState<number[]>([0, 1000000]); //hiện tại đang gán cứng giá min max
+  const [priceRange, setPriceRange] = useState<number[]>([0, 200]);
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [latestProducts, setLatestProducts] = useState<LatestProductWithRating[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [loadingProducts, setLoadingProducts] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
-  // Fetch categories using categoryService
+  const prevFilterKey = useRef<string>("");
+  const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${priceRange[0]}|${priceRange[1]}`;
+
+  useEffect(() => {
+    if (currentFilterKey !== prevFilterKey.current) {
+      prevFilterKey.current = currentFilterKey;
+      onFilterChange({
+        searchName,
+        categoryIds: selectedCategories,
+        minPrice: priceRange[0],
+        maxPrice: priceRange[1],
+      });
+    }
+  }, [currentFilterKey, onFilterChange]);
+
+  // Load categories
   useEffect(() => {
     const fetchCategories = async () => {
-      setLoading(true);
-      setError(null);
-      const result = await categoryService.getCategories();
-      setCategories(result.categories);
-      if (result.error) {
-        setError(result.error);
+      setLoadingCategories(true);
+      try {
+        const result = await categoryService.getCategories();
+        setCategories(result.categories || []);
+      } catch {
+        setError("Failed to load categories");
+      } finally {
+        setLoadingCategories(false);
       }
-      setLoading(false);
     };
     fetchCategories();
   }, []);
 
-  // Notify parent of filter changes
+  // Load 4 sản phẩm mới nhất + rating thật
   useEffect(() => {
-    onFilterChange({
-      searchName,
-      categoryIds: selectedCategories,
-      minPrice: priceRange[0],
-      maxPrice: priceRange[1],
-    });
-  }, [searchName, selectedCategories, priceRange, onFilterChange]);
+    const fetchLatestWithRating = async () => {
+      setLoadingProducts(true);
+      try {
+        const res = await productService.getProducts(0, 4, "id,desc");
+        const products = res.products || [];
+
+        const productsWithRating: LatestProductWithRating[] = await Promise.all(
+          products.map(async (product) => {
+            try {
+              const reviewRes = await reviewService.getProductReviews(product.id);
+              const reviews: ReviewResponse[] = reviewRes.data || [];
+
+              const avgRating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
+
+              return {
+                ...product,
+                rating: Number(avgRating.toFixed(1)),
+                reviewCount: reviews.length,
+              };
+            } catch {
+              return { ...product, rating: 0, reviewCount: 0 };
+            }
+          })
+        );
+
+        setLatestProducts(productsWithRating);
+      } catch (err) {
+        console.error("Load latest products failed:", err);
+        setLatestProducts([]);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+
+    fetchLatestWithRating();
+  }, []);
 
   const handleSearch = () => {
     onFilterChange({
@@ -74,45 +134,13 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
     );
   };
 
-  const handlePriceChange = (_event: Event, newValue: number | number[]) => {
+  const handlePriceChange = (_: Event, newValue: number | number[]) => {
     setPriceRange(newValue as number[]);
   };
 
   const handleTagClick = (tag: string) => {
-    setSelectedTag(selectedTag === tag ? null : tag);
-    // Note: Tags are not currently mapped to backend filters
+    setSelectedTag((prev) => (prev === tag ? null : tag));
   };
-
-  const latestList = [
-    {
-      id: 1,
-      name: "Fresh Lime",
-      price: "$30.00",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop&crop=center",
-      rating: 4.5,
-    },
-    {
-      id: 2,
-      name: "Chocolate Muffin",
-      price: "$20.00",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop&crop=center",
-      rating: 4.0,
-    },
-    {
-      id: 3,
-      name: "Country Burger",
-      price: "$40.00",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop&crop=center",
-      rating: 3.8,
-    },
-    {
-      id: 4,
-      name: "Cheese Butter",
-      price: "$10.00",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop&crop=center",
-      rating: 4.2,
-    },
-  ];
 
   return (
     <Box
@@ -122,10 +150,12 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
       transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
       viewport={{ once: true, amount: 0 }}
       sx={{
-        flex: "0 0 25%",
+        mt: "110px",
+        mb: 12,
+        // Thay bằng:
+        // mt: 0,
         padding: 2.5,
         bgcolor: "#fff",
-        mt: "100px",
         border: "1px solid #e0e0e0",
         borderRadius: 2,
       }}
@@ -152,16 +182,12 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
                 </IconButton>
               </InputAdornment>
             ),
-            sx: {
-              fontSize: "0.85rem",
-            },
+            sx: { fontSize: "0.85rem" },
           }}
           sx={{
             mt: 0,
             backgroundColor: "#FF9F0D1A",
-            "& .MuiOutlinedInput-notchedOutline": {
-              border: "none",
-            },
+            "& .MuiOutlinedInput-notchedOutline": { border: "none" },
           }}
         />
       </Box>
@@ -179,9 +205,9 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
         >
           Category
         </Typography>
-        {loading && <Typography>Loading categories...</Typography>}
+        {loadingCategories && <Typography>Loading categories...</Typography>}
         {error && <Typography color="error">{error}</Typography>}
-        {!loading && !error && (
+        {!loadingCategories && !error && (
           <FormGroup
             sx={{
               "& .MuiFormControlLabel-root": {
@@ -203,33 +229,15 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
                     checked={selectedCategories.includes(category.id)}
                     onChange={() => handleCategoryChange(category.id)}
                     sx={{
-                      transform: "scale(0.85)", // Nhỏ hơn một chút
-                      padding: "4px", // Tăng nhẹ để dễ click
-                      "& .MuiSvgIcon-root": {
-                        // Icon bên trong
-                        fontSize: 18,
-                      },
-                      "&.Mui-checked": {
-                        color: "#FF9F0D", // Màu khi được chọn
-                      },
-                      // Làm mỏng viền (outline) của checkbox
-                      "& .MuiTouchRipple-root": {
-                        display: "none", // Tắt ripple nếu muốn gọn
-                      },
-                      // Tùy chỉnh viền (border) của checkbox
-                      "& .MuiButtonBase-root": {
-                        padding: 0,
-                      },
-                      // Dùng border thay vì outline mặc định
+                      transform: "scale(0.85)",
+                      padding: "4px",
+                      "& .MuiSvgIcon-root": { fontSize: 18 },
+                      "&.Mui-checked": { color: "#FF9F0D" },
+                      "& .MuiTouchRipple-root": { display: "none" },
                       "& .MuiCheckbox-root": {
                         borderRadius: 1,
-                        "&:not(.Mui-checked)": {
-                          border: "1.5px solid #ccc", // Viền mỏng khi chưa chọn
-                        },
-                        "&.Mui-checked": {
-                          border: "1.5px solid #FF9F0D", // Viền mỏng khi chọn
-                          bgcolor: "transparent",
-                        },
+                        "&:not(.Mui-checked)": { border: "1.5px solid #ccc" },
+                        "&.Mui-checked": { border: "1.5px solid #FF9F0D", bgcolor: "transparent" },
                       },
                     }}
                   />
@@ -241,7 +249,7 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
         )}
       </Box>
 
-      {/* Poster Placeholder */}
+      {/* Poster */}
       <Box
         sx={{
           mb: 2,
@@ -284,7 +292,7 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
           onChange={handlePriceChange}
           valueLabelDisplay="auto"
           min={0}
-          max={1000000}
+          max={200}
           sx={{
             color: "#FF9F0D",
             "& .MuiSlider-thumb": {
@@ -293,12 +301,8 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
               border: "3.5px solid #fff",
               backgroundColor: "#FF9F0D",
             },
-            "& .MuiSlider-rail": {
-              height: 4,
-            },
-            "& .MuiSlider-track": {
-              height: 4,
-            },
+            "& .MuiSlider-rail": { height: 4 },
+            "& .MuiSlider-track": { height: 4 },
             "& .MuiSlider-valueLabel": {
               fontSize: "0.75rem",
               top: -2,
@@ -315,11 +319,10 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
             fontSize: "0.85rem",
           }}
         >
-          Price Range: ${priceRange[0]} - ${priceRange[1]}
+          Price Range: ${priceRange[0]} - ${priceRange[1] === 1000000 ? "Any" : priceRange[1]}
         </Typography>
       </Box>
 
-      {/* Latest Products */}
       <Box sx={{ mb: 2, p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
@@ -333,7 +336,14 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
         >
           Latest Products
         </Typography>
-        {latestList.map((item) => (
+
+        {loadingProducts && (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+            <CircularProgress size={20} />
+          </Box>
+        )}
+
+        {latestProducts.map((item) => (
           <Box
             key={item.id}
             sx={{
@@ -344,7 +354,10 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
             }}
           >
             <img
-              src={item.image}
+              src={
+                item.imageUrls[0] ||
+                "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop&crop=center"
+              }
               alt={item.name}
               style={{
                 width: 60,
@@ -371,12 +384,12 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
                   mb: 0.2,
                 }}
               >
-                {item.price}
+                ${item.price.toFixed(2)}
               </Typography>
               <Rating
                 name={`rating-${item.id}`}
                 value={item.rating}
-                max={5}
+                precision={0.1}
                 readOnly
                 size="small"
                 sx={{
@@ -389,7 +402,7 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
         ))}
       </Box>
 
-      {/* Product Tags */}
+      {/* Product Tags – giữ nguyên 100% */}
       <Box sx={{ p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
@@ -430,6 +443,6 @@ const FilterSidebar = ({ onFilterChange }: FilterSidebarProps) => {
       </Box>
     </Box>
   );
-};
+});
 
 export default FilterSidebar;

@@ -14,9 +14,17 @@ interface CartItemProps {
   onToggle: (id: number) => void;
   onQuantityChange: (id: number, newQuantity: number) => void;
   onRemove: (id: number) => void;
+  isUpdating?: boolean;
 }
 
-const CartItemComponent: React.FC<CartItemProps> = ({ item, isSelected, onToggle, onQuantityChange, onRemove }) => {
+const CartItemComponent: React.FC<CartItemProps> = ({
+  item,
+  isSelected,
+  onToggle,
+  onQuantityChange,
+  onRemove,
+  isUpdating = false,
+}) => {
   const navigate = useNavigate();
   const goToProductDetail = () => {
     navigate(`/shop/${item.product.id}`);
@@ -146,12 +154,17 @@ const CartItemComponent: React.FC<CartItemProps> = ({ item, isSelected, onToggle
           direction="row"
           spacing={0}
           alignItems="center"
-          sx={{ border: "1px solid var(--color-gray5)", borderRadius: 0 }}
+          sx={{
+            border: "1px solid var(--color-gray5)",
+            borderRadius: 0,
+            opacity: isUpdating ? 0.6 : 1,
+            pointerEvents: isUpdating ? "none" : "auto",
+          }}
         >
           <IconButton
             size="small"
             onClick={() => onQuantityChange(item.id, Math.max(1, item.quantity - 1))}
-            disabled={item.quantity === 1}
+            disabled={item.quantity === 1 || isUpdating}
             sx={{ borderRadius: 0, px: 1, "&.Mui-disabled": { color: "var(--color-gray4)" } }}
           >
             <RemoveIcon fontSize="small" />
@@ -162,6 +175,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({ item, isSelected, onToggle
           <IconButton
             size="small"
             onClick={() => onQuantityChange(item.id, item.quantity + 1)}
+            disabled={isUpdating}
             sx={{ borderRadius: 0, px: 1 }}
           >
             <AddIcon fontSize="small" />
@@ -189,12 +203,17 @@ const CartItemComponent: React.FC<CartItemProps> = ({ item, isSelected, onToggle
           direction="row"
           spacing={0}
           alignItems="center"
-          sx={{ border: "1px solid var(--color-gray5)", borderRadius: 0 }}
+          sx={{
+            border: "1px solid var(--color-gray5)",
+            borderRadius: 0,
+            opacity: isUpdating ? 0.6 : 1,
+            pointerEvents: isUpdating ? "none" : "auto",
+          }}
         >
           <IconButton
             size="small"
             onClick={() => onQuantityChange(item.id, Math.max(1, item.quantity - 1))}
-            disabled={item.quantity === 1}
+            disabled={item.quantity === 1 || isUpdating}
             sx={{ borderRadius: 0, px: 1, "&.Mui-disabled": { color: "var(--color-gray4)" } }}
           >
             <RemoveIcon fontSize="small" />
@@ -205,6 +224,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({ item, isSelected, onToggle
           <IconButton
             size="small"
             onClick={() => onQuantityChange(item.id, item.quantity + 1)}
+            disabled={isUpdating}
             sx={{ borderRadius: 0, px: 1 }}
           >
             <AddIcon fontSize="small" />

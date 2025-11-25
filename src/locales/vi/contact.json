@@ -1,0 +1,26 @@
+{
+  "error": "Gửi tin nhắn thất bại. Vui lòng thử lại.",
+  "form": {
+    "email": "Email Của Bạn",
+    "message": "Nội Dung",
+    "name": "Họ và Tên",
+    "phone": "Số Điện Thoại",
+    "send": "Gửi Tin Nhắn",
+    "sending": "Đang gửi...",
+    "subject": "Tiêu Đề"
+  },
+  "info": {
+    "address": "Địa Chỉ",
+    "addressContent": "1 Võ Văn Ngân, Phường Linh Chiểu, Thành phố Thủ Đức, TP. Hồ Chí Minh",
+    "email": "Email",
+    "emailContent": "booking@siupo.com",
+    "hours": "Giờ Mở Cửa",
+    "hoursContent": "Thứ 2 - Chủ nhật: 10:00 - 02:00",
+    "phone": "Điện Thoại",
+    "phoneContent": "(+84) 945 396 133",
+    "title": "Thông Tin Liên Hệ"
+  },
+  "subtitle": "Chúng Tôi Rất Mong Nhận Được Phản Hồi Từ Bạn",
+  "success": "Cảm ơn bạn đã gửi tin nhắn. Chúng tôi sẽ phản hồi sớm nhất!",
+  "title": "Liên Hệ"
+}

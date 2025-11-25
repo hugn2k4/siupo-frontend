@@ -1,0 +1,35 @@
+{
+  "hero": {
+    "subtitle": "Healthy & Tasty Food",
+    "title1": "Enjoy Healthy Life",
+    "title2": "& Tasty Food.",
+    "description": "Discover a variety of healthy and delicious meals crafted to nourish your body and delight your taste buds. From fresh salads to wholesome bowls, every dish is made with love and quality ingredients, helping you enjoy a balanced and flavorful lifestyle.",
+    "showMore": "Show More",
+    "placeOrder": "Place an Order"
+  },
+  "stats": {
+    "yearsOfExperience": "Years of Experience",
+    "happyCustomers": "Happy Customers",
+    "masterChefs": "Master Chefs",
+    "popularDishes": "Popular Dishes"
+  },
+  "aboutSection": {
+    "heading": "About Us",
+    "title": "Food is an important part Of a balanced diet",
+    "description": "Eating well is not just about feeling full — it's about fueling your body with the right nutrients to stay strong and energized. A balanced diet of vegetables, grains, proteins, and healthy fats helps you enjoy both wellness and flavor while supporting long-term health."
+  },
+  "menuSection": {
+    "heading": "Our Menu",
+    "title": "Explore Our Delicious Dishes",
+    "viewAllMenu": "View All Menu"
+  },
+  "chefSection": {
+    "heading": "Our Team",
+    "title": "Meet Our Master Chefs",
+    "viewAllChefs": "View All Chefs"
+  },
+  "testimonials": {
+    "heading": "Testimonials",
+    "title": "What Our Customers Say"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "detail": {
+    "category": "Category",
+    "availability": "Availability",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "sku": "SKU",
+    "description": "Description",
+    "ingredients": "Ingredients",
+    "nutrition": "Nutrition Information",
+    "addToCart": "Add to Cart",
+    "buyNow": "Buy Now",
+    "quantity": "Quantity",
+    "price": "Price"
+  },
+  "reviews": {
+    "title": "Customer Reviews",
+    "rating": "Rating",
+    "writeReview": "Write a Review",
+    "noReviews": "No reviews yet",
+    "verified": "Verified Purchase",
+    "helpful": "Helpful",
+    "reportAbuse": "Report Abuse"
+  },
+  "related": {
+    "title": "Related Products",
+    "viewAll": "View All"
+  }
+}

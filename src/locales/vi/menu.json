@@ -1,0 +1,33 @@
+{
+  "title": "Thực Đơn",
+  "subtitle": "Khám Phá Các Món Ăn Ngon",
+  "categories": {
+    "all": "Tất Cả",
+    "appetizers": "Khai Vị",
+    "mainCourse": "Món Chính",
+    "desserts": "Tráng Miệng",
+    "beverages": "Đồ Uống"
+  },
+  "filter": {
+    "title": "Lọc",
+    "priceRange": "Khoảng Giá",
+    "dietary": "Chế Độ Ăn",
+    "vegetarian": "Chay",
+    "vegan": "Thuần Chay",
+    "glutenFree": "Không Gluten",
+    "spicy": "Cay"
+  },
+  "sort": {
+    "title": "Sắp Xếp",
+    "popular": "Phổ Biến Nhất",
+    "priceLowToHigh": "Giá: Thấp Đến Cao",
+    "priceHighToLow": "Giá: Cao Đến Thấp",
+    "newest": "Mới Nhất"
+  },
+  "item": {
+    "addToCart": "Thêm Vào Giỏ",
+    "viewDetails": "Xem Chi Tiết",
+    "calories": "{{count}} cal",
+    "servingSize": "Khẩu Phần"
+  }
+}

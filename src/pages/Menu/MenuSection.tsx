@@ -1,10 +1,17 @@
-import { Box, Typography } from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import { Box, Typography, Skeleton } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useBanners } from "../../hooks/useBanners";
+import productApi from "../../api/productApi";
+import type { ProductResponse } from "../../types/responses/product.response";
+import DefaultSalad from "../../assets/images/image_salad.png";
+import DefaultBurger from "../../assets/images/image_burger.png";
+import DefaultCupcake from "../../assets/images/image_cupcake.png";
+import DefaultCocktail from "../../assets/images/image_cocktail.png";
 
-const MenuItem: React.FC<{ item: { name: string; description: string; price: string; calories?: string } }> = ({
-  item,
-}) => {
+const MenuItem: React.FC<{ item: ProductResponse }> = ({ item }) => {
   const itemRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const currentItem = itemRef.current;
@@ -13,9 +20,13 @@ const MenuItem: React.FC<{ item: { name: string; description: string; price: str
       setTimeout(() => {
         currentItem.style.transition = "opacity 0.5s ease-in";
         currentItem.style.opacity = "1";
-      }, 100); // Delay 100ms để tạo hiệu ứng tuần tự
+      }, 100);
     }
   }, []);
+
+  const handleProductClick = () => {
+    navigate(`/shop/${item.id}`);
+  };
 
   return (
     <Box sx={{ mb: 2 }} ref={itemRef}>
@@ -23,6 +34,7 @@ const MenuItem: React.FC<{ item: { name: string; description: string; price: str
         <Box sx={{ flex: 1, textAlign: "left" }}>
           <Typography
             variant="body1"
+            onClick={handleProductClick}
             sx={{
               color: "#000",
               fontSize: "1.2rem",
@@ -31,6 +43,8 @@ const MenuItem: React.FC<{ item: { name: string; description: string; price: str
               "&:hover": { color: "#FF9F0D" },
               "&:focus": { color: "#FF9F0D" },
               outline: "none",
+              cursor: "pointer",
+              transition: "color 0.3s ease",
             }}
           >
             {item.name}
@@ -38,11 +52,6 @@ const MenuItem: React.FC<{ item: { name: string; description: string; price: str
           <Typography variant="body2" sx={{ color: "#666", fontSize: "1rem", mb: 0.5, fontWeight: "light" }}>
             {item.description}
           </Typography>
-          {item.calories && (
-            <Typography variant="body2" sx={{ color: "#999", fontSize: "0.9rem" }}>
-              {item.calories}
-            </Typography>
-          )}
         </Box>
         <Typography
           variant="body1"
@@ -54,7 +63,7 @@ const MenuItem: React.FC<{ item: { name: string; description: string; price: str
             minWidth: "60px",
           }}
         >
-          {item.price}
+          ${item.price.toFixed(2)}
         </Typography>
       </Box>
       <Box sx={{ borderBottom: "2px dotted #e8e8e8", width: "100%", mb: 2 }} />
@@ -62,132 +71,54 @@ const MenuItem: React.FC<{ item: { name: string; description: string; price: str
   );
 };
 
-const menuData = [
-  {
-    title: "Starter Menu",
-    image: "../../src/assets/images/image_salad.png",
-    items: [
-      {
-        name: "Alder Grilled Chinook Salmon",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$32",
-        calories: "560 CAL",
-      },
-      {
-        name: "Berries and creme tart",
-        description: "Gorgonzola, ricotta, mozzarella, taleggio",
-        price: "$43",
-        calories: "700 CAL",
-      },
-      {
-        name: "Tormentoso Bush Pizza Pintoage",
-        description: "Ground cumin, avocados, peeled and cubed",
-        price: "$14",
-        calories: "1000 CAL",
-      },
-      {
-        name: "Spicy Vegan Potato Curry",
-        description: "Spreadable cream cheese, crumbled blue cheese",
-        price: "$35",
-        calories: "560 CAL",
-      },
-    ],
-  },
-  {
-    title: "Main Course",
-    image: "../../src/assets/images/image_burger.png",
-    items: [
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-      {
-        name: "Cashew Chicken With Stir-Fry",
-        description: "Gorgonzola, ricotta, mozzarella, taleggio",
-        price: "$43",
-        calories: "700 CAL",
-      },
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-    ],
-  },
-  {
-    title: "Dessert",
-    image: "../../src/assets/images/image_cupcake.png",
-    items: [
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-    ],
-  },
-  {
-    title: "Drinks",
-    image: "../../src/assets/images/image_cocktail.png",
-    items: [
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-      {
-        name: "Optic Big Breakfast Combo Menu",
-        description: "Toasted French bread topped with romano, cheddar",
-        price: "$25",
-        calories: "560 CAL",
-      },
-    ],
-  },
+const menuSections = [
+  { title: "Starter Menu", categoryId: 9 },
+  { title: "Main Course", categoryId: 2 },
+  { title: "Dessert", categoryId: 3 },
+  { title: "Drinks", categoryId: 10 },
 ];
+
+const defaultBanners = [DefaultSalad, DefaultBurger, DefaultCupcake, DefaultCocktail];
 
 const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { banners, loading: bannersLoading } = useBanners("Menu");
+  const [products, setProducts] = useState<ProductResponse[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  const section = menuSections[sectionIndex];
+  const isImageLeft = sectionIndex % 2 === 0;
+
+  // Fetch products by category
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await productApi.searchProducts(
+          null, // name
+          [section.categoryId], // categoryIds
+          null, // minPrice
+          null, // maxPrice
+          0, // page
+          4, // size - lấy 4 sản phẩm
+          "id,asc" // sortBy
+        );
+
+        if (response.success && response.data) {
+          setProducts(response.data.content);
+        }
+      } catch (error) {
+        console.error(`Error fetching products for ${section.title}:`, error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [section.categoryId, section.title]);
+
+  // Animation effect
   useEffect(() => {
     const currentSection = sectionRef.current;
     if (currentSection) {
@@ -199,8 +130,83 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
     }
   }, []);
 
-  const section = menuData[sectionIndex];
-  const isImageLeft = sectionIndex % 2 === 0;
+  // Image mapping for banners
+  // banners[0] = image_salad (Starter Menu)
+  // banners[1] = image_cupcake (Dessert)
+  // banners[2] = image_cocktail (Drinks)
+  // banners[3] = image_burger (Main Course)
+  const imageMapping = [0, 3, 1, 2]; // map section index → banners API index
+  const menuImage = banners[imageMapping[sectionIndex]]?.url || defaultBanners[sectionIndex];
+
+  // Component cho phần hình ảnh
+  const ImageSection = () => (
+    <Box
+      sx={{
+        flex: 1,
+        pr: isImageLeft ? { sm: 4 } : 0,
+        pl: !isImageLeft ? { sm: 4 } : 0,
+        mb: { xs: 4, sm: 0 },
+      }}
+    >
+      {bannersLoading ? (
+        <Skeleton variant="rectangular" width={350} height={350} sx={{ borderRadius: 0 }} />
+      ) : menuImage ? (
+        <img src={menuImage} alt={section.title} style={{ width: "100%", maxWidth: "350px", borderRadius: 0 }} />
+      ) : null}
+    </Box>
+  );
+
+  // Component cho phần nội dung menu
+  const ContentSection = () => (
+    <Box sx={{ flex: 2 }}>
+      <Typography
+        variant="h4"
+        sx={{
+          color: "#000",
+          mb: 2,
+          fontFamily: "Miniver",
+          fontSize: "2rem",
+          fontWeight: "bold",
+          "&:hover": {
+            color: "var(--color-yellow)",
+            transition: "all 0.3s ease",
+          },
+          transition: "color 0.3s ease",
+          position: "relative",
+        }}
+      >
+        {section.title}
+        <Box
+          sx={{
+            content: '""',
+            position: "absolute",
+            bottom: "-5px",
+            left: 0,
+            width: "30px",
+            height: "2px",
+            backgroundColor: "var(--color-green-primary)",
+          }}
+        />
+      </Typography>
+      {loading ? (
+        <>
+          {[1, 2, 3, 4].map((i) => (
+            <Box key={i} sx={{ mb: 2 }}>
+              <Skeleton variant="text" width="60%" height={30} />
+              <Skeleton variant="text" width="80%" height={20} />
+              <Skeleton variant="text" width="100%" height={2} sx={{ mt: 1 }} />
+            </Box>
+          ))}
+        </>
+      ) : products.length > 0 ? (
+        products.map((product) => <MenuItem key={product.id} item={product} />)
+      ) : (
+        <Typography variant="body2" sx={{ color: "#999" }}>
+          No items available in this category.
+        </Typography>
+      )}
+    </Box>
+  );
 
   return (
     <Box
@@ -209,91 +215,13 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
     >
       {isImageLeft ? (
         <>
-          <Box sx={{ flex: 1, pr: { sm: 4 }, mb: { xs: 4, sm: 0 } }}>
-            <img
-              src={section.image}
-              alt={section.title}
-              style={{ width: "100%", maxWidth: "350px", borderRadius: 0 }}
-            />
-          </Box>
-          <Box sx={{ flex: 2 }}>
-            <Typography
-              variant="h4"
-              sx={{
-                color: "#000",
-                mb: 2,
-                fontFamily: "Miniver",
-                fontSize: "2rem",
-                fontWeight: "bold",
-                "&:hover": {
-                  color: "var(--color-yellow)",
-                  transition: "all 0.3s ease",
-                },
-                transition: "color 0.3s ease",
-                position: "relative",
-              }}
-            >
-              {section.title}
-              <Box
-                sx={{
-                  content: '""',
-                  position: "absolute",
-                  bottom: "-5px",
-                  left: 0,
-                  width: "30px",
-                  height: "2px",
-                  backgroundColor: "var(--color-green-primary)",
-                }}
-              />
-            </Typography>
-            {section.items.map((item, itemIndex) => (
-              <MenuItem key={itemIndex} item={item} />
-            ))}
-          </Box>
+          <ImageSection />
+          <ContentSection />
         </>
       ) : (
         <>
-          <Box sx={{ flex: 2 }}>
-            <Typography
-              variant="h4"
-              sx={{
-                color: "#000",
-                mb: 2,
-                fontFamily: "Miniver",
-                fontSize: "2rem",
-                fontWeight: "bold",
-                "&:hover": {
-                  color: "var(--color-yellow)",
-                  transition: "all 0.3s ease",
-                },
-                transition: "color 0.3s ease",
-                position: "relative",
-              }}
-            >
-              {section.title}
-              <Box
-                sx={{
-                  content: '""',
-                  position: "absolute",
-                  bottom: "-5px",
-                  left: 0,
-                  width: "30px",
-                  height: "2px",
-                  backgroundColor: "var(--color-green-primary)",
-                }}
-              />
-            </Typography>
-            {section.items.map((item, itemIndex) => (
-              <MenuItem key={itemIndex} item={item} />
-            ))}
-          </Box>
-          <Box sx={{ flex: 1, pl: { sm: 4 }, mb: { xs: 4, sm: 0 } }}>
-            <img
-              src={section.image}
-              alt={section.title}
-              style={{ width: "100%", maxWidth: "350px", borderRadius: 0 }}
-            />
-          </Box>
+          <ContentSection />
+          <ImageSection />
         </>
       )}
     </Box>

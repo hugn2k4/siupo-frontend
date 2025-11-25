@@ -1,15 +1,25 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import ShiningStarsIcon from "../../../assets/icons/shining_stars.svg";
 import SparkleIcon from "../../../assets/icons/sparkle.svg";
-import ImageHero from "../../../assets/images/image_hero.png";
-import ImageHeroMobile from "../../../assets/images/image_hero_mobile.png";
+import DefaultHero from "../../../assets/images/image_hero.png";
+import DefaultHeroMobile from "../../../assets/images/image_hero_mobile.png";
 import MyButton from "../../../components/common/Button";
+import { useTranslation } from "../../../hooks/useTranslation";
+import type { Banner } from "../../../types/models/banner";
 
-const Hero = () => {
+interface HeroProps {
+  banners: Banner[];
+  loading: boolean;
+}
+
+const Hero = ({ banners, loading }: HeroProps) => {
+  const { t } = useTranslation("home");
   const [hoveredPlace, setHoveredPlace] = useState(false);
-
+  // Lấy banner từ API
+  const heroImage = banners[0]?.url || DefaultHero;
+  const heroImageMobile = banners[1]?.url || DefaultHeroMobile;
   return (
     <section className="w-full min-h-[90vh] flex flex-col relative overflow-hidden">
       {/* Right side: Hero Image - positioned absolutely to reach screen edge */}
@@ -21,13 +31,17 @@ const Hero = () => {
         viewport={{ once: true, amount: 0.3 }}
         className="absolute top-0 right-0 w-1/2 h-full hidden lg:flex items-start justify-end z-0"
       >
-        <img
-          src={ImageHero}
-          alt="Healthy and delicious food showcase"
-          className="w-auto h-[80vh] object-contain"
-          style={{ maxWidth: "none" }}
-          loading="eager"
-        />
+        {loading ? (
+          <Skeleton variant="rectangular" width="100%" height="80vh" sx={{ borderRadius: 2 }} />
+        ) : heroImage ? (
+          <img
+            src={heroImage}
+            alt="Healthy and delicious food showcase"
+            className="w-auto h-[80vh] object-contain"
+            style={{ maxWidth: "none" }}
+            loading="eager"
+          />
+        ) : null}
       </Box>
 
       <Container maxWidth="xl" className="flex-1 relative">
@@ -61,7 +75,7 @@ const Hero = () => {
                   fontSize: { xs: "0.9rem", sm: "1rem", md: "1.125rem" },
                 }}
               >
-                Healthy & Tasty Food
+                {t("hero.subtitle")}
                 <img
                   src={SparkleIcon}
                   alt="sparkle"
@@ -95,7 +109,7 @@ const Hero = () => {
                   lineHeight: { xs: 1.3, md: 1.2 },
                 }}
               >
-                Enjoy Healthy Life
+                {t("hero.title1")}
               </Typography>
               <Box
                 sx={{
@@ -118,7 +132,7 @@ const Hero = () => {
                     lineHeight: { xs: 1.3, md: 1.2 },
                   }}
                 >
-                  & Tasty Food.
+                  {t("hero.title2")}
                 </Typography>
                 <img
                   src={ShiningStarsIcon}
@@ -139,9 +153,7 @@ const Hero = () => {
                   lineHeight: { xs: 1.6, md: 1.7 },
                 }}
               >
-                Discover a variety of healthy and delicious meals crafted to nourish your body and delight your taste
-                buds. From fresh salads to wholesome bowls, every dish is made with love and quality ingredients,
-                helping you enjoy a balanced and flavorful lifestyle.
+                {t("hero.description")}
               </Typography>
               <Box
                 sx={{
@@ -159,7 +171,7 @@ const Hero = () => {
                   disableDefaultHover
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 >
-                  Show More
+                  {t("hero.showMore")}
                 </MyButton>
                 <MyButton
                   colorScheme="lightGreen"
@@ -167,7 +179,7 @@ const Hero = () => {
                   onMouseLeave={() => setHoveredPlace(false)}
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 >
-                  Place an Order
+                  {t("hero.placeOrder")}
                 </MyButton>
               </Box>
             </Box>
@@ -183,12 +195,16 @@ const Hero = () => {
             className="flex lg:hidden justify-center items-center px-4 order-1 mt-8"
           >
             <div className="relative w-full max-w-md">
-              <img
-                src={ImageHeroMobile}
-                alt="Healthy and delicious food showcase"
-                className="w-full h-auto object-contain max-h-[50vh]"
-                loading="eager"
-              />
+              {loading ? (
+                <Skeleton variant="rectangular" width="100%" height={300} sx={{ borderRadius: 2 }} />
+              ) : heroImageMobile ? (
+                <img
+                  src={heroImageMobile}
+                  alt="Healthy and delicious food showcase"
+                  className="w-full h-auto object-contain max-h-[50vh]"
+                  loading="eager"
+                />
+              ) : null}
             </div>
           </Box>
         </div>

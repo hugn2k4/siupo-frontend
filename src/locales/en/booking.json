@@ -1,0 +1,34 @@
+{
+  "title": "Table Reservation",
+  "form": {
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "email": "Email",
+    "date": "Date",
+    "time": "Time",
+    "guests": "Number of Guests",
+    "specialRequest": "Special Request",
+    "submit": "Reserve Now",
+    "tableName": "Table Name",
+    "selectTable": "Select Table"
+  },
+  "preOrder": {
+    "title": "Pre-order Food",
+    "optional": "Optional",
+    "addDish": "Add Dish",
+    "remove": "Remove",
+    "total": "Pre-order Total"
+  },
+  "success": {
+    "title": "Reservation Successful!",
+    "message": "Your table has been reserved. We'll send a confirmation to your email.",
+    "viewBooking": "View Booking",
+    "backToHome": "Back to Home"
+  },
+  "note": "Note: Reservation will be held for 15 minutes after the reserved time.",
+  "hero": {
+    "title": "Reserve Your Table",
+    "subtitle": "Experience dining at its finest",
+    "description": "Book your table in advance and enjoy a seamless dining experience with our easy reservation system."
+  }
+}

@@ -5,6 +5,7 @@ import Sidebar from "../Account/components/Sidebar";
 import WishlistHeader from "../WishList/components/WishlistHeader";
 import WishlistItem from "../WishList/components/WishlistItem";
 import WishlistEmpty from "../WishList/components/WishlistEmpty";
+import ConfirmModal from "../WishList/components/ConfirmModal";
 import WishlistLoading from "../WishList/components/WishlistLoading";
 import { wishlistApi } from "../../api/wishListApi";
 import type { WishlistResponse } from "../../types/models/wishlist";
@@ -13,6 +14,7 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState<WishlistResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showClearModal, setShowClearModal] = useState(false); // Thêm dòng này
   const { showSnackbar } = useSnackbar();
 
   // Fetch wishlist on mount
@@ -51,10 +53,6 @@ export default function WishlistPage() {
   };
 
   const handleClearAll = async () => {
-    if (!window.confirm("Are you sure you want to clear your entire wishlist?")) {
-      return;
-    }
-
     try {
       await wishlistApi.clearWishlist();
       setWishlist({
@@ -88,12 +86,12 @@ export default function WishlistPage() {
               <WishlistLoading />
             ) : !wishlist || wishlist.totalItems === 0 ? (
               <>
-                <WishlistHeader totalItems={0} onClearAll={handleClearAll} />
+                <WishlistHeader totalItems={0} onClearAll={() => setShowClearModal(true)} />
                 <WishlistEmpty />
               </>
             ) : (
               <>
-                <WishlistHeader totalItems={wishlist.totalItems} onClearAll={handleClearAll} />
+                <WishlistHeader totalItems={wishlist.totalItems} onClearAll={() => setShowClearModal(true)} />
 
                 {/* Wishlist Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -106,6 +104,16 @@ export default function WishlistPage() {
           </div>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={showClearModal}
+        onClose={() => setShowClearModal(false)}
+        onConfirm={handleClearAll}
+        title="Clear Wishlist?"
+        message="Are you sure you want to remove all items from your wishlist? This action cannot be undone."
+        confirmText="Clear All"
+        cancelText="Cancel"
+        type="danger"
+      />
     </div>
   );
 }

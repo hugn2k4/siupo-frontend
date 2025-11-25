@@ -1,0 +1,55 @@
+{
+  "hero": {
+    "subtitle": "Our Story & Passion",
+    "title": "About Us"
+  },
+  "mission": {
+    "content": "To provide our guests with exceptional food, warm hospitality, and memorable moments that bring people together.",
+    "title": "Our Mission"
+  },
+  "story": {
+    "content": "Founded with a passion for authentic cuisine and exceptional service, we have been serving our community for over 20 years. Our restaurant combines traditional recipes with modern culinary techniques to create unforgettable dining experiences.",
+    "title": "Our Story"
+  },
+  "team": {
+    "description": "Our talented team of chefs and staff are dedicated to making your dining experience exceptional.",
+    "title": "Meet Our Team"
+  },
+  "values": {
+    "authenticity": {
+      "description": "Traditional recipes passed down through generations, prepared with care and expertise.",
+      "title": "Authenticity"
+    },
+    "quality": {
+      "description": "We source the finest ingredients and maintain the highest standards in every dish.",
+      "title": "Quality"
+    },
+    "service": {
+      "description": "Warm, attentive service that makes every guest feel like family.",
+      "title": "Service"
+    },
+    "sustainability": {
+      "description": "Committed to sustainable practices and supporting local suppliers.",
+      "title": "Sustainability"
+    },
+    "title": "Our Values"
+  },
+  "whyChooseUs": {
+    "description": "We pride ourselves on providing you with the best dining experience through a perfect combination of quality, service, and atmosphere.",
+    "features": {
+      "bestChef": {
+        "description": "Our experienced culinary team has years of achievement in the gastronomy field, always creative and passionate about their craft.",
+        "title": "Best Chef"
+      },
+      "cleanEnvironment": {
+        "description": "A clean, comfortable, and safe restaurant space with food hygiene maintained to the highest standards.",
+        "title": "Clean Environment"
+      },
+      "qualityFood": {
+        "description": "A diverse menu with over 120 dishes ranging from traditional to modern cuisine, satisfying every palate.",
+        "title": "120+ Quality Dishes"
+      }
+    },
+    "title": "Why Choose Us"
+  }
+}

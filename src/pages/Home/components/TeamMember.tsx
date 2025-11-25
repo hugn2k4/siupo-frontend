@@ -24,7 +24,9 @@ const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
 
       <div className="max-w-6xl mx-auto px-4 text-center">
         <h2 className="text-4xl font-bold text-white mb-4">Team Member</h2>
-        <p className="text-green-100 max-w-2xl mx-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <p className="text-green-100 max-w-2xl mx-auto">
+          Your dedication and performance have been outstanding — thank you for consistently going above and beyond.
+        </p>
       </div>
 
       {/* Grid nổi lên */}

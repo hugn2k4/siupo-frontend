@@ -130,7 +130,7 @@ const ChefPage: React.FC = () => {
                 >
                   <Box>
                     <Chip
-                      label={`${chef.experience} ${t("card.experience", { years: chef.experience })}`}
+                      label={`${t("card.experience", { years: chef.experience })}`}
                       sx={{
                         bgcolor: "var(--color-primary)",
                         color: "white",

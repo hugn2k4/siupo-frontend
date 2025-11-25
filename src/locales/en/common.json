@@ -1,110 +1,110 @@
 {
-  "app": {
-    "name": "Siupo Restaurant",
-    "slogan": "Delicious Food, Perfect Moments"
-  },
   "actions": {
-    "login": "Login",
-    "logout": "Logout",
-    "signup": "Sign Up",
-    "submit": "Submit",
+    "addToCart": "Add to Cart",
+    "backToHome": "Back to Home",
+    "buyNow": "Buy Now",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "delete": "Delete",
     "edit": "Edit",
+    "loading": "Loading...",
+    "login": "Login",
+    "logout": "Logout",
+    "order": "Order",
     "save": "Save",
     "search": "Search",
-    "viewMore": "View More",
-    "backToHome": "Back to Home",
-    "addToCart": "Add to Cart",
-    "buyNow": "Buy Now",
-    "order": "Order",
-    "loading": "Loading..."
+    "signup": "Sign Up",
+    "submit": "Submit",
+    "viewMore": "View More"
   },
-  "navigation": {
-    "home": "Home",
-    "menu": "Menu",
-    "about": "About Us",
-    "chef": "Our Chefs",
-    "shop": "Shop",
-    "contact": "Contact",
-    "cart": "Cart",
-    "checkout": "Checkout",
-    "account": "Account",
-    "profile": "Profile",
-    "wishlist": "Wishlist",
-    "orders": "My Orders",
-    "settings": "Settings",
-    "notification": "Notification",
-    "placeTable": "Place Table",
-    "productDetail": "Product Detail"
-  },
-  "messages": {
-    "success": "Success",
-    "error": "Error",
-    "warning": "Warning",
-    "info": "Information",
-    "loginRequiredTitle": "You need to login to continue",
-    "loginRequired": "You need to login to continue. Please sign in or create a new account.",
-    "loginRequiredCart": "You need to login to view your cart. Please sign in or create a new account.",
-    "loginRequiredNotification": "You need to login to view notifications. Please sign in or create a new account.",
-    "loginSuccess": "Login successful",
-    "logoutSuccess": "Logout successful",
-    "addToCartSuccess": "Added to cart successfully",
-    "deleteSuccess": "Deleted successfully",
-    "updateSuccess": "Updated successfully",
-    "somethingWentWrong": "Something went wrong, please try again"
-  },
-  "validation": {
-    "required": "This field is required",
-    "invalidEmail": "Invalid email address",
-    "passwordTooShort": "Password must be at least 6 characters",
-    "passwordMismatch": "Passwords do not match",
-    "invalidPhone": "Invalid phone number"
-  },
-  "notFound": {
-    "title": "Oops! Looks like something going wrong",
-    "description": "Page cannot be found! We'll have it figured out in no time.\nMeanwhile, check out these fresh ideas:",
-    "goHome": "Go to Home"
-  },
-  "time": {
-    "justNow": "Just now",
-    "minutesAgo": "{{count}} minutes ago",
-    "hoursAgo": "{{count}} hours ago",
-    "daysAgo": "{{count}} days ago",
-    "weeksAgo": "{{count}} weeks ago",
-    "monthsAgo": "{{count}} months ago"
+  "app": {
+    "name": "Siupo Restaurant",
+    "slogan": "Delicious Food, Perfect Moments"
   },
   "footer": {
-    "support": {
-      "title": "Still You Need Our Support?",
-      "subtitle": "Don't wait make a smart & logical quote here. It's pretty easy.",
-      "placeholder": "Enter your email",
-      "button": "Subscribe Now"
+    "bottom": {
+      "copyright": "Copyright © 2025 Your Restaurant. All rights reserved.",
+      "partner": "Partner",
+      "privacyPolicy": "Privacy Policy",
+      "termOfUse": "Term of Use"
     },
     "company": {
-      "title": "Siupo",
-      "description": "Subscribe our newsletter and get discount 25% off"
+      "description": "Subscribe our newsletter and get discount 25% off",
+      "title": "Siupo"
     },
     "contact": {
-      "title": "Contact us",
-      "phone": "0123 456 789",
       "address": "1 Vo Van Ngan Street, Thu Duc City, Ho Chi Minh City",
       "email": "hcl2k4@gmail.com",
-      "hours": "Sun - Sat / 10:00 AM - 8:00 PM"
+      "hours": "Mon - Sun / 10:00 AM - 2:00 AM",
+      "phone": "0945 396 133",
+      "title": "Contact us"
+    },
+    "gallery": {
+      "imageAlt": "Image {{number}}",
+      "title": "Instagram Gallery"
     },
     "links": {
       "title": "Links"
     },
-    "gallery": {
-      "title": "Instagram Gallery",
-      "imageAlt": "Image {{number}}"
-    },
-    "bottom": {
-      "copyright": "Copyright © 2025 Your Restaurant. All rights reserved.",
-      "privacyPolicy": "Privacy Policy",
-      "termOfUse": "Term of Use",
-      "partner": "Partner"
+    "support": {
+      "button": "Subscribe Now",
+      "placeholder": "Enter your email",
+      "subtitle": "Don't wait make a smart & logical quote here. It's pretty easy.",
+      "title": "Still You Need Our Support?"
     }
+  },
+  "messages": {
+    "addToCartSuccess": "Added to cart successfully",
+    "deleteSuccess": "Deleted successfully",
+    "error": "Error",
+    "info": "Information",
+    "loginRequired": "You need to login to continue. Please sign in or create a new account.",
+    "loginRequiredCart": "You need to login to view your cart. Please sign in or create a new account.",
+    "loginRequiredNotification": "You need to login to view notifications. Please sign in or create a new account.",
+    "loginRequiredTitle": "You need to login to continue",
+    "loginSuccess": "Login successful",
+    "logoutSuccess": "Logout successful",
+    "somethingWentWrong": "Something went wrong, please try again",
+    "success": "Success",
+    "updateSuccess": "Updated successfully",
+    "warning": "Warning"
+  },
+  "navigation": {
+    "about": "About Us",
+    "account": "Account",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "chef": "Our Chefs",
+    "contact": "Contact",
+    "home": "Home",
+    "menu": "Menu",
+    "notification": "Notification",
+    "orders": "My Orders",
+    "placeTable": "Place Table",
+    "productDetail": "Product Detail",
+    "profile": "Profile",
+    "settings": "Settings",
+    "shop": "Shop",
+    "wishlist": "Wishlist"
+  },
+  "notFound": {
+    "description": "Page cannot be found! We'll have it figured out in no time.\nMeanwhile, check out these fresh ideas:",
+    "goHome": "Go to Home",
+    "title": "Oops! Looks like something going wrong"
+  },
+  "time": {
+    "daysAgo": "{{count}} days ago",
+    "hoursAgo": "{{count}} hours ago",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}} minutes ago",
+    "monthsAgo": "{{count}} months ago",
+    "weeksAgo": "{{count}} weeks ago"
+  },
+  "validation": {
+    "invalidEmail": "Invalid email address",
+    "invalidPhone": "Invalid phone number",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "required": "This field is required"
   }
 }

@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect } from "react";
-import { useGlobal } from "../hooks/useGlobal";
-import { useSnackbar } from "../hooks/useSnackbar";
-import { registerAuthHandlers } from "../utils/authUtils";
+import { useGlobal } from "../../hooks/useGlobal";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import { registerAuthHandlers } from "../../utils/authUtils";
 
 export default function AuthHandlerInitializer({ children }: { children: ReactNode }) {
   const { logout } = useGlobal();

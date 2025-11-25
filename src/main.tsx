@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
-import AuthHandlerInitializer from "./components/AuthHandlerInitializer.tsx";
+import AuthHandlerInitializer from "./components/common/AuthHandlerInitializer.tsx";
 import { GlobalProvider } from "./contexts/GlobalProvider.tsx";
 import { PreOrderProvider } from "./contexts/PreOrderContext";
 import { SnackbarProvider } from "./contexts/SnackbarContext";

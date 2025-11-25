@@ -11,9 +11,13 @@
   },
   "info": {
     "address": "Address",
+    "addressContent": "1 Vo Van Ngan Street, Linh Chieu Ward, Thu Duc City, Ho Chi Minh City",
     "email": "Email",
+    "emailContent": "booking@siupo.com",
     "hours": "Opening Hours",
+    "hoursContent": "Mon - Sun: 10:00 AM - 02:00 AM",
     "phone": "Phone",
+    "phoneContent": "(+84) 945 396 133",
     "title": "Get In Touch"
   },
   "subtitle": "We'd Love to Hear From You",

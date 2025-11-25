@@ -13,6 +13,7 @@ import SignUpPage from "../pages/Auth/SignUpPage";
 import Cart from "../pages/Cart/Cart";
 import CheckoutPage from "../pages/CheckOut/CheckoutPage";
 import ChefPage from "../pages/Chef/ChefPage";
+import ContactPage from "../pages/Contact/ContactPage";
 import HomePage from "../pages/Home/HomePage";
 import MenuPage from "../pages/Menu/MenuPage";
 import MyOrdersPage from "../pages/MyOrders/MyOrdersPage";
@@ -72,6 +73,7 @@ const router = createBrowserRouter([
       { path: "dev", element: <Dev /> },
       { path: "placetable", element: <PlaceTableForGuest /> },
       { path: "orderattable", element: <OrderAtTable /> },
+      { path: "contact", element: <ContactPage /> },
     ],
   },
 ]);

@@ -259,7 +259,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true, amount: 0.3 }}
-      sx={{ flex: 1, p: { xs: 2, md: 3 }, minWidth: 0 }}
+      sx={{ flex: 1, minWidth: 0 }}
     >
       {/* Sort and Show controls */}
       <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mb: 4, mt: 3 }}>

@@ -9,6 +9,8 @@ import {
   FormGroup,
   IconButton,
   InputAdornment,
+  Radio,
+  RadioGroup,
   Rating,
   Slider,
   TextField,
@@ -35,6 +37,7 @@ interface FilterSidebarProps {
     categoryIds: number[];
     minPrice: number;
     maxPrice: number;
+    viewMode: "all" | "products" | "combos";
   }) => void;
 }
 
@@ -42,6 +45,7 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
   const [searchName, setSearchName] = useState<string | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [priceRange, setPriceRange] = useState<number[]>([0, 200]);
+  const [viewMode, setViewMode] = useState<"all" | "products" | "combos">("all");
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [latestProducts, setLatestProducts] = useState<LatestProductWithRating[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
@@ -50,7 +54,7 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const prevFilterKey = useRef<string>("");
-  const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${priceRange[0]}|${priceRange[1]}`;
+  const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${priceRange[0]}|${priceRange[1]}|${viewMode}`;
 
   useEffect(() => {
     if (currentFilterKey !== prevFilterKey.current) {
@@ -60,9 +64,10 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
         categoryIds: selectedCategories,
         minPrice: priceRange[0],
         maxPrice: priceRange[1],
+        viewMode,
       });
     }
-  }, [currentFilterKey, onFilterChange]);
+  }, [currentFilterKey, onFilterChange, searchName, selectedCategories, priceRange, viewMode]);
 
   // Load categories
   useEffect(() => {
@@ -125,6 +130,7 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
       categoryIds: selectedCategories,
       minPrice: priceRange[0],
       maxPrice: priceRange[1],
+      viewMode,
     });
   };
 
@@ -150,14 +156,15 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
       transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
       viewport={{ once: true, amount: 0 }}
       sx={{
-        mt: "110px",
+        mt: { md: "75px", xs: 0 },
         mb: 12,
         // Thay bằng:
         // mt: 0,
-        padding: 2.5,
+        padding: 3,
         bgcolor: "#fff",
         border: "1px solid #e0e0e0",
-        borderRadius: 2,
+        borderRadius: 0,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
       }}
     >
       {/* Search Product */}
@@ -190,6 +197,36 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
             "& .MuiOutlinedInput-notchedOutline": { border: "none" },
           }}
         />
+      </Box>
+
+      {/* Menu Type Filter */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, fontSize: "1.1rem", color: "#333" }}>
+          Types
+        </Typography>
+        <RadioGroup
+          value={viewMode}
+          onChange={(e) => {
+            setViewMode(e.target.value as "all" | "products" | "combos");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        >
+          <FormControlLabel
+            value="all"
+            control={<Radio size="small" sx={{ color: "#FF9F0D", "&.Mui-checked": { color: "#FF9F0D" } }} />}
+            label={<Typography variant="body2">All</Typography>}
+          />
+          <FormControlLabel
+            value="combos"
+            control={<Radio size="small" sx={{ color: "#FF9F0D", "&.Mui-checked": { color: "#FF9F0D" } }} />}
+            label={<Typography variant="body2">Combos</Typography>}
+          />
+          <FormControlLabel
+            value="products"
+            control={<Radio size="small" sx={{ color: "#FF9F0D", "&.Mui-checked": { color: "#FF9F0D" } }} />}
+            label={<Typography variant="body2">Products</Typography>}
+          />
+        </RadioGroup>
       </Box>
 
       {/* Category */}
@@ -275,14 +312,15 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
       </Box>
 
       {/* Filter By Price */}
-      <Box sx={{ mb: 2, p: 0, bgcolor: "#fff" }}>
+      <Box sx={{ mb: 4, p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
           gutterBottom
           sx={{
-            color: "#232323",
-            fontWeight: "bold",
-            fontSize: "14pt",
+            color: "#1A1A1A",
+            fontWeight: 700,
+            fontSize: "1.1rem",
+            mb: 2,
           }}
         >
           Filter By Price
@@ -295,32 +333,58 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
           max={200}
           sx={{
             color: "#FF9F0D",
+            height: 4,
             "& .MuiSlider-thumb": {
-              width: 12,
-              height: 12,
-              border: "3.5px solid #fff",
+              width: 16,
+              height: 16,
+              border: "3px solid #fff",
+              backgroundColor: "#FF9F0D",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+              "&:hover, &.Mui-focusVisible": {
+                boxShadow: "0 0 0 8px rgba(255, 159, 13, 0.16)",
+              },
+            },
+            "& .MuiSlider-rail": { opacity: 0.3, backgroundColor: "#FF9F0D" },
+            "& .MuiSlider-valueLabel": {
               backgroundColor: "#FF9F0D",
             },
-            "& .MuiSlider-rail": { height: 4 },
-            "& .MuiSlider-track": { height: 4 },
-            "& .MuiSlider-valueLabel": {
-              fontSize: "0.75rem",
-              top: -2,
-              padding: "2px 4px",
-            },
-            mb: 0,
+            mb: 1,
           }}
         />
-        <Typography
-          variant="body2"
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="body2" color="text.secondary">
+            From: <span style={{ color: "#1A1A1A", fontWeight: 600 }}>${priceRange[0]}</span>
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            To:{" "}
+            <span style={{ color: "#1A1A1A", fontWeight: 600 }}>
+              ${priceRange[1] === 1000000 ? "Any" : priceRange[1]}
+            </span>
+          </Typography>
+        </Box>
+        <Box
           sx={{
-            mt: 0.5,
-            color: "#666",
-            fontSize: "0.85rem",
+            mt: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          Price Range: ${priceRange[0]} - ${priceRange[1] === 1000000 ? "Any" : priceRange[1]}
-        </Typography>
+          <Typography
+            component="button"
+            onClick={() => {}} // Add filter logic if needed
+            sx={{
+              border: "none",
+              bgcolor: "transparent",
+              color: "#666",
+              fontSize: "0.9rem",
+              cursor: "pointer",
+              "&:hover": { color: "#FF9F0D" },
+            }}
+          >
+            Filter
+          </Typography>
+        </Box>
       </Box>
 
       <Box sx={{ mb: 2, p: 0, bgcolor: "#fff" }}>
@@ -402,36 +466,39 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
         ))}
       </Box>
 
-      {/* Product Tags – giữ nguyên 100% */}
+      {/* Product Tags */}
       <Box sx={{ p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
           gutterBottom
           sx={{
-            color: "#4A4A4A",
-            fontSize: "14pt",
-            fontWeight: "bold",
+            color: "#1A1A1A",
+            fontSize: "1.1rem",
+            fontWeight: 700,
+            mb: 2,
           }}
         >
           Product Tags
         </Typography>
-        <Box>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
           {["Services", "Our Menu", "Pizza", "Burger", "Cupcake", "Cookies", "Tandoori Chicken"].map((tag) => (
             <Typography
               key={tag}
               variant="body2"
               sx={{
                 display: "inline-block",
-                bgcolor: selectedTag === tag ? "#fff" : "#ffffff",
-                color: selectedTag === tag ? "#FF9F0D" : "#4F4F4F",
-                mr: 1,
-                mb: 0.5,
-                borderBottom: selectedTag === tag ? "2px solid #FF9F0D" : "2px solid #F2F2F2",
+                px: 2,
+                py: 0.5,
+                bgcolor: selectedTag === tag ? "#FF9F0D" : "transparent",
+                color: selectedTag === tag ? "#fff" : "#4F4F4F",
+                borderBottom: selectedTag === tag ? "none" : "1px solid #F2F2F2",
                 borderRadius: 0,
                 cursor: "pointer",
+                fontSize: "0.9rem",
+                transition: "all 0.2s ease",
                 "&:hover": {
-                  bgcolor: selectedTag === tag ? "#e06b16" : "#ffffff",
-                  color: selectedTag === tag ? "#fff" : "#4A4A4A",
+                  color: "#FF9F0D",
+                  borderBottomColor: "#FF9F0D",
                 },
               }}
               onClick={() => handleTagClick(tag)}

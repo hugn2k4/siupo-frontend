@@ -1,9 +1,12 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Typography, Dialog, IconButton } from "@mui/material";
 import { motion } from "framer-motion";
+import { useState } from "react"; // ← Thêm import này
+import CloseIcon from "@mui/icons-material/Close"; // ← Thêm icon đóng
 import DefaultAboutUs from "../../../assets/images/image_about_us_home.png";
 import MyButton from "../../../components/common/Button";
 import { useTranslation } from "../../../hooks/useTranslation";
 import type { Banner } from "../../../types/models/banner";
+import { useNavigate } from "react-router-dom";
 
 interface AboutUsProps {
   banners: Banner[];
@@ -12,6 +15,14 @@ interface AboutUsProps {
 
 function AboutUs({ banners, loading }: AboutUsProps) {
   const { t } = useTranslation("home");
+  const navigate = useNavigate();
+
+  // State để mở/đóng modal video
+  const [openVideo, setOpenVideo] = useState(false);
+
+  const handleOpenVideo = () => setOpenVideo(true);
+  const handleCloseVideo = () => setOpenVideo(false);
+
   // Lấy banner từ API
   const aboutUsImage = banners[0]?.url || DefaultAboutUs;
 
@@ -60,7 +71,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
           ) : null}
         </Box>
 
-        {/* Right side*/}
+        {/* Right side */}
         <Box
           component={motion.div}
           initial={{ opacity: 0, x: 100 }}
@@ -115,6 +126,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
                 }}
               />
             </Typography>
+
             <Typography
               component={motion.div}
               initial={{ opacity: 0, y: 30 }}
@@ -149,6 +161,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
             >
               {t("aboutSection.description")}
             </Typography>
+
             <Box
               component={motion.div}
               initial={{ opacity: 0, y: 20 }}
@@ -160,17 +173,72 @@ function AboutUs({ banners, loading }: AboutUsProps) {
                 flexDirection: "row",
                 gap: 2,
                 justifyContent: { xs: "center", lg: "flex-start" },
-                alignItems: { xs: "center", sm: "flex-start" },
+                alignItems: "center",
                 pb: { xs: 4, lg: 20 },
               }}
             >
-              <MyButton colorScheme="green">{t("hero.showMore")}</MyButton>
+              <MyButton colorScheme="green" onClick={() => navigate("/about")}>
+                {t("hero.showMore")}
+              </MyButton>
 
-              <MyButton isWatch />
+              {/* Nút Watch Video - mở modal */}
+              <MyButton isWatch={true} onClick={handleOpenVideo}>
+                Watch Video
+              </MyButton>
             </Box>
           </Box>
         </Box>
       </Box>
+
+      {/* Modal Video YouTube */}
+      <Dialog
+        open={openVideo}
+        onClose={handleCloseVideo}
+        maxWidth="lg"
+        fullWidth
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: { xs: 2, md: 3 },
+            overflow: "hidden",
+            bgcolor: "black",
+            boxShadow: 24,
+          },
+        }}
+      >
+        {/* Nút đóng */}
+        <IconButton
+          onClick={handleCloseVideo}
+          sx={{
+            position: "absolute",
+            right: { xs: 8, sm: 16 },
+            top: { xs: 8, sm: 16 },
+            color: "white",
+            bgcolor: "rgba(0,0,0,0.5)",
+            zIndex: 10,
+            "&:hover": {
+              bgcolor: "rgba(0,0,0,0.7)",
+            },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Box sx={{ position: "relative", paddingTop: "56.25%" }}>
+          <iframe
+            src="https://www.youtube.com/embed/4pRcDgMhWuw?autoplay=1&rel=0&modestbranding=1"
+            title="About Our Healthy Food Journey"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              border: 0,
+            }}
+          />
+        </Box>
+      </Dialog>
     </section>
   );
 }

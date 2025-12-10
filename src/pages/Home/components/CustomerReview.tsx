@@ -8,35 +8,35 @@ const CustomerReview = () => {
     {
       id: 1,
       name: "Abdur Rahman",
-      role: "Customer",
+      role: "Regular Customer",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque diam pellentesque bibendum non dui volutpat fringilla bibendum. Urna, elit augue urna, vitae feugiat pretium donec id elementum. Ultrices mattis sed vitae mus risus. Lacus nisl, et ac dapibus sit eu velit in consequat.",
+      text: "I’ve been ordering from here for months and the quality never drops. The quinoa bowl is my go-to lunch – fresh ingredients, perfect portion, and it actually keeps me full all afternoon. Highly recommend for anyone trying to eat healthier without sacrificing taste!",
       dishImage:
         "https://dmrqkbkq8el9i.cloudfront.net/Pictures/780xany/3/8/0/291380_anniesprattot7_vi0hhgunsplash_146309.jpg",
-      dishName: "Order now",
-      price: "10.00$",
+      dishName: "Quinoa Power Bowl",
+      price: "$14.00",
       rating: 5,
     },
     {
       id: 2,
       name: "Sarah Johnson",
-      role: "Customer",
+      role: "Fitness Enthusiast",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
-      text: "Amazing food and excellent service! The flavors were absolutely incredible and the presentation was beautiful. Will definitely order again.",
+      text: "Finally found a place that understands healthy doesn’t mean boring! The grilled salmon salad is packed with flavor and the dressing is light but delicious. Delivery is always on time and the packaging keeps everything fresh. My new favorite spot!",
       dishImage: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop",
-      dishName: "Order now",
-      price: "12.50$",
+      dishName: "Grilled Salmon Salad",
+      price: "$16.50",
       rating: 5,
     },
     {
       id: 3,
       name: "Michael Chen",
-      role: "Customer",
+      role: "Busy Professional",
       avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
-      text: "Best restaurant experience I have had in years. The quality of ingredients is outstanding and you can really taste the difference.",
+      text: "As someone who works long hours, I rely on quick but nutritious meals. Their chicken avocado wrap with the green smoothie combo is perfect – tastes amazing and gives me energy without the afternoon crash. Great portion sizes and consistent quality every time.",
       dishImage: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=600&fit=crop",
-      dishName: "Order now",
-      price: "15.00$",
+      dishName: "Chicken Avocado Wrap",
+      price: "$12.00",
       rating: 5,
     },
   ];
@@ -129,9 +129,14 @@ const CustomerReview = () => {
                   </div>
 
                   {/* Description */}
+                  {/* Description - thay đổi theo từng món */}
                   <p className="text-xs sm:text-sm text-gray-600 mt-2 line-clamp-2">
-                    Lorem ipsum dolor sit amet, consectetur elit. Quisque diam pellentesque bibendum fringilla bibendum.
-                    Urna, elit augue urna,
+                    {currentReview === 0 &&
+                      "Organic quinoa, fresh vegetables, avocado, chickpeas, and lemon-tahini dressing – a complete balanced meal."}
+                    {currentReview === 1 &&
+                      "Wild-caught salmon, mixed greens, cherry tomatoes, cucumber, and light balsamic vinaigrette."}
+                    {currentReview === 2 &&
+                      "Grilled chicken breast, ripe avocado, whole grain wrap with fresh greens and herb dressing."}
                   </p>
                 </div>
 

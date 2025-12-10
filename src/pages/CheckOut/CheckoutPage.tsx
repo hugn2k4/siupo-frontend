@@ -8,6 +8,7 @@ import orderService from "../../services/orderService";
 import { EMethodPayment, type MethodPayment } from "../../types/enums/methodPayment.enum";
 import type { Address } from "../../types/models/address";
 import type { CartItem } from "../../types/models/cartItem";
+import type { OrderItem } from "../../types/models/orderItem";
 import type { CreateOrderRequest } from "../../types/requests/order.request";
 import AddressList from "./Components/AddressList";
 import OrderSummary from "./Components/OrderSummary";
@@ -38,7 +39,10 @@ const CheckoutPage: React.FC = () => {
   }, [location.state, navigate]);
 
   // Tính toán subtotal từ cart items
-  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((sum, item) => {
+    const itemPrice = item.product ? item.product.price : item.combo ? item.combo.basePrice : 0;
+    return sum + itemPrice * item.quantity;
+  }, 0);
 
   // Các thông số tính toán
   const shipping = selectedPaymentMethod === EMethodPayment.COD ? 2 : 0;
@@ -49,9 +53,17 @@ const CheckoutPage: React.FC = () => {
   // Tính total
   const finalTotal = subtotal - discount + vat + shipping;
 
+  // Convert CartItem to OrderItem format for display
+  const orderItems: OrderItem[] = cartItems.map((item) => ({
+    id: item.id,
+    product: (item.product || item.combo)!,
+    quantity: item.quantity,
+    totalPrice: item.totalPrice,
+  }));
+
   // Dữ liệu đơn hàng
   const orderData = {
-    items: cartItems,
+    items: orderItems,
     subtotal,
     shipping,
     discount,
@@ -80,8 +92,17 @@ const CheckoutPage: React.FC = () => {
     }
 
     setLoading(true);
+
+    // Convert CartItem to OrderItem format
+    const orderItems: OrderItem[] = cartItems.map((item) => ({
+      id: item.id,
+      product: (item.product || item.combo)!,
+      quantity: item.quantity,
+      totalPrice: item.totalPrice,
+    }));
+
     const request: CreateOrderRequest = {
-      items: orderData.items,
+      items: orderItems,
       shippingAddress: selectedAddress,
       paymentMethod: selectedPaymentMethod,
     };

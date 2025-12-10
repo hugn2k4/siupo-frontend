@@ -36,7 +36,7 @@ const TestimonialSection: React.FC<BannerProps> = ({ loading }) => {
     }, 5000); // 3 giây/lần
 
     return () => clearInterval(interval); // Clear khi component unmount
-  }, []);
+  }, [testimonials.length]);
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));

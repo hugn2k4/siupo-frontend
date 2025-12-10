@@ -5,7 +5,10 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Box, Button, Divider, Skeleton, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import imageDefault from "../../../assets/gallery/gallery_burger.png";
+import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
+import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import cartService from "../../../services/cartService";
 import comboService from "../../../services/comboService";
 import type { ComboResponse } from "../../../types/responses/combo.response";
 import { formatCurrency } from "../../../utils/format";
@@ -20,6 +23,8 @@ const ComboList = () => {
   const [selectedCombo, setSelectedCombo] = useState<ComboResponse | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const { showSnackbar } = useSnackbar();
+  const { isLogin } = useGlobal();
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   useEffect(() => {
     const fetchCombos = async () => {
@@ -39,10 +44,18 @@ const ComboList = () => {
     fetchCombos();
   }, []);
 
-  const handleAddToCart = (combo: ComboResponse) => {
-    // TODO: Implement actual add to cart logic
-    showSnackbar(`Đã thêm ${combo.name} vào giỏ hàng`, "success");
-    setOpenDialog(false);
+  const handleAddToCart = async (combo: ComboResponse) => {
+    if (!isLogin) {
+      setShowLoginDialog(true);
+      return;
+    }
+    try {
+      await cartService.addToCart({ comboId: combo.id, quantity: 1 });
+      showSnackbar("Combo added to cart!", "success", 3000);
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      showSnackbar("Failed to add combo to cart!", "error", 3000);
+    }
   };
 
   const handleOpenDetail = (combo: ComboResponse) => {
@@ -218,14 +231,28 @@ const ComboList = () => {
                 >
                   Giá ưu đãi
                 </Typography>
-                <Typography
-                  variant="h5"
-                  fontWeight={800}
-                  color="white"
-                  sx={{ textShadow: "0 2px 10px rgba(0,0,0,0.3)" }}
-                >
-                  {formatCurrency(combo.basePrice, "VND")}
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={1.5}>
+                  <Typography
+                    variant="h5"
+                    fontWeight={800}
+                    color="white"
+                    sx={{ textShadow: "0 2px 10px rgba(0,0,0,0.3)" }}
+                  >
+                    {formatCurrency(combo.basePrice, "VND")}
+                  </Typography>
+                  {combo.originalPrice > combo.basePrice && (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "rgba(255,255,255,0.7)",
+                        textDecoration: "line-through",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {formatCurrency(combo.originalPrice, "VND")}
+                    </Typography>
+                  )}
+                </Stack>
               </Box>
             </Box>
           </Box>
@@ -359,6 +386,7 @@ const ComboList = () => {
         combo={selectedCombo}
         onAddToCart={handleAddToCart}
       />
+      <LoginRequiredDialog open={showLoginDialog} onClose={() => setShowLoginDialog(false)} />
     </Box>
   );
 };

@@ -137,19 +137,47 @@ const ComboDetailDialog = ({ open, onClose, combo, onAddToCart }: ComboDetailDia
             {combo.name}
           </Typography>
 
-          <Typography
-            variant="h4"
-            sx={{
-              color: "#FF9F0D",
-              fontWeight: 800,
-              mb: 3,
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            {formatCurrency(combo.basePrice, "VND")}
-          </Typography>
+          <Box sx={{ mb: 3 }}>
+            <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: "#FF9F0D",
+                  fontWeight: 800,
+                }}
+              >
+                {formatCurrency(combo.basePrice, "VND")}
+              </Typography>
+              {combo.originalPrice > combo.basePrice && (
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "text.secondary",
+                    textDecoration: "line-through",
+                    fontWeight: 500,
+                  }}
+                >
+                  {formatCurrency(combo.originalPrice, "VND")}
+                </Typography>
+              )}
+            </Stack>
+            {combo.originalPrice > combo.basePrice && (
+              <Box
+                sx={{
+                  display: "inline-block",
+                  bgcolor: "#FF9F0D",
+                  color: "white",
+                  px: 1.5,
+                  py: 0.5,
+                  borderRadius: 0,
+                  fontSize: "0.875rem",
+                  fontWeight: 700,
+                }}
+              >
+                Tiết kiệm {formatCurrency(combo.originalPrice - combo.basePrice, "VND")}
+              </Box>
+            )}
+          </Box>
 
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4, lineHeight: 1.6 }}>
             {combo.description || "Thưởng thức combo tuyệt hảo với sự kết hợp hoàn hảo của các món ăn đặc sắc."}

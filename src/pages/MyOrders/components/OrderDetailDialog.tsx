@@ -530,7 +530,7 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
           }}
           orderId={order.orderId}
           item={selectedItem}
-          productImage={selectedItem.productImageUrl}
+          productImage={selectedItem.productImageUrl ?? undefined}
           onSubmit={handleSubmitReview}
         />
       )}
@@ -546,7 +546,7 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
           }}
           orderId={order.orderId}
           item={selectedItem}
-          productImage={selectedItem.productImageUrl}
+          productImage={selectedItem.productImageUrl ?? undefined}
           review={selectedReview}
         />
       )}

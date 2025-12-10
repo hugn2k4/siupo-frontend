@@ -1,4 +1,5 @@
 export type AddToCartRequest = {
-  productId: number;
+  productId?: number;
+  comboId?: number;
   quantity: number;
 };

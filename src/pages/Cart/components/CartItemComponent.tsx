@@ -26,8 +26,19 @@ const CartItemComponent: React.FC<CartItemProps> = ({
   isUpdating = false,
 }) => {
   const navigate = useNavigate();
+
+  const isCombo = !!item.combo;
+  const itemData = isCombo ? item.combo! : item.product!;
+  const itemPrice = isCombo ? item.combo!.basePrice : item.product!.price;
+  const itemImage = isCombo
+    ? item.combo!.imageUrls?.[0] || "/assets/images/placeholder.png"
+    : item.product!.images[0].url;
+  const itemName = itemData.name;
+
   const goToProductDetail = () => {
-    navigate(`/shop/${item.product.id}`);
+    if (!isCombo) {
+      navigate(`/shop/${item.product!.id}`);
+    }
   };
 
   return (
@@ -77,8 +88,8 @@ const CartItemComponent: React.FC<CartItemProps> = ({
         </Box>
         <Box
           component="img"
-          src={item.product.images[0].url}
-          alt={item.product.name}
+          src={itemImage}
+          alt={itemName}
           sx={{
             width: { xs: 70, md: 80 },
             height: { xs: 70, md: 80 },
@@ -91,36 +102,60 @@ const CartItemComponent: React.FC<CartItemProps> = ({
         <Box
           onClick={goToProductDetail}
           sx={{
-            cursor: "pointer",
+            cursor: isCombo ? "default" : "pointer",
             flex: 1,
             "&:hover": {
-              opacity: 0.8,
+              opacity: isCombo ? 1 : 0.8,
             },
           }}
         >
-          <Typography
-            variant="body1"
-            fontWeight={500}
-            color="var(--color-gray1)"
-            sx={{
-              mb: 0.5,
-              fontSize: "0.95rem",
-            }}
-          >
-            {item.product.name}
-          </Typography>
-          <Rating
-            name="product-rating"
-            value={item.rating}
-            precision={0.5}
-            readOnly
-            size="small"
-            sx={{
-              "& .MuiRating-iconFilled": {
-                color: "var(--color-primary)",
-              },
-            }}
-          />
+          <Stack direction="row" alignItems="center" spacing={1} mb={0.5}>
+            <Typography
+              variant="body1"
+              fontWeight={500}
+              color="var(--color-gray1)"
+              sx={{
+                fontSize: "0.95rem",
+              }}
+            >
+              {itemName}
+            </Typography>
+            {isCombo && (
+              <Box
+                sx={{
+                  bgcolor: "#FF9F0D",
+                  color: "white",
+                  px: 1,
+                  py: 0.25,
+                  borderRadius: 0,
+                  fontSize: "0.65rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.5px",
+                }}
+              >
+                COMBO
+              </Box>
+            )}
+          </Stack>
+          {!isCombo && (
+            <Rating
+              name="product-rating"
+              value={item.rating}
+              precision={0.5}
+              readOnly
+              size="small"
+              sx={{
+                "& .MuiRating-iconFilled": {
+                  color: "var(--color-primary)",
+                },
+              }}
+            />
+          )}
+          {isCombo && (
+            <Typography variant="caption" color="var(--color-gray3)" sx={{ fontSize: "0.75rem" }}>
+              {item.combo!.items.length} món
+            </Typography>
+          )}
         </Box>
       </Stack>
 
@@ -131,7 +166,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({
             Price
           </Typography>
           <Typography variant="body1" fontWeight={500} color="var(--color-gray1)" sx={{ fontSize: "0.875rem" }}>
-            {formatCurrency(item.product.price, "USD")}
+            {formatCurrency(itemPrice, "USD")}
           </Typography>
         </Box>
         <Box>
@@ -139,7 +174,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({
             Total
           </Typography>
           <Typography variant="body1" fontWeight={600} color="var(--color-primary)" sx={{ fontSize: "0.875rem" }}>
-            {formatCurrency(item.product.price * item.quantity, "USD")}
+            {formatCurrency(itemPrice * item.quantity, "USD")}
           </Typography>
         </Box>
       </Stack>
@@ -193,7 +228,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({
       {/* Desktop Price */}
       <Box sx={{ display: { xs: "none", md: "block" }, textAlign: "center" }}>
         <Typography variant="body1" fontWeight={500} color="var(--color-gray1)" sx={{ fontSize: "0.875rem" }}>
-          {formatCurrency(item.product.price, "USD")}
+          {formatCurrency(itemPrice, "USD")}
         </Typography>
       </Box>
 
@@ -235,7 +270,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({
       {/* Desktop Total */}
       <Box sx={{ display: { xs: "none", md: "block" }, textAlign: "center" }}>
         <Typography variant="body1" fontWeight={600} color="var(--color-primary)" sx={{ fontSize: "0.875rem" }}>
-          {formatCurrency(item.product.price * item.quantity, "USD")}
+          {formatCurrency(itemPrice * item.quantity, "USD")}
         </Typography>
       </Box>
 

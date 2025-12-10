@@ -14,12 +14,15 @@ import { CheckCircle2, Clock, Eye, MessageCircle, Package, RotateCcw, Star, Truc
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import comboService from "../../../services/comboService";
 import reviewService from "../../../services/reviewService";
 import { EMethodPayment } from "../../../types/enums/methodPayment.enum";
 import { EOrderStatus } from "../../../types/enums/order.enum";
+import type { ComboResponse } from "../../../types/responses/combo.response";
 import type { OrderItemResponse, OrderResponse } from "../../../types/responses/order.reponse";
 import type { ReviewResponse } from "../../../types/responses/review.response";
 import { formatCurrency } from "../../../utils/format";
+import ComboDetailDialog from "../../Shop/components/ComboDetailDialog";
 import ConfirmModal from "../../WishList/components/ConfirmModal";
 import ReviewDialog from "./ReviewDialog";
 import ViewReviewDialog from "./ViewReviewDialog";
@@ -38,12 +41,31 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
   const [selectedItem, setSelectedItem] = useState<OrderItemResponse | null>(null);
   const [selectedReview, setSelectedReview] = useState<ReviewResponse | null>(null);
   const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
+  const [selectedCombo, setSelectedCombo] = useState<ComboResponse | null>(null);
+  const [comboDialogOpen, setComboDialogOpen] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
-  const viewProductDetail = (productId: number) => {
-    navigate(`/shop/${productId}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const viewProductDetail = async (item: OrderItemResponse) => {
+    if (item.comboId) {
+      // If it's a combo, fetch and show in dialog
+      try {
+        const response = await comboService.getComboById(item.comboId);
+        setSelectedCombo(response.data);
+        setComboDialogOpen(true);
+      } catch (error) {
+        console.error("Failed to fetch combo details:", error);
+      }
+    } else if (item.productId) {
+      // If it's a product, navigate to product detail page
+      navigate(`/shop/${item.productId}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleAddComboToCart = () => {
+    // TODO: Implement add combo to cart
+    setComboDialogOpen(false);
   };
 
   const getStatusStep = (status: string): number => {
@@ -225,7 +247,7 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                   const isCombo = !!item.comboId;
                   const itemName = isCombo ? item.comboName : item.productName;
                   const itemImage = isCombo ? item.comboImageUrl : item.productImageUrl;
-                  const itemId = isCombo ? item.comboId : item.productId;
+                  const hasValidId = isCombo ? !!item.comboId : !!item.productId;
 
                   return (
                     <Box
@@ -253,9 +275,9 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                             objectFit: "cover",
                             borderRadius: 8,
                             border: "1px solid #E5E7EB",
-                            cursor: itemId ? "pointer" : "default",
+                            cursor: hasValidId ? "pointer" : "default",
                           }}
-                          onClick={() => itemId && viewProductDetail(itemId)}
+                          onClick={() => hasValidId && viewProductDetail(item)}
                         />
                       ) : (
                         <Box
@@ -267,9 +289,9 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            cursor: itemId ? "pointer" : "default",
+                            cursor: hasValidId ? "pointer" : "default",
                           }}
-                          onClick={() => itemId && viewProductDetail(itemId)}
+                          onClick={() => hasValidId && viewProductDetail(item)}
                         >
                           <Package size={32} color="#9CA3AF" />
                         </Box>
@@ -280,8 +302,8 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                             variant="body1"
                             fontWeight={600}
                             color="var(--color-gray1)"
-                            sx={{ cursor: itemId ? "pointer" : "default" }}
-                            onClick={() => itemId && viewProductDetail(itemId)}
+                            sx={{ cursor: hasValidId ? "pointer" : "default" }}
+                            onClick={() => hasValidId && viewProductDetail(item)}
                           >
                             {itemName}
                           </Typography>
@@ -542,6 +564,14 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
         confirmText="Yes, Cancel Order"
         cancelText="No, Keep Order"
         type="danger"
+      />
+
+      {/* Combo Detail Dialog */}
+      <ComboDetailDialog
+        open={comboDialogOpen}
+        onClose={() => setComboDialogOpen(false)}
+        combo={selectedCombo}
+        onAddToCart={handleAddComboToCart}
       />
     </>
   );

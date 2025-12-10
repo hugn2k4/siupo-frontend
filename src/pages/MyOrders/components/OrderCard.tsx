@@ -2,10 +2,13 @@ import { Box, Button, Card, CardContent, Chip, Divider, Typography } from "@mui/
 import { Clock, Package, Receipt, RotateCcw, X } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import comboService from "../../../services/comboService";
 import { EMethodPayment } from "../../../types/enums/methodPayment.enum";
 import { EOrderStatus } from "../../../types/enums/order.enum";
-import type { OrderResponse } from "../../../types/responses/order.reponse";
+import type { ComboResponse } from "../../../types/responses/combo.response";
+import type { OrderItemResponse, OrderResponse } from "../../../types/responses/order.reponse";
 import { formatCurrency } from "../../../utils/format";
+import ComboDetailDialog from "../../Shop/components/ComboDetailDialog";
 import ConfirmModal from "../../WishList/components/ConfirmModal";
 
 type OrderCardProps = {
@@ -18,10 +21,29 @@ type OrderCardProps = {
 const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, onReorder }) => {
   const navigate = useNavigate();
   const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
+  const [selectedCombo, setSelectedCombo] = useState<ComboResponse | null>(null);
+  const [comboDialogOpen, setComboDialogOpen] = useState(false);
 
-  const viewProductDetail = (productId: number) => {
-    navigate(`/shop/${productId}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const viewProductDetail = async (item: OrderItemResponse) => {
+    if (item.comboId) {
+      // If it's a combo, fetch and show in dialog
+      try {
+        const response = await comboService.getComboById(item.comboId);
+        setSelectedCombo(response.data);
+        setComboDialogOpen(true);
+      } catch (error) {
+        console.error("Failed to fetch combo details:", error);
+      }
+    } else if (item.productId) {
+      // If it's a product, navigate to product detail page
+      navigate(`/shop/${item.productId}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleAddComboToCart = () => {
+    // TODO: Implement add combo to cart
+    setComboDialogOpen(false);
   };
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -101,7 +123,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, on
                 const isCombo = !!item.comboId;
                 const itemName = isCombo ? item.comboName : item.productName;
                 const itemImage = isCombo ? item.comboImageUrl : item.productImageUrl;
-                const itemId = isCombo ? item.comboId : item.productId;
+                const hasValidId = isCombo ? !!item.comboId : !!item.productId;
 
                 return (
                   <Box
@@ -125,9 +147,9 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, on
                           borderRadius: 8,
                           border: "1px solid #E5E7EB",
                           flexShrink: 0,
-                          cursor: itemId ? "pointer" : "default",
+                          cursor: hasValidId ? "pointer" : "default",
                         }}
-                        onClick={() => itemId && viewProductDetail(itemId)}
+                        onClick={() => hasValidId && viewProductDetail(item)}
                       />
                     ) : (
                       <Box
@@ -140,9 +162,9 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, on
                           alignItems: "center",
                           justifyContent: "center",
                           flexShrink: 0,
-                          cursor: itemId ? "pointer" : "default",
+                          cursor: hasValidId ? "pointer" : "default",
                         }}
-                        onClick={() => itemId && viewProductDetail(itemId)}
+                        onClick={() => hasValidId && viewProductDetail(item)}
                       >
                         <Package size={24} color="#9CA3AF" />
                       </Box>
@@ -157,9 +179,9 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, on
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
-                            cursor: itemId ? "pointer" : "default",
+                            cursor: hasValidId ? "pointer" : "default",
                           }}
-                          onClick={() => itemId && viewProductDetail(itemId)}
+                          onClick={() => hasValidId && viewProductDetail(item)}
                         >
                           {itemName}
                         </Typography>
@@ -303,6 +325,13 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, on
         confirmText="Yes, Cancel Order"
         cancelText="No, Keep Order"
         type="danger"
+      />
+
+      <ComboDetailDialog
+        open={comboDialogOpen}
+        onClose={() => setComboDialogOpen(false)}
+        combo={selectedCombo}
+        onAddToCart={handleAddComboToCart}
       />
     </>
   );

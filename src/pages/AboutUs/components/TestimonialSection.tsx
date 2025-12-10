@@ -1,7 +1,7 @@
-import type { BannerProps } from "../../../types/props/BannerProps";
 import { Skeleton } from "@mui/material";
-import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { BannerProps } from "../../../types/props/BannerProps";
 
 const TestimonialSection: React.FC<BannerProps> = ({ loading }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,7 +33,7 @@ const TestimonialSection: React.FC<BannerProps> = ({ loading }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
-    }, 1000); // 1 giây/lần
+    }, 5000); // 3 giây/lần
 
     return () => clearInterval(interval); // Clear khi component unmount
   }, []);

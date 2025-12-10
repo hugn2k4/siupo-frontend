@@ -130,7 +130,10 @@ const Cart: React.FC = () => {
   };
 
   const selectedCartItems = cartItems.filter((item) => selectedItems.has(item.id));
-  const subtotal = selectedCartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = selectedCartItems.reduce((sum, item) => {
+    const itemPrice = item.product ? item.product.price : item.combo ? item.combo.basePrice : 0;
+    return sum + itemPrice * item.quantity;
+  }, 0);
   const shipping = selectedItems.size > 0 ? 2 : 0;
   const total = subtotal + shipping;
   const isAllSelected = cartItems.length > 0 && selectedItems.size === cartItems.length;

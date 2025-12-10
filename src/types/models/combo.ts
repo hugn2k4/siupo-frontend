@@ -1,6 +1,6 @@
 import type { ProductStatus } from "../enums/product.enum";
 
-export interface ComboItemResponse {
+export interface ComboItem {
   id: number;
   productId: number;
   productName: string;
@@ -10,15 +10,15 @@ export interface ComboItemResponse {
   displayOrder: number;
 }
 
-export interface ComboResponse {
+export type Combo = {
   id: number;
   name: string;
   description: string;
   basePrice: number;
   originalPrice: number;
   imageUrls: string[];
-  items: ComboItemResponse[];
+  items: ComboItem[];
   status: ProductStatus;
   createdAt: string;
   updatedAt: string;
-}
+};

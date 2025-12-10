@@ -20,7 +20,7 @@ export default function PageHeader({ title, backgroundImage, breadcrumb = [] }: 
     <Box
       sx={{
         width: "100%",
-        height: "20rem",
+        height: "13rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

@@ -7,18 +7,20 @@ interface OrderItemProps {
 }
 
 const OrderItem: React.FC<OrderItemProps> = ({ item }) => {
-  // Check if item is a combo or product by checking for 'images' property
-  const isCombo = !("images" in item.product);
+  // Check if item is a combo or product
+  const isCombo = !!item.combo;
+  const isProduct = !!item.product;
 
-  const itemPrice = isCombo
-    ? (item.product as { basePrice: number }).basePrice
-    : (item.product as { price: number }).price;
+  const itemPrice = isCombo && item.combo ? item.combo.basePrice : isProduct && item.product ? item.product.price : 0;
 
-  const itemImage = isCombo
-    ? (item.product as { imageUrls?: string[] }).imageUrls?.[0] || "/assets/images/placeholder.png"
-    : (item.product as { images: Array<{ url: string }> }).images[0].url;
+  const itemImage =
+    isCombo && item.combo
+      ? item.combo.imageUrls?.[0] || "/assets/images/placeholder.png"
+      : isProduct && item.product
+        ? item.product.images?.[0]?.url || "/assets/images/placeholder.png"
+        : "/assets/images/placeholder.png";
 
-  const itemName = item.product.name;
+  const itemName = isCombo && item.combo ? item.combo.name : isProduct && item.product ? item.product.name : "Unknown";
 
   return (
     <div className="flex items-center gap-3 py-3">

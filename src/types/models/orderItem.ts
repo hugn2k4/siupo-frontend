@@ -3,7 +3,8 @@ import type { Product } from "./product";
 
 export type OrderItem = {
   id: number;
-  product: Product | Combo;
+  product?: Product | null;
+  combo?: Combo | null;
   quantity: number;
-  totalPrice: number;
+  totalPrice?: number;
 };

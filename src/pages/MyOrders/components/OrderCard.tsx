@@ -97,71 +97,95 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, on
           {/* Products Preview */}
           <Box sx={{ mb: 2 }}>
             <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-              {order.items.slice(0, 3).map((item) => (
-                <Box
-                  key={item.id}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1.5,
-                    flex: 1,
-                    minWidth: 0,
-                  }}
-                >
-                  {item.productImageUrl ? (
-                    <img
-                      src={item.productImageUrl}
-                      alt={item.productName}
-                      style={{
-                        width: 56,
-                        height: 56,
-                        objectFit: "cover",
-                        borderRadius: 8,
-                        border: "1px solid #E5E7EB",
-                        flexShrink: 0,
-                        cursor: "pointer",
-                      }}
-                      onClick={() => viewProductDetail(item.productId)}
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        width: 56,
-                        height: 56,
-                        bgcolor: "grey.200",
-                        borderRadius: 2,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                        cursor: "pointer",
-                      }}
-                      onClick={() => viewProductDetail(item.productId)}
-                    >
-                      <Package size={24} color="#9CA3AF" />
+              {order.items.slice(0, 3).map((item) => {
+                const isCombo = !!item.comboId;
+                const itemName = isCombo ? item.comboName : item.productName;
+                const itemImage = isCombo ? item.comboImageUrl : item.productImageUrl;
+                const itemId = isCombo ? item.comboId : item.productId;
+
+                return (
+                  <Box
+                    key={item.id}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1.5,
+                      flex: 1,
+                      minWidth: 0,
+                    }}
+                  >
+                    {itemImage ? (
+                      <img
+                        src={itemImage}
+                        alt={itemName || "Item"}
+                        style={{
+                          width: 56,
+                          height: 56,
+                          objectFit: "cover",
+                          borderRadius: 8,
+                          border: "1px solid #E5E7EB",
+                          flexShrink: 0,
+                          cursor: itemId ? "pointer" : "default",
+                        }}
+                        onClick={() => itemId && viewProductDetail(itemId)}
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          bgcolor: "grey.200",
+                          borderRadius: 2,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                          cursor: itemId ? "pointer" : "default",
+                        }}
+                        onClick={() => itemId && viewProductDetail(itemId)}
+                      >
+                        <Package size={24} color="#9CA3AF" />
+                      </Box>
+                    )}
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          fontWeight={500}
+                          color="var(--color-gray1)"
+                          sx={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            cursor: itemId ? "pointer" : "default",
+                          }}
+                          onClick={() => itemId && viewProductDetail(itemId)}
+                        >
+                          {itemName}
+                        </Typography>
+                        {isCombo && (
+                          <Box
+                            sx={{
+                              bgcolor: "var(--color-primary)",
+                              color: "white",
+                              px: 0.5,
+                              py: 0.25,
+                              fontSize: "0.625rem",
+                              fontWeight: 700,
+                              borderRadius: 0.5,
+                            }}
+                          >
+                            COMBO
+                          </Box>
+                        )}
+                      </Box>
+                      <Typography variant="caption" color="var(--color-gray3)">
+                        x{item.quantity}
+                      </Typography>
                     </Box>
-                  )}
-                  <Box sx={{ minWidth: 0, flex: 1 }}>
-                    <Typography
-                      variant="body2"
-                      fontWeight={500}
-                      color="var(--color-gray1)"
-                      sx={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => viewProductDetail(item.productId)}
-                    >
-                      {item.productName}
-                    </Typography>
-                    <Typography variant="caption" color="var(--color-gray3)">
-                      x{item.quantity}
-                    </Typography>
                   </Box>
-                </Box>
-              ))}
+                );
+              })}
             </Box>
             {order.items.length > 3 && (
               <Typography variant="caption" color="var(--color-gray3)">

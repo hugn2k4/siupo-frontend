@@ -221,133 +221,157 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                 Order Items
               </Typography>
               <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-                {order.items.map((item) => (
-                  <Box
-                    key={item.id}
-                    sx={{
-                      display: "flex",
-                      gap: 2,
-                      p: 2,
-                      border: "1px solid",
-                      borderColor: "grey.200",
-                      borderRadius: 2,
-                      "&:hover": {
-                        borderColor: "var(--color-primary)",
-                        bgcolor: "rgba(var(--color-primary-rgb), 0.04)",
-                      },
-                    }}
-                  >
-                    {item.productImageUrl ? (
-                      <img
-                        src={item.productImageUrl}
-                        alt={item.productName}
-                        style={{
-                          width: 80,
-                          height: 80,
-                          objectFit: "cover",
-                          borderRadius: 8,
-                          border: "1px solid #E5E7EB",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => viewProductDetail(item.productId)}
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          width: 80,
-                          height: 80,
-                          bgcolor: "grey.200",
-                          borderRadius: 2,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => viewProductDetail(item.productId)}
-                      >
-                        <Package size={32} color="#9CA3AF" />
-                      </Box>
-                    )}
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography
-                        variant="body1"
-                        fontWeight={600}
-                        color="var(--color-gray1)"
-                        sx={{ cursor: "pointer" }}
-                        onClick={() => viewProductDetail(item.productId)}
-                      >
-                        {item.productName}
-                      </Typography>
-                      <Typography variant="body2" color="var(--color-gray3)" sx={{ mt: 0.5 }}>
-                        {formatCurrency(item.price, "USD")} × {item.quantity}
-                      </Typography>
-                      {canReview &&
-                        (item.reviewed ? (
-                          <Button
-                            size="small"
-                            startIcon={<Eye size={16} />}
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              try {
-                                const response = await reviewService.getReviewByOrderItemId(item.id);
-                                setSelectedReview(response.data);
+                {order.items.map((item) => {
+                  const isCombo = !!item.comboId;
+                  const itemName = isCombo ? item.comboName : item.productName;
+                  const itemImage = isCombo ? item.comboImageUrl : item.productImageUrl;
+                  const itemId = isCombo ? item.comboId : item.productId;
+
+                  return (
+                    <Box
+                      key={item.id}
+                      sx={{
+                        display: "flex",
+                        gap: 2,
+                        p: 2,
+                        border: "1px solid",
+                        borderColor: "grey.200",
+                        borderRadius: 2,
+                        "&:hover": {
+                          borderColor: "var(--color-primary)",
+                          bgcolor: "rgba(var(--color-primary-rgb), 0.04)",
+                        },
+                      }}
+                    >
+                      {itemImage ? (
+                        <img
+                          src={itemImage}
+                          alt={itemName || "Item"}
+                          style={{
+                            width: 80,
+                            height: 80,
+                            objectFit: "cover",
+                            borderRadius: 8,
+                            border: "1px solid #E5E7EB",
+                            cursor: itemId ? "pointer" : "default",
+                          }}
+                          onClick={() => itemId && viewProductDetail(itemId)}
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            width: 80,
+                            height: 80,
+                            bgcolor: "grey.200",
+                            borderRadius: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: itemId ? "pointer" : "default",
+                          }}
+                          onClick={() => itemId && viewProductDetail(itemId)}
+                        >
+                          <Package size={32} color="#9CA3AF" />
+                        </Box>
+                      )}
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <Typography
+                            variant="body1"
+                            fontWeight={600}
+                            color="var(--color-gray1)"
+                            sx={{ cursor: itemId ? "pointer" : "default" }}
+                            onClick={() => itemId && viewProductDetail(itemId)}
+                          >
+                            {itemName}
+                          </Typography>
+                          {isCombo && (
+                            <Box
+                              sx={{
+                                bgcolor: "var(--color-primary)",
+                                color: "white",
+                                px: 1,
+                                py: 0.25,
+                                fontSize: "0.7rem",
+                                fontWeight: 700,
+                                borderRadius: 0.5,
+                              }}
+                            >
+                              COMBO
+                            </Box>
+                          )}
+                        </Box>
+                        <Typography variant="body2" color="var(--color-gray3)" sx={{ mt: 0.5 }}>
+                          {formatCurrency(item.price, "USD")} × {item.quantity}
+                        </Typography>
+                        {canReview &&
+                          (item.reviewed ? (
+                            <Button
+                              size="small"
+                              startIcon={<Eye size={16} />}
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                try {
+                                  const response = await reviewService.getReviewByOrderItemId(item.id);
+                                  setSelectedReview(response.data);
+                                  setSelectedItem(item);
+                                  setViewReviewDialogOpen(true);
+                                } catch (error) {
+                                  console.error("Failed to load review:", error);
+                                  showSnackbar("Failed to load review", "error");
+                                }
+                              }}
+                              sx={{
+                                mt: 1,
+                                textTransform: "none",
+                                color: "var(--color-success)",
+                                fontWeight: 600,
+                                fontSize: "0.875rem",
+                                p: 0,
+                                minWidth: "auto",
+                                "&:hover": {
+                                  bgcolor: "transparent",
+                                  textDecoration: "underline",
+                                },
+                              }}
+                            >
+                              View review
+                            </Button>
+                          ) : (
+                            <Button
+                              size="small"
+                              startIcon={<Star size={16} />}
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setSelectedItem(item);
-                                setViewReviewDialogOpen(true);
-                              } catch (error) {
-                                console.error("Failed to load review:", error);
-                                showSnackbar("Failed to load review", "error");
-                              }
-                            }}
-                            sx={{
-                              mt: 1,
-                              textTransform: "none",
-                              color: "var(--color-success)",
-                              fontWeight: 600,
-                              fontSize: "0.875rem",
-                              p: 0,
-                              minWidth: "auto",
-                              "&:hover": {
-                                bgcolor: "transparent",
-                                textDecoration: "underline",
-                              },
-                            }}
-                          >
-                            View review
-                          </Button>
-                        ) : (
-                          <Button
-                            size="small"
-                            startIcon={<Star size={16} />}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedItem(item);
-                              setReviewDialogOpen(true);
-                            }}
-                            sx={{
-                              mt: 1,
-                              textTransform: "none",
-                              color: "var(--color-primary)",
-                              fontWeight: 600,
-                              fontSize: "0.875rem",
-                              p: 0,
-                              minWidth: "auto",
-                              "&:hover": {
-                                bgcolor: "transparent",
-                                textDecoration: "underline",
-                              },
-                            }}
-                          >
-                            Write a review
-                          </Button>
-                        ))}
+                                setReviewDialogOpen(true);
+                              }}
+                              sx={{
+                                mt: 1,
+                                textTransform: "none",
+                                color: "var(--color-primary)",
+                                fontWeight: 600,
+                                fontSize: "0.875rem",
+                                p: 0,
+                                minWidth: "auto",
+                                "&:hover": {
+                                  bgcolor: "transparent",
+                                  textDecoration: "underline",
+                                },
+                              }}
+                            >
+                              Write a review
+                            </Button>
+                          ))}
+                      </Box>
+                      <Box sx={{ textAlign: "right" }}>
+                        <Typography variant="body1" fontWeight={700} color="var(--color-gray1)">
+                          {formatCurrency(item.subTotal, "USD")}
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box sx={{ textAlign: "right" }}>
-                      <Typography variant="body1" fontWeight={700} color="var(--color-gray1)">
-                        {formatCurrency(item.subTotal, "USD")}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
+                  );
+                })}
               </Box>
             </Box>
 

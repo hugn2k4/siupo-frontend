@@ -56,7 +56,8 @@ const CheckoutPage: React.FC = () => {
   // Convert CartItem to OrderItem format for display
   const orderItems: OrderItem[] = cartItems.map((item) => ({
     id: item.id,
-    product: (item.product || item.combo)!,
+    product: item.product,
+    combo: item.combo,
     quantity: item.quantity,
     totalPrice: item.totalPrice,
   }));
@@ -93,16 +94,16 @@ const CheckoutPage: React.FC = () => {
 
     setLoading(true);
 
-    // Convert CartItem to OrderItem format
-    const orderItems: OrderItem[] = cartItems.map((item) => ({
+    // Convert CartItem to request format with proper product/combo structure
+    const requestItems: OrderItem[] = cartItems.map((item) => ({
       id: item.id,
-      product: (item.product || item.combo)!,
+      product: item.product,
+      combo: item.combo,
       quantity: item.quantity,
-      totalPrice: item.totalPrice,
     }));
 
     const request: CreateOrderRequest = {
-      items: orderItems,
+      items: requestItems,
       shippingAddress: selectedAddress,
       paymentMethod: selectedPaymentMethod,
     };

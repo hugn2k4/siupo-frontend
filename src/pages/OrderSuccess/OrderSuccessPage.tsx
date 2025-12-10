@@ -51,19 +51,33 @@ const OrderSuccessPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId]);
 
-  // Fetch product images
+  // Fetch product images (not needed since backend now returns images)
   useEffect(() => {
     const fetchProductImages = async () => {
       if (!order?.items) return;
 
       const imagePromises = order.items.map(async (item) => {
-        try {
-          const response = await productService.getProductById(item.productId);
-          if (response.product?.imageUrls?.[0]) {
-            return { productId: item.productId, imageUrl: response.product.imageUrls[0] };
+        // Skip if we already have image from backend
+        if (item.productImageUrl || item.comboImageUrl) {
+          const itemId = item.productId || item.comboId;
+          if (itemId) {
+            return {
+              productId: itemId,
+              imageUrl: item.productImageUrl || item.comboImageUrl || "",
+            };
           }
-        } catch (error) {
-          console.error(`Failed to fetch image for product ${item.productId}:`, error);
+        }
+
+        // Fallback: fetch from API if needed
+        if (item.productId) {
+          try {
+            const response = await productService.getProductById(item.productId);
+            if (response.product?.imageUrls?.[0]) {
+              return { productId: item.productId, imageUrl: response.product.imageUrls[0] };
+            }
+          } catch (error) {
+            console.error(`Failed to fetch image for product ${item.productId}:`, error);
+          }
         }
         return null;
       });
@@ -118,37 +132,51 @@ const OrderSuccessPage: React.FC = () => {
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h3>
                 <div className="space-y-4">
-                  {order.items.map((item) => (
-                    <div key={item.id} className="flex gap-4 py-3 border-b border-gray-100">
-                      {/* Product Image */}
-                      <div className="flex-shrink-0">
-                        {productImages[item.productId] ? (
-                          <img
-                            src={productImages[item.productId]}
-                            alt={item.productName}
-                            className="w-20 h-20 object-cover rounded border border-gray-200"
-                          />
-                        ) : (
-                          <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">
-                            <span className="text-gray-400 text-xs">No image</span>
+                  {order.items.map((item) => {
+                    const isCombo = !!item.comboId;
+                    const itemName = isCombo ? item.comboName : item.productName;
+                    const itemId = isCombo ? item.comboId : item.productId;
+                    const itemImage = productImages[itemId!] || item.productImageUrl || item.comboImageUrl;
+
+                    return (
+                      <div key={item.id} className="flex gap-4 py-3 border-b border-gray-100">
+                        {/* Product/Combo Image */}
+                        <div className="flex-shrink-0">
+                          {itemImage ? (
+                            <img
+                              src={itemImage}
+                              alt={itemName || "Item"}
+                              className="w-20 h-20 object-cover rounded border border-gray-200"
+                            />
+                          ) : (
+                            <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">
+                              <span className="text-gray-400 text-xs">No image</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Product/Combo Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-gray-900 truncate">{itemName}</p>
+                            {isCombo && (
+                              <span className="bg-orange-500 text-white px-1.5 py-0.5 text-xs font-bold rounded">
+                                COMBO
+                              </span>
+                            )}
                           </div>
-                        )}
-                      </div>
+                          <p className="text-sm text-gray-500 mt-1">
+                            {formatCurrency(item.price, "USD")} × {item.quantity}
+                          </p>
+                        </div>
 
-                      {/* Product Info */}
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate">{item.productName}</p>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {formatCurrency(item.price, "USD")} × {item.quantity}
-                        </p>
+                        {/* Subtotal */}
+                        <div className="flex-shrink-0 text-right">
+                          <p className="font-semibold text-gray-900">{formatCurrency(item.subTotal, "USD")}</p>
+                        </div>
                       </div>
-
-                      {/* Subtotal */}
-                      <div className="flex-shrink-0 text-right">
-                        <p className="font-semibold text-gray-900">{formatCurrency(item.subTotal, "USD")}</p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

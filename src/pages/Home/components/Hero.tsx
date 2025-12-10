@@ -8,6 +8,7 @@ import DefaultHeroMobile from "../../../assets/images/image_hero_mobile.png";
 import MyButton from "../../../components/common/Button";
 import { useTranslation } from "../../../hooks/useTranslation";
 import type { Banner } from "../../../types/models/banner";
+import { useNavigate } from "react-router-dom";
 
 interface HeroProps {
   banners: Banner[];
@@ -20,6 +21,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
   // Lấy banner từ API
   const heroImage = banners[0]?.url || DefaultHero;
   const heroImageMobile = banners[1]?.url || DefaultHeroMobile;
+  const navigate = useNavigate();
   return (
     <section className="w-full min-h-[90vh] flex flex-col relative overflow-hidden">
       {/* Right side: Hero Image - positioned absolutely to reach screen edge */}
@@ -177,6 +179,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
                   colorScheme="lightGreen"
                   onMouseEnter={() => setHoveredPlace(true)}
                   onMouseLeave={() => setHoveredPlace(false)}
+                  onClick={() => navigate("/shop")}
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 >
                   {t("hero.placeOrder")}

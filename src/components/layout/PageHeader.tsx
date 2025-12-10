@@ -1,6 +1,6 @@
 import { Box, Breadcrumbs, Link as MuiLink, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import ImageBanner from "../../assets/images/image_banner.png";
+import ImageBanner from "../../assets/images/image_banner_2.jpg";
 import { useTranslation } from "../../hooks/useTranslation";
 
 interface PageHeaderProps {
@@ -20,7 +20,7 @@ export default function PageHeader({ title, backgroundImage, breadcrumb = [] }: 
     <Box
       sx={{
         width: "100%",
-        height: "13rem",
+        height: "20rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -38,13 +38,13 @@ export default function PageHeader({ title, backgroundImage, breadcrumb = [] }: 
         sx={{
           position: "absolute",
           inset: 0,
-          //   bgcolor: "rgba(0,0,0,0.5)",
+          bgcolor: "rgba(0,0,0,0.75)",
         }}
       />
 
       {/* Nội dung */}
       <Box sx={{ position: "relative", zIndex: 2 }}>
-        <Typography variant="h3" fontWeight="bold" gutterBottom>
+        <Typography variant="h2" gutterBottom sx={{ fontFamily: '"Alex Brush", cursive' }}>
           {title}
         </Typography>
 
@@ -55,11 +55,22 @@ export default function PageHeader({ title, backgroundImage, breadcrumb = [] }: 
         >
           {finalBreadcrumb.map((item, index) =>
             item.path ? (
-              <MuiLink key={index} component={Link} to={item.path} underline="hover" color="inherit">
+              <MuiLink
+                key={index}
+                component={Link}
+                to={item.path}
+                underline="hover"
+                color="inherit"
+                sx={{ fontFamily: '"Lora", serif', fontSize: "1.25rem" }}
+              >
                 {item.label}
               </MuiLink>
             ) : (
-              <Typography key={index} color="var(--color-primary)">
+              <Typography
+                key={index}
+                color="var(--color-primary)"
+                sx={{ fontFamily: '"Lora", serif', fontSize: "1.25rem" }}
+              >
                 {item.label}
               </Typography>
             )

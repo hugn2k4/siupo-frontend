@@ -1,13 +1,19 @@
-import { Skeleton } from "@mui/material";
-import React from "react";
+import { Box, Skeleton, Dialog, IconButton } from "@mui/material";
+import { useState } from "react";
 import defaultAboutUs from "../../../assets/images/image_about_us_home.png";
 import MyButton from "../../../components/common/Button";
 import { useTranslation } from "../../../hooks/useTranslation";
 import type { BannerProps } from "../../../types/props/BannerProps";
+import CloseIcon from "@mui/icons-material/Close";
 // Food Gallery Section Component
 const FoodGallerySection: React.FC<BannerProps> = ({ banners, loading }) => {
   const { t } = useTranslation("home");
   const aboutUsImage = banners[0]?.url || defaultAboutUs;
+  // State để mở/đóng modal video
+  const [openVideo, setOpenVideo] = useState(false);
+
+  const handleOpenVideo = () => setOpenVideo(true);
+  const handleCloseVideo = () => setOpenVideo(false);
   return (
     <section className="py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4">
@@ -28,12 +34,60 @@ const FoodGallerySection: React.FC<BannerProps> = ({ banners, loading }) => {
             <h2 className="text-4xl font-bold text-gray-800 mb-6">{t("aboutSection.title")}</h2>
             <p className="text-gray-600 mb-6 leading-relaxed">{t("aboutSection.description")}</p>
             <div className="flex items-center space-x-4 gap-4">
-              <MyButton colorScheme="orange">{t("hero.showMore")}</MyButton>
-              <MyButton isWatch colorScheme="orange" />
+              <MyButton isWatch colorScheme="orange" onClick={handleOpenVideo} />
             </div>
           </div>
         </div>
       </div>
+      {/* Modal Video YouTube */}
+      <Dialog
+        open={openVideo}
+        onClose={handleCloseVideo}
+        maxWidth="lg"
+        fullWidth
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: { xs: 2, md: 3 },
+            overflow: "hidden",
+            bgcolor: "black",
+            boxShadow: 24,
+          },
+        }}
+      >
+        {/* Nút đóng */}
+        <IconButton
+          onClick={handleCloseVideo}
+          sx={{
+            position: "absolute",
+            right: { xs: 8, sm: 16 },
+            top: { xs: 8, sm: 16 },
+            color: "white",
+            bgcolor: "rgba(0,0,0,0.5)",
+            zIndex: 10,
+            "&:hover": {
+              bgcolor: "rgba(0,0,0,0.7)",
+            },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Box sx={{ position: "relative", paddingTop: "56.25%" }}>
+          <iframe
+            src="https://www.youtube.com/embed/4pRcDgMhWuw?autoplay=1&rel=0&modestbranding=1"
+            title="About Our Healthy Food Journey"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              border: 0,
+            }}
+          />
+        </Box>
+      </Dialog>
     </section>
   );
 };

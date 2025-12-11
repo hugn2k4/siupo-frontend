@@ -24,6 +24,7 @@ import PaymentCallbackPage from "../pages/PaymentCallback/PaymentCallbackPage";
 import PlaceTableForGuest from "../pages/PlaceTableForGuest/PlaceTableForGuest";
 import ProductDetailPage from "../pages/ProductDetail/ProductDetailPage";
 import OurShopPage from "../pages/Shop/OurShopPage";
+import VouchersPage from "../pages/Vouchers/VouchersPage";
 import WishlistPage from "../pages/WishList/WishlistPage";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
       { path: "orderattable", element: <OrderAtTable /> },
       { path: "shop", element: <OurShopPage /> },
       { path: "/shop/:productId", element: <ProductDetailPage /> },
+      { path: "vouchers", element: <VouchersPage /> },
       { path: "*", element: <NotFoundPage /> },
       {
         element: <PublicRoute />,

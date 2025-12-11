@@ -23,6 +23,9 @@ export type OrderResponse = {
   totalPrice: number;
   shippingFee: number;
   vat: number;
+  discountAmount?: number; // Thêm field discount từ voucher
+  voucherCode?: string; // Thêm field voucher code
+  finalAmount?: number; // Thêm field final amount sau discount
   items: OrderItemResponse[];
   paymentMethod: MethodPayment;
   payUrl?: string;

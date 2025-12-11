@@ -114,11 +114,6 @@ const Cart: React.FC = () => {
     }
   };
 
-  const handleApplyCoupon = (code: string) => {
-    console.log("Applying coupon:", code);
-    // Implement coupon logic here
-  };
-
   const handleCheckout = () => {
     const selectedCartItems = cartItems.filter((item) => selectedItems.has(item.id));
 
@@ -341,7 +336,7 @@ const Cart: React.FC = () => {
           {/* Coupon and Summary */}
           <Stack direction={{ xs: "column", lg: "row" }} spacing={3} sx={{ mt: 3 }}>
             <Box sx={{ flex: 1 }}>
-              <CouponSection onApplyCoupon={handleApplyCoupon} />
+              <CouponSection orderAmount={subtotal} />
             </Box>
             <Box sx={{ flex: 1, maxWidth: { lg: 420 } }}>
               <OrderSummary

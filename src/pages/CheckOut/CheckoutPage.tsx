@@ -20,6 +20,8 @@ const CheckoutPage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [appliedVoucher, setAppliedVoucher] = useState<string>("");
+  const [voucherDiscount, setVoucherDiscount] = useState<number>(0);
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const location = useLocation();
@@ -46,7 +48,7 @@ const CheckoutPage: React.FC = () => {
 
   // Các thông số tính toán
   const shipping = selectedPaymentMethod === EMethodPayment.COD ? 2 : 0;
-  const discount = 0; // TODO: Tính từ voucher/coupon
+  const discount = voucherDiscount; // Discount từ voucher
   const vatRate = 0.1; // 10% VAT
   const vat = (subtotal - discount) * vatRate;
 
@@ -61,16 +63,6 @@ const CheckoutPage: React.FC = () => {
     quantity: item.quantity,
     totalPrice: item.totalPrice,
   }));
-
-  // Dữ liệu đơn hàng
-  const orderData = {
-    items: orderItems,
-    subtotal,
-    shipping,
-    discount,
-    vat,
-    total: finalTotal,
-  };
 
   const handleBackToCart = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -106,6 +98,7 @@ const CheckoutPage: React.FC = () => {
       items: requestItems,
       shippingAddress: selectedAddress,
       paymentMethod: selectedPaymentMethod,
+      voucherCode: appliedVoucher || undefined, // Gửi voucher code nếu có
     };
 
     try {
@@ -144,6 +137,16 @@ const CheckoutPage: React.FC = () => {
     setSelectedPaymentMethod(method);
   };
 
+  const handleVoucherApply = (voucherCode: string, discountAmount: number) => {
+    setAppliedVoucher(voucherCode);
+    setVoucherDiscount(discountAmount);
+  };
+
+  const handleRemoveVoucher = () => {
+    setAppliedVoucher("");
+    setVoucherDiscount(0);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -152,7 +155,14 @@ const CheckoutPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Address selector / add-new flow */}
             <AddressList onSelect={(a) => setSelectedAddress(a)} />
-            {/* Form voucher */ <Voucher title="Discount Code" />}
+            {/* Form voucher */}
+            <Voucher
+              title="Discount Code"
+              orderAmount={subtotal}
+              appliedVoucher={appliedVoucher}
+              onVoucherApply={handleVoucherApply}
+              onRemoveVoucher={handleRemoveVoucher}
+            />
 
             {/* Phương thức thanh toán */}
             <PaymentMethod selectedMethod={selectedPaymentMethod} onMethodChange={handlePaymentMethodChange} />
@@ -186,11 +196,11 @@ const CheckoutPage: React.FC = () => {
             <div className="sticky top-8">
               {/* Sử dụng component OrderSummary */}
               <OrderSummary
-                items={orderData.items}
-                subtotal={orderData.subtotal}
-                shipping={orderData.shipping}
-                discount={orderData.discount}
-                vat={orderData.vat}
+                items={orderItems}
+                subtotal={subtotal}
+                shipping={shipping}
+                discount={discount}
+                vat={vat}
                 total={finalTotal}
                 selectedPaymentMethod={selectedPaymentMethod}
                 onProceedToPayment={handleProceedToPayment}

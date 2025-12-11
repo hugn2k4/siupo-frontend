@@ -6,4 +6,5 @@ export type CreateOrderRequest = {
   items: OrderItem[];
   shippingAddress: Address;
   paymentMethod: MethodPayment;
+  voucherCode?: string; // Thêm field voucher code
 };

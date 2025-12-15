@@ -1,15 +1,10 @@
-// src/Account/components/AccountSettings.tsx
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
-import userApi from "../../../api/userApi";
+import userService from "../../../services/userService";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import type { UserRequest } from "../../../types/requests/user.request";
 
-interface UserRequest {
-  fullName: string;
-  phoneNumber: string;
-  dateOfBirth?: string;
-  gender?: "MALE" | "FEMALE" | "OTHER";
-}
+const DEFAULT_AVATAR = "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png";
 
 export default function AccountSettings() {
   const [firstName, setFirstName] = useState("");
@@ -18,26 +13,30 @@ export default function AccountSettings() {
   const [phone, setPhone] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [gender, setGender] = useState<"MALE" | "FEMALE" | "OTHER">("FEMALE");
-  const [image, setImage] = useState("https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png");
+
+  const [avatarUrl, setAvatarUrl] = useState<string>(DEFAULT_AVATAR);
+  const [avatarName, setAvatarName] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const { showSnackbar } = useSnackbar();
 
-  // Load dữ liệu user khi mở trang
   useEffect(() => {
     const loadUser = async () => {
       try {
         setLoading(true);
-        const res = await userApi.getCurrentUser();
+        const res = await userService.getCurrentUser();
         const user = res.data;
-        // KIỂM TRA user CÓ TỒN TẠI
+
         if (!user) {
           showSnackbar("Không có dữ liệu người dùng", "error");
           setLoading(false);
           return;
         }
-        // Tách fullName → firstName + lastName
+
         const nameParts = user.fullName.trim().split(" ");
         const first = nameParts[0] || "";
         const last = nameParts.slice(1).join(" ") || "";
@@ -48,7 +47,14 @@ export default function AccountSettings() {
         setPhone(user.phoneNumber);
         setBirthDate(user.dateOfBirth || "");
         setGender((user.gender as "MALE" | "FEMALE" | "OTHER") || "FEMALE");
-        // Avatar: nếu BE có thì dùng, không thì giữ default
+
+        if (user.avatar?.url) {
+          setAvatarUrl(user.avatar.url);
+          setAvatarName(user.avatar.name || null);
+        } else {
+          setAvatarUrl(DEFAULT_AVATAR);
+          setAvatarName(null);
+        }
       } catch {
         showSnackbar("Không tải được thông tin", "error");
       } finally {
@@ -59,21 +65,48 @@ export default function AccountSettings() {
     loadUser();
   }, [showSnackbar]);
 
-  // Xử lý upload ảnh
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => setImage(reader.result as string);
+      reader.onloadend = () => setAvatarUrl(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
 
-  // Gộp và gửi về BE
   const handleSave = async () => {
     if (!firstName.trim()) {
       showSnackbar("Vui lòng nhập tên", "error");
       return;
+    }
+
+    setSaving(true);
+    let finalAvatarUrl = avatarUrl === DEFAULT_AVATAR ? null : avatarUrl;
+    let finalAvatarName = avatarName;
+
+    if (selectedFile) {
+      setUploading(true);
+      try {
+        const uploadedData = await userService.uploadAvatar(selectedFile);
+
+        if (uploadedData?.avatarUrl) {
+          finalAvatarUrl = uploadedData.avatarUrl;
+          finalAvatarName = uploadedData.avatarName;
+        } else {
+          showSnackbar("Lỗi upload: Server không trả về URL", "error");
+          setSaving(false);
+          setUploading(false);
+          return;
+        }
+      } catch (error) {
+        showSnackbar("Upload hình ảnh thất bại", "error");
+        setSaving(false);
+        setUploading(false);
+        return;
+      } finally {
+        setUploading(false);
+      }
     }
 
     const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
@@ -83,11 +116,17 @@ export default function AccountSettings() {
       phoneNumber: phone,
       dateOfBirth: birthDate || undefined,
       gender: gender,
+      avatarUrl: finalAvatarUrl,
+      avatarName: finalAvatarName,
     };
 
     try {
-      setSaving(true);
-      await userApi.updateUser(payload);
+      await userService.updateUser(payload);
+
+      setAvatarUrl(finalAvatarUrl || DEFAULT_AVATAR);
+      setAvatarName(finalAvatarName);
+      setSelectedFile(null);
+
       showSnackbar("Cập nhật thành công!", "success");
     } catch {
       showSnackbar("Cập nhật thất bại", "error");
@@ -95,6 +134,9 @@ export default function AccountSettings() {
       setSaving(false);
     }
   };
+
+  const isFormDirty = firstName || lastName || phone || birthDate || gender || selectedFile;
+  const isButtonDisabled = saving || uploading || !isFormDirty;
 
   if (loading) {
     return <div className="p-6 text-center">Đang tải...</div>;
@@ -109,7 +151,6 @@ export default function AccountSettings() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-10 items-start">
-        {/* FORM BÊN TRÁI */}
         <div className="flex-1 max-w-lg w-full space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -129,7 +170,7 @@ export default function AccountSettings() {
                     color: "#666666",
                   } as React.CSSProperties
                 }
-                disabled={saving}
+                disabled={saving || uploading}
               />
             </div>
             <div>
@@ -149,7 +190,7 @@ export default function AccountSettings() {
                     color: "#666666",
                   } as React.CSSProperties
                 }
-                disabled={saving}
+                disabled={saving || uploading}
               />
             </div>
           </div>
@@ -189,7 +230,7 @@ export default function AccountSettings() {
                   color: "#666666",
                 } as React.CSSProperties
               }
-              disabled={saving}
+              disabled={saving || uploading}
             />
           </div>
 
@@ -200,7 +241,7 @@ export default function AccountSettings() {
               </label>
               <input
                 type="date"
-                value={birthDate}
+                value={birthDate || ""}
                 onChange={(e) => setBirthDate(e.target.value)}
                 className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1"
                 style={
@@ -211,7 +252,7 @@ export default function AccountSettings() {
                     color: "#666666",
                   } as React.CSSProperties
                 }
-                disabled={saving}
+                disabled={saving || uploading}
               />
             </div>
             <div>
@@ -231,7 +272,7 @@ export default function AccountSettings() {
                     backgroundColor: "#ffffff",
                   } as React.CSSProperties
                 }
-                disabled={saving}
+                disabled={saving || uploading}
               >
                 <option value="MALE">Male</option>
                 <option value="FEMALE">Female</option>
@@ -244,45 +285,46 @@ export default function AccountSettings() {
             className="mt-6 px-6 py-2.5 text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50"
             style={{ backgroundColor: "#FF9F0D" }}
             onClick={handleSave}
-            disabled={saving}
-            onMouseEnter={(e) => !saving && (e.currentTarget.style.backgroundColor = "#e48900")}
-            onMouseLeave={(e) => !saving && (e.currentTarget.style.backgroundColor = "#FF9F0D")}
+            disabled={isButtonDisabled}
+            onMouseEnter={(e) => !isButtonDisabled && (e.currentTarget.style.backgroundColor = "#e48900")}
+            onMouseLeave={(e) => !isButtonDisabled && (e.currentTarget.style.backgroundColor = "#FF9F0D")}
           >
-            {saving ? "Đang lưu..." : "Save Changes"}
+            {saving || uploading ? "Đang xử lý..." : "Save Changes"}
           </button>
         </div>
 
-        {/* AVATAR BÊN PHẢI */}
         <div className="flex justify-center w-full md:w-auto pl-18 pt-10">
           <div className="flex flex-col items-center">
             <div
               className="w-45 h-45 rounded-full overflow-hidden mb-5 shadow-lg"
               style={{ border: "3px solid #FF9F0D" }}
             >
-              <img src={image} alt="User avatar" className="w-full h-full object-cover" />
+              <img src={avatarUrl} alt="User avatar" className="w-full h-full object-cover" />
             </div>
 
-            <label className="cursor-pointer">
+            <label className="cursor-pointer" style={{ opacity: saving || uploading ? 0.5 : 1 }}>
               <span
                 className="inline-block px-5 py-2 text-sm font-medium rounded-full border-2 transition-all"
                 style={{
                   color: "#FF9F0D",
                   borderColor: "#FF9F0D",
                   backgroundColor: "#ffffff",
+                  pointerEvents: saving || uploading ? "none" : "auto",
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#FF9F0D";
-                  e.currentTarget.style.color = "#ffffff";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#ffffff";
-                  e.currentTarget.style.color = "#FF9F0D";
-                }}
+                onMouseEnter={(e) => !(saving || uploading) && (e.currentTarget.style.backgroundColor = "#FF9F0D")}
+                onMouseLeave={(e) => !(saving || uploading) && (e.currentTarget.style.backgroundColor = "#ffffff")}
               >
                 Choose Image
               </span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+                disabled={saving || uploading}
+              />
             </label>
+            {uploading && <p className="text-xs text-gray-500 mt-2">Đang upload...</p>}
           </div>
         </div>
       </div>

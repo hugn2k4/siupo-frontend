@@ -1,10 +1,12 @@
-// src/Account/components/UserAvatar.tsx
 import { useEffect, useState } from "react";
-import userApi from "../../../api/userApi";
+import userService from "../../../services/userService";
 import { useNavigate } from "react-router-dom";
+
+const DEFAULT_AVATAR = "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png";
 
 export default function UserAvatar() {
   const [fullName, setFullName] = useState<string>("Khách hàng");
+  const [avatarUrl, setAvatarUrl] = useState<string>(DEFAULT_AVATAR);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
@@ -12,9 +14,18 @@ export default function UserAvatar() {
     const fetchUser = async () => {
       try {
         setLoading(true);
-        const response = await userApi.getCurrentUser();
-        if (response.data?.fullName) {
-          setFullName(response.data.fullName);
+        const response = await userService.getCurrentUser();
+
+        const userData = response.data;
+
+        if (userData?.fullName) {
+          setFullName(userData.fullName);
+        }
+
+        if (userData?.avatar?.url) {
+          setAvatarUrl(userData.avatar.url);
+        } else {
+          setAvatarUrl(DEFAULT_AVATAR);
         }
       } catch (error) {
         console.error("Lỗi lấy thông tin user:", error);
@@ -36,11 +47,7 @@ export default function UserAvatar() {
           className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4"
           style={{ borderColor: "#ffffff" }}
         >
-          <img
-            src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
-            alt="User avatar"
-            className="w-full h-full object-cover"
-          />
+          <img src={avatarUrl} alt="User avatar" className="w-full h-full object-cover" />
         </div>
         <h3 className="text-xl font-semibold" style={{ color: "#111827" }}>
           {loading ? "Đang tải..." : fullName}

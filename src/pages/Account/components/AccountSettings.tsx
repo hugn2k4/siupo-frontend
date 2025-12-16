@@ -3,8 +3,18 @@ import React, { useEffect, useState } from "react";
 import userService from "../../../services/userService";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import type { UserRequest } from "../../../types/requests/user.request";
-
+import { useGlobal } from "../../../hooks/useGlobal";
+import type { UserResponse } from "../../../types/responses/user.response";
+import type { User } from "../../../types/models/user";
 const DEFAULT_AVATAR = "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png";
+
+type ApiUserCleaned = Omit<UserResponse, "avatar" | "dateOfBirth" | "gender" | "role">;
+type UserForGlobalState = ApiUserCleaned & {
+  avatarUrl?: string;
+  gender?: User["gender"];
+  dateOfBirth?: string;
+  role?: string;
+};
 
 export default function AccountSettings() {
   const [firstName, setFirstName] = useState("");
@@ -23,7 +33,7 @@ export default function AccountSettings() {
   const [uploading, setUploading] = useState(false);
 
   const { showSnackbar } = useSnackbar();
-
+  const { setGlobal } = useGlobal();
   useEffect(() => {
     const loadUser = async () => {
       try {
@@ -121,7 +131,18 @@ export default function AccountSettings() {
     };
 
     try {
-      await userService.updateUser(payload);
+      const response = await userService.updateUser(payload);
+      const updatedUser = response.data;
+      if (updatedUser) {
+        const userForGlobal: UserForGlobalState = {
+          ...(updatedUser as ApiUserCleaned),
+          avatarUrl: updatedUser.avatar?.url || undefined,
+          gender: updatedUser.gender as UserForGlobalState["gender"],
+          dateOfBirth: updatedUser.dateOfBirth,
+          role: updatedUser.role,
+        };
+        setGlobal({ user: userForGlobal as unknown as User });
+      }
 
       setAvatarUrl(finalAvatarUrl || DEFAULT_AVATAR);
       setAvatarName(finalAvatarName);

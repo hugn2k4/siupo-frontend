@@ -1,21 +1,21 @@
 import AddIcon from "@mui/icons-material/Add";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Avatar, Box, Button, Divider, Rating, Stack, Typography } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaFacebookF, FaInstagram, FaTwitter, FaVk, FaYoutube } from "react-icons/fa";
+import reviewApi from "../../../api/reviewApi";
+import { wishlistApi } from "../../../api/wishListApi";
 import MyButton from "../../../components/common/Button";
 import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import cartService from "../../../services/cartService";
-import reviewApi from "../../../api/reviewApi";
 import { EProductStatus } from "../../../types/enums/product.enum";
 import type { ProductDetailResponse } from "../../../types/responses/product.response";
-import { wishlistApi } from "../../../api/wishListApi";
 
 interface ProductInfoProps {
   product: ProductDetailResponse;
@@ -355,9 +355,40 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         <Typography variant="body2" color="var(--color-gray2)">
           Category: {product.categoryName || "Unknown"}
         </Typography>
-        <Typography variant="body2" color="var(--color-gray2)" sx={{ mt: 1 }}>
-          Tag: {"Our Shop"}
-        </Typography>
+        <Box sx={{ mt: 1, display: "flex", alignItems: "center", gap: 0.5 }}>
+          <Typography variant="body2" color="var(--color-gray2)">
+            Tag:
+          </Typography>
+          {product.tags && product.tags.length > 0 ? (
+            product.tags.map((tag, index) => (
+              <React.Fragment key={tag}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "var(--color-gray2)",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    transition: "color 0.2s ease",
+                    "&:hover": {
+                      color: "var(--color-primary)",
+                    },
+                  }}
+                >
+                  {tag}
+                </Typography>
+                {index < product.tags.length - 1 && (
+                  <Typography variant="body2" color="var(--color-gray2)">
+                    ,
+                  </Typography>
+                )}
+              </React.Fragment>
+            ))
+          ) : (
+            <Typography variant="body2" color="var(--color-gray2)">
+              Our Shop
+            </Typography>
+          )}
+        </Box>
         <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
           <Typography variant="body2" color="var(--color-gray2)">
             Share:

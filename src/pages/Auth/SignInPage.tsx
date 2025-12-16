@@ -12,13 +12,18 @@ import type { LoginRequest } from "../../types/requests/auth.request";
 import AuthFormWrapper from "./components/AuthFormWrapper";
 import AuthTextField from "./components/AuthTextField";
 import SocialLoginButtons from "./components/SocialLoginButtons";
+import type { User } from "../../types/models/user";
 
 type SignInFormData = {
   email: string;
   password: string;
   rememberMe: boolean;
 };
-
+type ApiUserResponse = User & {
+  avatar?: {
+    url: string;
+  };
+};
 export default function SignInPage() {
   const { t } = useTranslation("auth");
   const navigate = useNavigate();
@@ -51,7 +56,20 @@ export default function SignInPage() {
       const res = await authService.login(request);
       if (res.success) {
         showSnackbar(t("signIn.loginSuccess"), "success", 3000);
-        setGlobal({ isLogin: true, user: res.data?.user || null, accessToken: res.data?.accessToken || null });
+        const apiUser = res.data?.user as ApiUserResponse | undefined;
+
+        const processedUser = apiUser
+          ? {
+              ...apiUser,
+              avatarUrl: apiUser.avatar?.url || undefined,
+            }
+          : null;
+
+        setGlobal({
+          isLogin: true,
+          user: processedUser,
+          accessToken: res.data?.accessToken || null,
+        });
 
         // Redirect to the page user was trying to access, or home
         navigate(from, { replace: true });

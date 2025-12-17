@@ -351,7 +351,6 @@ const OrderAtTable: React.FC = () => {
               onRemoveCombo={removeCombo}
               onCheckout={handleCheckout}
               loading={loading}
-              isLogin={isLogin}
             />
           </div>
         </aside>
@@ -396,7 +395,6 @@ const OrderAtTable: React.FC = () => {
                 handleCheckout();
               }}
               loading={loading}
-              isLogin={isLogin}
             />
           </div>
         </div>

@@ -10,6 +10,7 @@ export interface ProductResponse {
   createdAt: string;
   updatedAt: string;
   wishlist: boolean;
+  tags?: string[];
 }
 
 export interface CategoryResponse {
@@ -22,7 +23,7 @@ export interface ProductDetailResponse extends ProductResponse {
   status: "AVAILABLE" | "UNAVAILABLE";
   rating: number;
   reviewCount: number;
-  tags?: string[];
+  tags: string[];
 }
 export interface CartItem extends ProductResponse {
   quantity: number;

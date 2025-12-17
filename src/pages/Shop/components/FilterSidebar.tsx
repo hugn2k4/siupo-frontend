@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { memo, useEffect, useRef, useState } from "react";
+import tagApi from "../../../api/tagApi";
 import categoryService from "../../../services/categoryService";
 import productService from "../../../services/productService";
 import reviewService from "../../../services/reviewService";
@@ -52,6 +53,8 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
+  const [loadingTags, setLoadingTags] = useState(false);
 
   const prevFilterKey = useRef<string>("");
   const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${priceRange[0]}|${priceRange[1]}|${viewMode}`;
@@ -85,6 +88,25 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
     fetchCategories();
   }, []);
 
+  // Load tags from database
+  useEffect(() => {
+    const fetchTags = async () => {
+      setLoadingTags(true);
+      try {
+        const response = await tagApi.getAllTags();
+        const tagList = response.data || [];
+        setTags(tagList.map((tag) => tag.name));
+      } catch (err) {
+        console.error("Failed to load tags:", err);
+        setTags([]);
+      } finally {
+        setLoadingTags(false);
+      }
+    };
+    fetchTags();
+  }, []);
+
+  // Load
   // Load 4 sản phẩm mới nhất + rating thật
   useEffect(() => {
     const fetchLatestWithRating = async () => {
@@ -480,33 +502,43 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
         >
           Product Tags
         </Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-          {["Services", "Our Menu", "Pizza", "Burger", "Cupcake", "Cookies", "Tandoori Chicken"].map((tag) => (
-            <Typography
-              key={tag}
-              variant="body2"
-              sx={{
-                display: "inline-block",
-                px: 2,
-                py: 0.5,
-                bgcolor: selectedTag === tag ? "#FF9F0D" : "transparent",
-                color: selectedTag === tag ? "#fff" : "#4F4F4F",
-                borderBottom: selectedTag === tag ? "none" : "1px solid #F2F2F2",
-                borderRadius: 0,
-                cursor: "pointer",
-                fontSize: "0.9rem",
-                transition: "all 0.2s ease",
-                "&:hover": {
-                  color: "#FF9F0D",
-                  borderBottomColor: "#FF9F0D",
-                },
-              }}
-              onClick={() => handleTagClick(tag)}
-            >
-              {tag}
-            </Typography>
-          ))}
-        </Box>
+        {loadingTags ? (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+            <CircularProgress size={20} />
+          </Box>
+        ) : tags.length === 0 ? (
+          <Typography variant="body2" color="text.secondary" sx={{ py: 1 }}>
+            No tags available
+          </Typography>
+        ) : (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+            {tags.map((tag) => (
+              <Typography
+                key={tag}
+                variant="body2"
+                sx={{
+                  display: "inline-block",
+                  px: 2,
+                  py: 0.5,
+                  bgcolor: selectedTag === tag ? "#FF9F0D" : "transparent",
+                  color: selectedTag === tag ? "#fff" : "#4F4F4F",
+                  borderBottom: selectedTag === tag ? "none" : "1px solid #F2F2F2",
+                  borderRadius: 0,
+                  cursor: "pointer",
+                  fontSize: "0.9rem",
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    color: "#FF9F0D",
+                    borderBottomColor: "#FF9F0D",
+                  },
+                }}
+                onClick={() => handleTagClick(tag)}
+              >
+                {tag}
+              </Typography>
+            ))}
+          </Box>
+        )}
       </Box>
     </Box>
   );

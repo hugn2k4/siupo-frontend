@@ -1,5 +1,5 @@
-import type { ProductResponse } from "../../types/responses/product.response";
-import type { Combo } from "../../types/models/combo";
+import type { ProductResponse } from "../../../types/responses/product.response";
+import type { Combo } from "../../../types/models/combo";
 
 interface OrderItemProps {
   data: ProductResponse | Combo;

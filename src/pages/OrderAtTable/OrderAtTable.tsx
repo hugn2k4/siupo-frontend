@@ -2,9 +2,9 @@ import React, { useMemo, useState } from "react";
 import { useGlobal } from "../../hooks/useGlobal";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import preOrderPayment from "../../api/preOrderPayment";
-import FoodItemCard from "../../components/order/FoodItemCard";
-import ComboCard from "../../components/order/ComboCard";
-import OrderSummary from "../../components/order/OrderSummary";
+import FoodItemCard from "./components/FoodItemCard";
+import ComboCard from "./components/ComboCard";
+import OrderSummary from "./components/OrderSummary";
 import type { ProductResponse } from "../../types/responses/product.response";
 import type { Combo } from "../../types/models/combo";
 import productService from "../../services/productService";
@@ -248,9 +248,7 @@ const OrderAtTable: React.FC = () => {
 
   return (
     <div className="px-6 py-6 md:px-10 bg-gray-50 min-h-screen">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Order at Table</h1>
-      </div>
+      <div className="flex items-center justify-between mb-6"></div>
 
       {/* Search and Filter Bar */}
       <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
@@ -339,7 +337,7 @@ const OrderAtTable: React.FC = () => {
         </main>
 
         <aside className="lg:col-span-1">
-          <div className={`sticky top-6`}>
+          <div className={`sticky top-25 mt-[38px]`}>
             <OrderSummary
               items={itemsArray.map((it) => ({ data: it.data, quantity: it.quantity }))}
               combos={combosArray.map((c) => ({ data: c.data, quantity: c.quantity }))}

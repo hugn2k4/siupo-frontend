@@ -1,4 +1,4 @@
-import type { ProductResponse } from "../../types/responses/product.response";
+import type { ProductResponse } from "../../../types/responses/product.response";
 
 export default function FoodItemCard({
   item,

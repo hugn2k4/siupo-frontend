@@ -151,6 +151,14 @@ const ROUTES_META: Record<string, RouteMeta> = {
       { label: "Vouchers", labelKey: "navigation.vouchers" },
     ],
   },
+  "/order-at-table": {
+    title: "Order at Table",
+    titleKey: "Order At Table",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Order at Table", labelKey: "Order At Table" },
+    ],
+  },
 };
 
 export default ROUTES_META;

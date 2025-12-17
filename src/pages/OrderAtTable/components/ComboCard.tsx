@@ -1,4 +1,4 @@
-import type { Combo } from "../../types/models/combo";
+import type { Combo } from "../../../types/models/combo";
 
 export default function ComboCard({ combo, onAdd }: { combo: Combo; onAdd: (c: Combo) => void }) {
   const img = (combo.imageUrls && combo.imageUrls[0]) || "";

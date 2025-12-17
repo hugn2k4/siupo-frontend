@@ -2,9 +2,9 @@ import React, { useMemo, useState } from "react";
 import { useGlobal } from "../../hooks/useGlobal";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import preOrderPayment from "../../api/preOrderPayment";
-import FoodItemCard from "../../components/order/FoodItemCard";
-import ComboCard from "../../components/order/ComboCard";
-import OrderSummary from "../../components/order/OrderSummary";
+import FoodItemCard from "./components/FoodItemCard";
+import ComboCard from "./components/ComboCard";
+import OrderSummary from "./components/OrderSummary";
 import type { ProductResponse } from "../../types/responses/product.response";
 import type { Combo } from "../../types/models/combo";
 import productService from "../../services/productService";
@@ -248,9 +248,7 @@ const OrderAtTable: React.FC = () => {
 
   return (
     <div className="px-6 py-6 md:px-10 bg-gray-50 min-h-screen">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Order at Table</h1>
-      </div>
+      <div className="flex items-center justify-between mb-6"></div>
 
       {/* Search and Filter Bar */}
       <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
@@ -300,14 +298,14 @@ const OrderAtTable: React.FC = () => {
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              {cat === "all" ? "Tất cả" : cat}
+              {cat === "all" ? "All" : cat}
             </button>
           ))}
         </div>
 
         {/* Results count */}
         <div className="mt-3 text-sm text-gray-600">
-          Tìm thấy {filteredMenu.length} món ăn {filteredCombos.length > 0 && `và ${filteredCombos.length} combo`}
+          Found {filteredMenu.length} dishes {filteredCombos.length > 0 && `and ${filteredCombos.length} combos`}
         </div>
       </div>
 
@@ -327,7 +325,7 @@ const OrderAtTable: React.FC = () => {
           <section className="mb-6">
             <h3 className="text-lg font-semibold mb-3">Menu</h3>
             {filteredMenu.length === 0 ? (
-              <div className="text-center py-12 text-gray-500 bg-white rounded-lg">Không tìm thấy món ăn phù hợp</div>
+              <div className="text-center py-12 text-gray-500 bg-white rounded-lg">No matching dishes found</div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {filteredMenu.map((m) => (
@@ -339,7 +337,7 @@ const OrderAtTable: React.FC = () => {
         </main>
 
         <aside className="lg:col-span-1">
-          <div className={`sticky top-6`}>
+          <div className={`sticky top-25 mt-[38px]`}>
             <OrderSummary
               items={itemsArray.map((it) => ({ data: it.data, quantity: it.quantity }))}
               combos={combosArray.map((c) => ({ data: c.data, quantity: c.quantity }))}
@@ -359,10 +357,10 @@ const OrderAtTable: React.FC = () => {
       {/* Mobile drawer toggle + drawer */}
       <button
         className={`fixed bottom-4 right-4 z-40 md:hidden bg-amber-500 text-black px-4 py-3 rounded-full shadow-lg`}
-        aria-label="Mở tóm tắt đơn"
+        aria-label="Open order summary"
         onClick={() => setDrawerOpen(true)}
       >
-        <span className="font-semibold">Giỏ</span>
+        <span className="font-semibold">Cart</span>
         <span
           className={`ml-3 inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold ${cartPulse ? "animate-pulse" : ""}`}
         >
@@ -375,9 +373,9 @@ const OrderAtTable: React.FC = () => {
       >
         <div className="mx-4 mb-4 bg-white rounded-t-xl shadow-lg">
           <div className="p-4 flex items-center justify-between">
-            <div className="text-lg font-semibold">Tóm tắt đơn</div>
+            <div className="text-lg font-semibold">Order Summary</div>
             <button className="text-sm text-gray-600" onClick={() => setDrawerOpen(false)}>
-              Đóng
+              Close
             </button>
           </div>
           <div className="px-4 pb-6 max-h-[70vh] overflow-y-auto">

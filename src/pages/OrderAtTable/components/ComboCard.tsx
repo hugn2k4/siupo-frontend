@@ -1,4 +1,4 @@
-import type { Combo } from "../../types/models/combo";
+import type { Combo } from "../../../types/models/combo";
 
 export default function ComboCard({ combo, onAdd }: { combo: Combo; onAdd: (c: Combo) => void }) {
   const img = (combo.imageUrls && combo.imageUrls[0]) || "";
@@ -14,7 +14,7 @@ export default function ComboCard({ combo, onAdd }: { combo: Combo; onAdd: (c: C
       <div className="p-4 flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
           <div className="text-sm font-semibold text-gray-900">{combo.name}</div>
-          <div className="text-sm font-extrabold text-amber-600">{(combo.basePrice || 0).toLocaleString()} đ</div>
+          <div className="text-sm font-extrabold text-amber-600">${(combo.basePrice || 0).toLocaleString()}</div>
         </div>
         <div className="text-xs text-gray-600 line-clamp-2">{combo.description}</div>
         <div className="mt-2 flex justify-between items-center">
@@ -23,7 +23,7 @@ export default function ComboCard({ combo, onAdd }: { combo: Combo; onAdd: (c: C
             onClick={() => onAdd(combo)}
             className="px-4 py-2 bg-amber-500 text-black rounded-md font-semibold shadow-sm hover:opacity-95 transition"
           >
-            + Thêm
+            + Add
           </button>
         </div>
       </div>

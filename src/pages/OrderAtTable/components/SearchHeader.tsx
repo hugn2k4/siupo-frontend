@@ -18,7 +18,7 @@ export default function SearchHeader({ value, onChange, categories, activeCatego
           <input
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="Tìm món, ví dụ: Burger, Pizza..."
+            placeholder="Search for dishes, e.g: Burger, Pizza..."
             className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm"
           />
         </div>
@@ -31,7 +31,7 @@ export default function SearchHeader({ value, onChange, categories, activeCatego
                 activeCategory === null ? "bg-primary text-white shadow" : "bg-gray-100 text-gray-700"
               }`}
             >
-              Tất cả
+              All
             </button>
 
             {categories.map((c) => (

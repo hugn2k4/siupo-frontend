@@ -1,4 +1,3 @@
-import React from "react";
 import type { ProductResponse } from "../../types/responses/product.response";
 import type { Combo } from "../../types/models/combo";
 
@@ -11,7 +10,13 @@ interface OrderItemProps {
   thumbnail?: string;
 }
 
+const isCombo = (data: ProductResponse | Combo): data is Combo => {
+  return "basePrice" in data;
+};
+
 export default function OrderItem({ data, quantity, onIncrease, onDecrease, onRemove, thumbnail }: OrderItemProps) {
+  const price = isCombo(data) ? data.basePrice : data.price;
+
   return (
     <div className="flex items-center justify-between gap-3 p-3 rounded-md border border-gray-100 bg-white">
       <div className="flex items-center gap-3 flex-1">
@@ -22,7 +27,7 @@ export default function OrderItem({ data, quantity, onIncrease, onDecrease, onRe
         )}
         <div>
           <div className="font-semibold text-sm text-gray-900">{data.name}</div>
-          <div className="text-xs text-gray-500">{(data.price || data.basePrice || 0).toLocaleString()} đ</div>
+          <div className="text-xs text-gray-500">{(price || 0).toLocaleString()} đ</div>
         </div>
       </div>
       <div className="flex items-center gap-2">

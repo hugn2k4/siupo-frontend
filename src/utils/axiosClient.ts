@@ -138,8 +138,15 @@ axiosClient.interceptors.response.use(
       }
     }
 
-    // Log error with request ID
-    logger.error(`❌ [${reqId}] ${error.response?.status || "ERR"} ${error.config?.url || "Unknown"}`);
+    // Log error with request ID and detailed info
+    const errorInfo = {
+      url: error.config?.url,
+      method: error.config?.method?.toUpperCase(),
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message,
+    };
+    logger.error(`❌ [${reqId}] ${error.response?.status || "ERR"} ${error.config?.url || "Unknown"}`, errorInfo);
 
     return Promise.reject(error);
   }

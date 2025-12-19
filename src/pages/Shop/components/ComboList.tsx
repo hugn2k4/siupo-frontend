@@ -2,47 +2,29 @@ import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Box, Button, Divider, Skeleton, Stack, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { useState } from "react";
 import imageDefault from "../../../assets/gallery/gallery_burger.png";
 import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import cartService from "../../../services/cartService";
-import comboService from "../../../services/comboService";
 import type { ComboResponse } from "../../../types/responses/combo.response";
 import { formatCurrency } from "../../../utils/format";
 import ComboDetailDialog from "./ComboDetailDialog";
 
 const fallbackImage = imageDefault;
 
-const ComboList = () => {
-  const [combos, setCombos] = useState<ComboResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+interface ComboListProps {
+  combos: ComboResponse[];
+}
+
+const ComboList = ({ combos }: ComboListProps) => {
   const [selectedCombo, setSelectedCombo] = useState<ComboResponse | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const { showSnackbar } = useSnackbar();
   const { isLogin } = useGlobal();
   const [showLoginDialog, setShowLoginDialog] = useState(false);
-
-  useEffect(() => {
-    const fetchCombos = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await comboService.getAvailableCombos();
-        setCombos(res.data || []);
-      } catch (err) {
-        console.error(err);
-        setError("Không tải được combo. Vui lòng thử lại.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCombos();
-  }, []);
 
   const handleAddToCart = async (combo: ComboResponse) => {
     if (!isLogin) {
@@ -68,59 +50,7 @@ const ComboList = () => {
     setTimeout(() => setSelectedCombo(null), 300); // Clear after animation
   };
 
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" },
-          gap: 2,
-          mt: 2,
-          minHeight: "1000px",
-        }}
-      >
-        {Array.from({ length: 6 }).map((_, idx) => (
-          <Box
-            key={idx}
-            sx={{
-              width: "100%",
-              height: "auto",
-              mx: "auto",
-              bgcolor: "#fff",
-              borderRadius: 0,
-              overflow: "hidden",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-            }}
-          >
-            <Skeleton variant="rectangular" width="100%" height={200} animation="wave" />
-            <Box sx={{ p: 2 }}>
-              <Skeleton width="80%" height={28} sx={{ mb: 1 }} />
-              <Skeleton width="100%" height={20} sx={{ mb: 0.5 }} />
-              <Skeleton width="90%" height={20} sx={{ mb: 2 }} />
-              <Stack spacing={1} mb={2}>
-                <Skeleton width="70%" height={20} />
-                <Skeleton width="70%" height={20} />
-              </Stack>
-              <Stack direction="row" spacing={2} mt="auto">
-                <Skeleton width="50%" height={36} sx={{ borderRadius: 0 }} />
-                <Skeleton width="50%" height={36} sx={{ borderRadius: 0 }} />
-              </Stack>
-            </Box>
-          </Box>
-        ))}
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box textAlign="center" py={8} color="error.main" fontWeight={600}>
-        {error}
-      </Box>
-    );
-  }
-
-  if (combos.length === 0) {
+  if (!combos || combos.length === 0) {
     return (
       <Box textAlign="center" py={8} color="text.secondary">
         <Typography variant="h6">Hiện chưa có combo nào.</Typography>

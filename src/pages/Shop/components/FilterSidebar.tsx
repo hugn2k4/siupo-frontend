@@ -1,10 +1,7 @@
-// src/components/FilterSidebar.tsx
-
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Checkbox,
-  CircularProgress,
   FormControlLabel,
   FormGroup,
   IconButton,
@@ -18,20 +15,9 @@ import {
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { memo, useEffect, useRef, useState } from "react";
-import tagApi from "../../../api/tagApi";
-import categoryService from "../../../services/categoryService";
-import productService from "../../../services/productService";
-import reviewService from "../../../services/reviewService";
+import type { TagResponse } from "../../../api/tagApi";
 import type { CategoryResponse } from "../../../types/responses/category.response";
-import type { ProductResponse } from "../../../types/responses/product.response";
-import type { ReviewResponse } from "../../../types/responses/review.response";
-
-// Dùng để mở rộng ProductResponse thêm rating + reviewCount
-interface LatestProductWithRating extends ProductResponse {
-  rating: number;
-  reviewCount: number;
-}
-
+import type { ProductWithRatingResponse } from "../../../types/responses/product.response";
 interface FilterSidebarProps {
   onFilterChange: (filters: {
     searchName: string | null;
@@ -40,21 +26,17 @@ interface FilterSidebarProps {
     maxPrice: number;
     viewMode: "all" | "products" | "combos";
   }) => void;
+  categories: CategoryResponse[];
+  tags: TagResponse[];
+  latestProducts: ProductWithRatingResponse[];
 }
 
-const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
+const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }: FilterSidebarProps) => {
   const [searchName, setSearchName] = useState<string | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [priceRange, setPriceRange] = useState<number[]>([0, 200]);
   const [viewMode, setViewMode] = useState<"all" | "products" | "combos">("all");
-  const [categories, setCategories] = useState<CategoryResponse[]>([]);
-  const [latestProducts, setLatestProducts] = useState<LatestProductWithRating[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(false);
-  const [loadingProducts, setLoadingProducts] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [tags, setTags] = useState<string[]>([]);
-  const [loadingTags, setLoadingTags] = useState(false);
 
   const prevFilterKey = useRef<string>("");
   const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${priceRange[0]}|${priceRange[1]}|${viewMode}`;
@@ -71,80 +53,6 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
       });
     }
   }, [currentFilterKey, onFilterChange, searchName, selectedCategories, priceRange, viewMode]);
-
-  // Load categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      setLoadingCategories(true);
-      try {
-        const result = await categoryService.getCategories();
-        setCategories(result.categories || []);
-      } catch {
-        setError("Failed to load categories");
-      } finally {
-        setLoadingCategories(false);
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  // Load tags from database
-  useEffect(() => {
-    const fetchTags = async () => {
-      setLoadingTags(true);
-      try {
-        const response = await tagApi.getAllTags();
-        const tagList = response.data || [];
-        setTags(tagList.map((tag) => tag.name));
-      } catch (err) {
-        console.error("Failed to load tags:", err);
-        setTags([]);
-      } finally {
-        setLoadingTags(false);
-      }
-    };
-    fetchTags();
-  }, []);
-
-  // Load
-  // Load 4 sản phẩm mới nhất + rating thật
-  useEffect(() => {
-    const fetchLatestWithRating = async () => {
-      setLoadingProducts(true);
-      try {
-        const res = await productService.getProducts(0, 4, "id,desc");
-        const products = res.products || [];
-
-        const productsWithRating: LatestProductWithRating[] = await Promise.all(
-          products.map(async (product) => {
-            try {
-              const reviewRes = await reviewService.getProductReviews(product.id);
-              const reviews: ReviewResponse[] = reviewRes.data || [];
-
-              const avgRating = reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
-
-              return {
-                ...product,
-                rating: Number(avgRating.toFixed(1)),
-                reviewCount: reviews.length,
-              };
-            } catch {
-              return { ...product, rating: 0, reviewCount: 0 };
-            }
-          })
-        );
-
-        setLatestProducts(productsWithRating);
-      } catch (err) {
-        console.error("Load latest products failed:", err);
-        setLatestProducts([]);
-      } finally {
-        setLoadingProducts(false);
-      }
-    };
-
-    fetchLatestWithRating();
-  }, []);
 
   const handleSearch = () => {
     onFilterChange({
@@ -166,8 +74,8 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
     setPriceRange(newValue as number[]);
   };
 
-  const handleTagClick = (tag: string) => {
-    setSelectedTag((prev) => (prev === tag ? null : tag));
+  const handleTagClick = (tagName: string) => {
+    setSelectedTag((prev) => (prev === tagName ? null : tagName));
   };
 
   return (
@@ -180,8 +88,6 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
       sx={{
         mt: { md: "75px", xs: 0 },
         mb: 12,
-        // Thay bằng:
-        // mt: 0,
         padding: 3,
         bgcolor: "#fff",
         border: "1px solid #e0e0e0",
@@ -264,48 +170,44 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
         >
           Category
         </Typography>
-        {loadingCategories && <Typography>Loading categories...</Typography>}
-        {error && <Typography color="error">{error}</Typography>}
-        {!loadingCategories && !error && (
-          <FormGroup
-            sx={{
-              "& .MuiFormControlLabel-root": {
-                marginBottom: "4px",
-                marginLeft: -1,
-                marginRight: 0,
-              },
-              "& .MuiFormControlLabel-label": {
-                fontSize: "0.85rem",
-                marginLeft: "2px",
-              },
-            }}
-          >
-            {categories.map((category) => (
-              <FormControlLabel
-                key={category.id}
-                control={
-                  <Checkbox
-                    checked={selectedCategories.includes(category.id)}
-                    onChange={() => handleCategoryChange(category.id)}
-                    sx={{
-                      transform: "scale(0.85)",
-                      padding: "4px",
-                      "& .MuiSvgIcon-root": { fontSize: 18 },
-                      "&.Mui-checked": { color: "#FF9F0D" },
-                      "& .MuiTouchRipple-root": { display: "none" },
-                      "& .MuiCheckbox-root": {
-                        borderRadius: 1,
-                        "&:not(.Mui-checked)": { border: "1.5px solid #ccc" },
-                        "&.Mui-checked": { border: "1.5px solid #FF9F0D", bgcolor: "transparent" },
-                      },
-                    }}
-                  />
-                }
-                label={category.name}
-              />
-            ))}
-          </FormGroup>
-        )}
+        <FormGroup
+          sx={{
+            "& .MuiFormControlLabel-root": {
+              marginBottom: "4px",
+              marginLeft: -1,
+              marginRight: 0,
+            },
+            "& .MuiFormControlLabel-label": {
+              fontSize: "0.85rem",
+              marginLeft: "2px",
+            },
+          }}
+        >
+          {categories.map((category) => (
+            <FormControlLabel
+              key={category.id}
+              control={
+                <Checkbox
+                  checked={selectedCategories.includes(category.id)}
+                  onChange={() => handleCategoryChange(category.id)}
+                  sx={{
+                    transform: "scale(0.85)",
+                    padding: "4px",
+                    "& .MuiSvgIcon-root": { fontSize: 18 },
+                    "&.Mui-checked": { color: "#FF9F0D" },
+                    "& .MuiTouchRipple-root": { display: "none" },
+                    "& .MuiCheckbox-root": {
+                      borderRadius: 1,
+                      "&:not(.Mui-checked)": { border: "1.5px solid #ccc" },
+                      "&.Mui-checked": { border: "1.5px solid #FF9F0D", bgcolor: "transparent" },
+                    },
+                  }}
+                />
+              }
+              label={category.name}
+            />
+          ))}
+        </FormGroup>
       </Box>
 
       {/* Poster */}
@@ -384,31 +286,9 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
             </span>
           </Typography>
         </Box>
-        <Box
-          sx={{
-            mt: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography
-            component="button"
-            onClick={() => {}} // Add filter logic if needed
-            sx={{
-              border: "none",
-              bgcolor: "transparent",
-              color: "#666",
-              fontSize: "0.9rem",
-              cursor: "pointer",
-              "&:hover": { color: "#FF9F0D" },
-            }}
-          >
-            Filter
-          </Typography>
-        </Box>
       </Box>
 
+      {/* Latest Products */}
       <Box sx={{ mb: 2, p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
@@ -422,12 +302,6 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
         >
           Latest Products
         </Typography>
-
-        {loadingProducts && (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
-            <CircularProgress size={20} />
-          </Box>
-        )}
 
         {latestProducts.map((item) => (
           <Box
@@ -474,7 +348,7 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
               </Typography>
               <Rating
                 name={`rating-${item.id}`}
-                value={item.rating}
+                value={item.averageRating}
                 precision={0.1}
                 readOnly
                 size="small"
@@ -502,11 +376,7 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
         >
           Product Tags
         </Typography>
-        {loadingTags ? (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
-            <CircularProgress size={20} />
-          </Box>
-        ) : tags.length === 0 ? (
+        {tags.length === 0 ? (
           <Typography variant="body2" color="text.secondary" sx={{ py: 1 }}>
             No tags available
           </Typography>
@@ -514,15 +384,15 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
             {tags.map((tag) => (
               <Typography
-                key={tag}
+                key={tag.name}
                 variant="body2"
                 sx={{
                   display: "inline-block",
                   px: 2,
                   py: 0.5,
-                  bgcolor: selectedTag === tag ? "#FF9F0D" : "transparent",
-                  color: selectedTag === tag ? "#fff" : "#4F4F4F",
-                  borderBottom: selectedTag === tag ? "none" : "1px solid #F2F2F2",
+                  bgcolor: selectedTag === tag.name ? "#FF9F0D" : "transparent",
+                  color: selectedTag === tag.name ? "#fff" : "#4F4F4F",
+                  borderBottom: selectedTag === tag.name ? "none" : "1px solid #F2F2F2",
                   borderRadius: 0,
                   cursor: "pointer",
                   fontSize: "0.9rem",
@@ -532,9 +402,9 @@ const FilterSidebar = memo(({ onFilterChange }: FilterSidebarProps) => {
                     borderBottomColor: "#FF9F0D",
                   },
                 }}
-                onClick={() => handleTagClick(tag)}
+                onClick={() => handleTagClick(tag.name)}
               >
-                {tag}
+                {tag.name}
               </Typography>
             ))}
           </Box>

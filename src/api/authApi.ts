@@ -22,7 +22,7 @@ const authApi = {
 
   refreshToken: (): Promise<LoginResponse> => axiosClient.post("/auth/refresh-token").then((response) => response.data),
 
-  logout: (): Promise<ApiResponse> => axiosClient.post("/api/logout").then((response) => response.data),
+  logout: (): Promise<ApiResponse> => axiosClient.post("/auth/logout").then((response) => response.data),
 
   requestForgotPassword: (email: string): Promise<ApiResponse> =>
     axiosClient.post("/auth/request-forgot-password", null, { params: { email } }).then((response) => response.data),

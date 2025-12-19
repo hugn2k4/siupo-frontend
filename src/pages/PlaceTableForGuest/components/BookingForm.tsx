@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { bookingApi } from "../../../api/bookingApi";
-import type { CartItem } from "../../../types/responses/product.response";
-import PersonIcon from "@mui/icons-material/Person";
-import PhoneIcon from "@mui/icons-material/Phone";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import EmailIcon from "@mui/icons-material/Email";
 import GroupIcon from "@mui/icons-material/Group";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import NoteIcon from "@mui/icons-material/Note";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PersonIcon from "@mui/icons-material/Person";
+import PhoneIcon from "@mui/icons-material/Phone";
+import React, { useEffect, useState } from "react";
+import { bookingApi } from "../../../api/bookingApi";
+import type { CartItem } from "../../../types/responses/product.response";
 
 interface BookingFormProps {
   preOrderItems?: CartItem[];
@@ -90,8 +90,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
 
     const hour = selectedTime.getHours();
 
-    if (hour < 8 || hour >= 22) {
-      return "Booking time must be within operating hours (8:00 AM - 10:00 PM)";
+    if (hour >= 2 && hour < 10) {
+      return "Booking time must be within operating hours (10:00 AM - 02:00 AM)";
     }
 
     const minimumTime = new Date(now.getTime() + 60 * 60 * 1000);
@@ -372,7 +372,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ preOrderItems = [] }) => {
                 />
               </div>
               {errors.startedAt && <p className="mt-1 text-sm text-red-600">{errors.startedAt}</p>}
-              <p className="mt-1 text-xs text-gray-500">Operating hours: 8:00 AM - 10:00 PM</p>
+              <p className="mt-1 text-xs text-gray-500">Operating hours: 10:00 AM - 2:00 AM</p>
             </div>
           </div>
 

@@ -1,9 +1,9 @@
 // src/Account/components/ChangePassword.tsx
 
-import React, { useState, useEffect } from "react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import userApi from "../../../api/userApi";
 import { useSnackbar } from "../../../hooks/useSnackbar";
-import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
 type ChangePasswordRequest = {
   oldPassword: string;
@@ -43,15 +43,15 @@ export default function ChangePassword() {
 
     // Current password
     if (currentPassword && currentPassword.length < 1) {
-      err.current = "Vui lòng nhập mật khẩu hiện tại";
+      err.current = "Please enter your current password";
     }
 
     // New password
     if (newPassword) {
       if (newPassword.length < 6) {
-        err.new = "Mật khẩu phải ít nhất 6 ký tự";
+        err.new = "Password must be at least 6 characters";
       } else if (newPassword === currentPassword) {
-        err.new = "Mật khẩu mới phải khác mật khẩu cũ";
+        err.new = "New password must be different from the current password";
       }
     }
 
@@ -79,7 +79,7 @@ export default function ChangePassword() {
     try {
       setLoading(true);
       await userApi.changePassword(payload);
-      showSnackbar("Đổi mật khẩu thành công!", "success");
+      showSnackbar("Password changed successfully!", "success");
 
       // Reset form
       setCurrentPassword("");
@@ -90,7 +90,7 @@ export default function ChangePassword() {
       setShowConfirm(false);
       setErrors({ current: "", new: "", confirm: "" });
     } catch (error: unknown) {
-      let msg = "Đổi mật khẩu thất bại";
+      let msg = "Password change failed";
 
       if (error && typeof error === "object" && "response" in error) {
         const err = error as { response?: { data?: { message?: string } } };
@@ -131,7 +131,7 @@ export default function ChangePassword() {
                 color: "#666666",
               } as React.CSSProperties
             }
-            placeholder="Nhập mật khẩu hiện tại"
+            placeholder="Current Password"
             disabled={loading}
           />
           <button
@@ -172,7 +172,7 @@ export default function ChangePassword() {
                   color: "#666666",
                 } as React.CSSProperties
               }
-              placeholder="Mật khẩu mới"
+              placeholder="New Password"
               disabled={loading}
             />
             <button
@@ -211,7 +211,7 @@ export default function ChangePassword() {
                   color: "#666666",
                 } as React.CSSProperties
               }
-              placeholder="Xác nhận mật khẩu"
+              placeholder="Confirm New Password"
               disabled={loading}
             />
             <button
@@ -240,7 +240,7 @@ export default function ChangePassword() {
           onMouseEnter={(e) => !isDisabled && (e.currentTarget.style.backgroundColor = "#ec8e00")}
           onMouseLeave={(e) => !isDisabled && (e.currentTarget.style.backgroundColor = "#FF9F0D")}
         >
-          {loading ? "Đang xử lý..." : "Change Password"}
+          {loading ? "Processing..." : "Change Password"}
         </button>
       </div>
     </div>

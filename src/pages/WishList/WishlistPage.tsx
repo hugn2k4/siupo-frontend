@@ -1,15 +1,16 @@
 // src/Account/pages/WishlistPage.tsx
 import { AxiosError } from "axios";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { wishlistApi } from "../../api/wishListApi";
+import { useSnackbar } from "../../hooks/useSnackbar";
+import cartService from "../../services/cartService";
+import type { WishlistResponse } from "../../types/models/wishlist";
 import Sidebar from "../Account/components/Sidebar";
+import ConfirmModal from "../WishList/components/ConfirmModal";
+import WishlistEmpty from "../WishList/components/WishlistEmpty";
 import WishlistHeader from "../WishList/components/WishlistHeader";
 import WishlistItem from "../WishList/components/WishlistItem";
-import WishlistEmpty from "../WishList/components/WishlistEmpty";
-import ConfirmModal from "../WishList/components/ConfirmModal";
 import WishlistLoading from "../WishList/components/WishlistLoading";
-import { wishlistApi } from "../../api/wishListApi";
-import type { WishlistResponse } from "../../types/models/wishlist";
-import { useSnackbar } from "../../hooks/useSnackbar";
 
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState<WishlistResponse | null>(null);
@@ -68,9 +69,13 @@ export default function WishlistPage() {
   };
 
   const handleAddToCart = async (productId: number) => {
-    // TODO: Implement add to cart logic
-    showSnackbar("Add to cart feature coming soon", "info");
-    console.log("Add to cart:", productId);
+    try {
+      await cartService.addToCart({ productId: productId, quantity: 1 });
+      showSnackbar("Product added to cart!", "success", 3000);
+    } catch (error) {
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      showSnackbar("Failed to add product to cart!", "error", 3000);
+    }
   };
 
   return (
@@ -95,7 +100,7 @@ export default function WishlistPage() {
 
                 {/* Wishlist Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {wishlist.items.map((item) => (
+                  {wishlist.items?.map((item) => (
                     <WishlistItem key={item.id} item={item} onRemove={handleRemoveItem} onAddToCart={handleAddToCart} />
                   ))}
                 </div>

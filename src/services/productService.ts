@@ -1,6 +1,6 @@
 import productApi from "../api/productApi";
 import type { ApiResponse } from "../types/responses/api.response";
-import type { PageResponse, ProductResponse, ProductDetailResponse } from "../types/responses/product.response";
+import type { PageResponse, ProductDetailResponse, ProductResponse } from "../types/responses/product.response";
 
 interface ProductServiceResponse {
   products: ProductResponse[];
@@ -46,7 +46,6 @@ const productService = {
     sortBy: string
   ): Promise<ProductServiceResponse> => {
     try {
-      console.log("searchProducts params:", { name, categoryIds, minPrice, maxPrice, page, size, sortBy });
       const response: ApiResponse<PageResponse<ProductResponse>> = await productApi.searchProducts(
         name,
         categoryIds,
@@ -56,7 +55,6 @@ const productService = {
         size,
         sortBy
       );
-      console.log("searchProducts response:", response);
       if (response.success && response.data && response.data.content) {
         return {
           products: response.data.content,
@@ -82,7 +80,6 @@ const productService = {
   getProductById: async (id: number): Promise<ProductDetailServiceResponse> => {
     try {
       const response: ApiResponse<ProductDetailResponse> = await productApi.getProductById(id);
-      console.log("getProductById response:", response); // Debug
       if (response.success && response.data) {
         return {
           product: response.data,

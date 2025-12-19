@@ -13,7 +13,4 @@ export const wishlistApi = {
     axiosClient.delete(`${API_URL}/items/${productId}`).then((res) => res.data),
 
   clearWishlist: (): Promise<{ message: string }> => axiosClient.delete(`${API_URL}/items`).then((res) => res.data),
-
-  checkProductInWishlist: (productId: number): Promise<boolean> =>
-    axiosClient.get(`${API_URL}/check/${productId}`).then((res) => res.data.isInWishlist),
 };

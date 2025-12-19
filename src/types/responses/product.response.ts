@@ -48,3 +48,8 @@ export interface PageResponse<T> {
   first: boolean;
   empty: boolean;
 }
+
+export interface ProductWithRatingResponse extends ProductResponse {
+  averageRating: number;
+  reviewCount: number;
+}

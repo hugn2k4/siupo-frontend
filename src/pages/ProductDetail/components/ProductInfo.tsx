@@ -24,8 +24,7 @@ interface ProductInfoProps {
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
-  const [isInWishlist, setIsInWishlist] = useState(false);
-  const [isCheckingWishlist, setIsCheckingWishlist] = useState(true);
+  const [isInWishlist, setIsInWishlist] = useState(product?.wishlist || false);
 
   // State cho reviews
   const [averageRating, setAverageRating] = useState(0);
@@ -44,7 +43,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       if (!product?.id) return;
-
       try {
         setLoadingReviews(true);
         const response = await reviewApi.getProductReviews(product.id);
@@ -74,30 +72,13 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
     fetchReviews();
   }, [product?.id]);
 
-  // Check if product is in wishlist when component mounts or login status changes
   useEffect(() => {
     const checkWishlistStatus = async () => {
       if (!isLogin || !product?.id) {
         setIsInWishlist(false);
-        setIsCheckingWishlist(false);
         return;
       }
-
-      try {
-        setIsCheckingWishlist(true);
-        const wishlist = await wishlistApi.getWishlist();
-        const isProductInWishlist = wishlist?.items?.some(
-          (item: { productId: number }) => item.productId === product.id
-        );
-        setIsInWishlist(isProductInWishlist || false);
-      } catch (error) {
-        console.error("Error checking wishlist status:", error);
-        setIsInWishlist(false);
-      } finally {
-        setIsCheckingWishlist(false);
-      }
     };
-
     checkWishlistStatus();
   }, [isLogin, product?.id]);
 
@@ -320,7 +301,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             startIcon={isInWishlist ? <FavoriteIcon sx={{ color: "red" }} /> : <FavoriteBorderOutlinedIcon />}
             variant="text"
             onClick={handleToggleWishlist}
-            disabled={isCheckingWishlist}
             sx={{
               fontWeight: 400,
               textTransform: "none",

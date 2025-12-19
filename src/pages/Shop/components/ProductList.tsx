@@ -1,6 +1,6 @@
 import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import imageDefault from "../../../assets/gallery/gallery_burger.png";
 import productService from "../../../services/productService";
@@ -24,6 +24,7 @@ interface ProductListProps {
   categoryIds: number[];
   minPrice: number;
   maxPrice: number;
+  initialProducts?: ProductResponse[];
 }
 
 const isNewProduct = (createdAt: string): boolean => {
@@ -33,11 +34,11 @@ const isNewProduct = (createdAt: string): boolean => {
   return diffInDays <= 7;
 };
 
-const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductListProps) => {
+const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initialProducts }: ProductListProps) => {
   const [sortBy, setSortBy] = useState("id,asc");
   const [showCount, setShowCount] = useState(15);
   const [currentPage, setCurrentPage] = useState(0);
-  const [products, setProducts] = useState<ProductResponse[]>([]);
+  const [products, setProducts] = useState<ProductResponse[]>(initialProducts || []);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +47,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
   const [isParentHovered, setIsParentHovered] = useState(false);
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const mapSortBy = (uiSort: string): string => {
     switch (uiSort) {
@@ -76,8 +78,45 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
     }
   };
 
+  // Sử dụng initialProducts khi có và chưa có filter
   useEffect(() => {
+    // Nếu có initialProducts và chưa có filter gì, dùng luôn không cần fetch
+    if (
+      isInitialLoad &&
+      initialProducts &&
+      initialProducts.length > 0 &&
+      !searchName &&
+      categoryIds.length === 0 &&
+      minPrice === 0 &&
+      maxPrice === 1000000 &&
+      currentPage === 0 &&
+      sortBy === "id,asc" &&
+      showCount === 15
+    ) {
+      setIsInitialLoad(false);
+      // Không set totalPages vì không biết tổng số, sẽ fetch khi user thao tác
+      return;
+    }
+
+    // Nếu chưa có filter gì (default state) và isInitialLoad = false, không fetch
+    if (
+      !isInitialLoad &&
+      !searchName &&
+      categoryIds.length === 0 &&
+      minPrice === 0 &&
+      maxPrice === 1000000 &&
+      currentPage === 0 &&
+      sortBy === "id,asc" &&
+      showCount === 15 &&
+      initialProducts &&
+      initialProducts.length > 0
+    ) {
+      return; // Đã có data từ initialProducts, không cần fetch
+    }
+
+    // Chỉ fetch khi có filter hoặc user thay đổi pagination/sort
     const fetchProducts = async () => {
+      setIsInitialLoad(false);
       setLoading(true);
       setError(null);
       try {
@@ -96,7 +135,6 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
           result = await productService.getProducts(currentPage, mapShowCount(showCount), mapSortBy(sortBy));
         }
 
-        // Sử dụng trực tiếp thuộc tính wishlist từ backend
         setProducts(result.products);
         setTotalPages(result.totalPages);
 
@@ -110,7 +148,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       }
     };
     fetchProducts();
-  }, [currentPage, sortBy, showCount, searchName, categoryIds, minPrice, maxPrice]);
+  }, [currentPage, sortBy, showCount, searchName, categoryIds, minPrice, maxPrice, initialProducts, isInitialLoad]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -529,6 +567,8 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       <LoginRequiredDialog open={showLoginDialog} onClose={() => setShowLoginDialog(false)} />
     </Box>
   );
-};
+});
+
+ProductList.displayName = "ProductList";
 
 export default ProductList;

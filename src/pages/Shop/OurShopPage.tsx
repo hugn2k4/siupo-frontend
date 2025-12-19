@@ -1,8 +1,10 @@
 // src/pages/OurShopPage.tsx
 import FilterListIcon from "@mui/icons-material/FilterList";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import { Box, Drawer, IconButton, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { Box, CircularProgress, Drawer, IconButton, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import pageService from "../../services/pageService";
+import type { ShopInitialDataResponse } from "../../types/responses/shop.response";
 import ComboList from "./components/ComboList";
 import FilterSidebar from "./components/FilterSidebar";
 import ProductList from "./components/ProductList";
@@ -16,6 +18,10 @@ interface FilterState {
 }
 
 function OurShopPage() {
+  const [initialData, setInitialData] = useState<ShopInitialDataResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [filters, setFilters] = useState<FilterState>({
     searchName: null,
     categoryIds: [],
@@ -28,6 +34,24 @@ function OurShopPage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
+  // Load tất cả data ban đầu 1 lần
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await pageService.getShopInitialData();
+        setInitialData(data);
+      } catch (err) {
+        console.error("Failed to load shop data:", err);
+        setError("Failed to load shop data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInitialData();
+  }, []);
+
   const prevFiltersRef = useRef<string>("");
 
   const productListProps = useMemo(
@@ -36,8 +60,9 @@ function OurShopPage() {
       categoryIds: filters.categoryIds,
       minPrice: filters.minPrice,
       maxPrice: filters.maxPrice,
+      initialProducts: initialData?.products,
     }),
-    [filters.searchName, filters.categoryIds, filters.minPrice, filters.maxPrice]
+    [filters.searchName, filters.categoryIds, filters.minPrice, filters.maxPrice, initialData?.products]
   );
 
   const handleFilterChange = useCallback(
@@ -52,6 +77,29 @@ function OurShopPage() {
   );
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+
+  // Loading state
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+        <CircularProgress sx={{ color: "#FF9F0D" }} size={60} />
+      </Box>
+    );
+  }
+
+  // Error state
+  if (error || !initialData) {
+    return (
+      <Box sx={{ textAlign: "center", py: 8 }}>
+        <Typography variant="h6" color="error" mb={2}>
+          {error || "Failed to load shop data"}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Please refresh the page or try again later.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -98,7 +146,7 @@ function OurShopPage() {
                     Hot Combos & Specials!
                   </Typography>
                 </Stack>
-                <ComboList />
+                <ComboList combos={initialData.combos} />
               </Box>
             )}
 
@@ -116,7 +164,12 @@ function OurShopPage() {
           {/* Sidebar (Right) */}
           {!isMobile && (
             <Box width={280} flexShrink={0} sx={{ position: "sticky", top: 24 }}>
-              <FilterSidebar onFilterChange={handleFilterChange} />
+              <FilterSidebar
+                onFilterChange={handleFilterChange}
+                categories={initialData.categories}
+                tags={initialData.tags}
+                latestProducts={initialData.latestProducts}
+              />
             </Box>
           )}
         </Stack>
@@ -131,7 +184,12 @@ function OurShopPage() {
         sx={{ "& .MuiDrawer-paper": { width: 320, boxSizing: "border-box" } }}
       >
         <Box sx={{ width: 320, p: 3, pt: 6 }}>
-          <FilterSidebar onFilterChange={handleFilterChange} />
+          <FilterSidebar
+            onFilterChange={handleFilterChange}
+            categories={initialData.categories}
+            tags={initialData.tags}
+            latestProducts={initialData.latestProducts}
+          />
         </Box>
       </Drawer>
     </>

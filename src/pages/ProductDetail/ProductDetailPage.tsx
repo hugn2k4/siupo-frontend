@@ -25,16 +25,12 @@ const ProductDetailPage: React.FC = () => {
       setError(null);
       try {
         const response = await productService.getProductById(Number(productId));
-        console.log("ShopDetailPage response:", response); // Debug
         if (response.product) {
           setProduct(response.product);
         } else {
           setError(response.error || "Không tìm thấy sản phẩm.");
         }
       } catch (err: unknown) {
-        // dùng unknown
-        console.error("Lỗi khi lấy chi tiết sản phẩm:", err);
-        // Check type an toàn trước khi truy cập message
         if (err instanceof Error) {
           setError(err.message || "Không thể tải sản phẩm. Vui lòng thử lại.");
         } else {

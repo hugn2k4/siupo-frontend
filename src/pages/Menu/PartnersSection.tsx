@@ -1,12 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 
-import partner1 from "../assets/images/image_partner_1.png";
-import partner2 from "../assets/images/image_partner_2.png";
-import partner3 from "../assets/images/image_partner_3.png";
-import partner4 from "../assets/images/image_partner_4.png";
-import partner5 from "../assets/images/image_partner_5.png";
-import partner6 from "../assets/images/image_partner_6.png";
+import partner1 from "../../assets/images/image_partner_1.png";
+import partner2 from "../../assets/images/image_partner_2.png";
+import partner3 from "../../assets/images/image_partner_3.png";
+import partner4 from "../../assets/images/image_partner_4.png";
+import partner5 from "../../assets/images/image_partner_5.png";
+import partner6 from "../../assets/images/image_partner_6.png";
 
 const partners = [
   { image: partner1 },

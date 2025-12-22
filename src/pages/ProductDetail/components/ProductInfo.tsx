@@ -1,21 +1,21 @@
 import AddIcon from "@mui/icons-material/Add";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Avatar, Box, Button, Divider, Rating, Stack, Typography } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaFacebookF, FaInstagram, FaTwitter, FaVk, FaYoutube } from "react-icons/fa";
+import reviewApi from "../../../api/reviewApi";
+import { wishlistApi } from "../../../api/wishListApi";
 import MyButton from "../../../components/common/Button";
 import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
 import cartService from "../../../services/cartService";
-import reviewApi from "../../../api/reviewApi";
 import { EProductStatus } from "../../../types/enums/product.enum";
 import type { ProductDetailResponse } from "../../../types/responses/product.response";
-import { wishlistApi } from "../../../api/wishListApi";
 
 interface ProductInfoProps {
   product: ProductDetailResponse;
@@ -24,8 +24,7 @@ interface ProductInfoProps {
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
-  const [isInWishlist, setIsInWishlist] = useState(false);
-  const [isCheckingWishlist, setIsCheckingWishlist] = useState(true);
+  const [isInWishlist, setIsInWishlist] = useState(product?.wishlist || false);
 
   // State cho reviews
   const [averageRating, setAverageRating] = useState(0);
@@ -44,7 +43,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       if (!product?.id) return;
-
       try {
         setLoadingReviews(true);
         const response = await reviewApi.getProductReviews(product.id);
@@ -74,30 +72,13 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
     fetchReviews();
   }, [product?.id]);
 
-  // Check if product is in wishlist when component mounts or login status changes
   useEffect(() => {
     const checkWishlistStatus = async () => {
       if (!isLogin || !product?.id) {
         setIsInWishlist(false);
-        setIsCheckingWishlist(false);
         return;
       }
-
-      try {
-        setIsCheckingWishlist(true);
-        const wishlist = await wishlistApi.getWishlist();
-        const isProductInWishlist = wishlist?.items?.some(
-          (item: { productId: number }) => item.productId === product.id
-        );
-        setIsInWishlist(isProductInWishlist || false);
-      } catch (error) {
-        console.error("Error checking wishlist status:", error);
-        setIsInWishlist(false);
-      } finally {
-        setIsCheckingWishlist(false);
-      }
     };
-
     checkWishlistStatus();
   }, [isLogin, product?.id]);
 
@@ -320,7 +301,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
             startIcon={isInWishlist ? <FavoriteIcon sx={{ color: "red" }} /> : <FavoriteBorderOutlinedIcon />}
             variant="text"
             onClick={handleToggleWishlist}
-            disabled={isCheckingWishlist}
             sx={{
               fontWeight: 400,
               textTransform: "none",
@@ -355,9 +335,40 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         <Typography variant="body2" color="var(--color-gray2)">
           Category: {product.categoryName || "Unknown"}
         </Typography>
-        <Typography variant="body2" color="var(--color-gray2)" sx={{ mt: 1 }}>
-          Tag: {"Our Shop"}
-        </Typography>
+        <Box sx={{ mt: 1, display: "flex", alignItems: "center", gap: 0.5 }}>
+          <Typography variant="body2" color="var(--color-gray2)">
+            Tag:
+          </Typography>
+          {product.tags && product.tags.length > 0 ? (
+            product.tags.map((tag, index) => (
+              <React.Fragment key={tag}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "var(--color-gray2)",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    transition: "color 0.2s ease",
+                    "&:hover": {
+                      color: "var(--color-primary)",
+                    },
+                  }}
+                >
+                  {tag}
+                </Typography>
+                {index < product.tags.length - 1 && (
+                  <Typography variant="body2" color="var(--color-gray2)">
+                    ,
+                  </Typography>
+                )}
+              </React.Fragment>
+            ))
+          ) : (
+            <Typography variant="body2" color="var(--color-gray2)">
+              Our Shop
+            </Typography>
+          )}
+        </Box>
         <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
           <Typography variant="body2" color="var(--color-gray2)">
             Share:

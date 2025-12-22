@@ -80,13 +80,9 @@ const WhyChooseUs = () => {
               <h2 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">Why We are the best?</h2>
 
               <p className="text-gray-primary leading-relaxed mb-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque diam pellentesque bibendum non dui
-                volutpat fringilla bibendum. Urna, elit augue urna, vitae feugiat pretium donec id elementum. Ultrices
-                mattis sed vitae mus risus. Lacus nisl, et ac dapibus sit eu velit in consequat.
-              </p>
-
-              <p className="text-gray-primary leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius sed pharetra dictum neque massa congue
+                We believe healthy eating should be a joy, not a chore. That's why we use only the finest fresh
+                ingredients and heartfelt recipes to create meals that nourish your body and delight your taste buds—so
+                you can feel energized and happy every day.
               </p>
             </div>
 

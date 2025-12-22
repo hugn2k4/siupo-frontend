@@ -14,12 +14,15 @@ import { CheckCircle2, Clock, Eye, MessageCircle, Package, RotateCcw, Star, Truc
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import comboService from "../../../services/comboService";
 import reviewService from "../../../services/reviewService";
 import { EMethodPayment } from "../../../types/enums/methodPayment.enum";
 import { EOrderStatus } from "../../../types/enums/order.enum";
+import type { ComboResponse } from "../../../types/responses/combo.response";
 import type { OrderItemResponse, OrderResponse } from "../../../types/responses/order.reponse";
 import type { ReviewResponse } from "../../../types/responses/review.response";
 import { formatCurrency } from "../../../utils/format";
+import ComboDetailDialog from "../../Shop/components/ComboDetailDialog";
 import ConfirmModal from "../../WishList/components/ConfirmModal";
 import ReviewDialog from "./ReviewDialog";
 import ViewReviewDialog from "./ViewReviewDialog";
@@ -38,12 +41,31 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
   const [selectedItem, setSelectedItem] = useState<OrderItemResponse | null>(null);
   const [selectedReview, setSelectedReview] = useState<ReviewResponse | null>(null);
   const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
+  const [selectedCombo, setSelectedCombo] = useState<ComboResponse | null>(null);
+  const [comboDialogOpen, setComboDialogOpen] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
-  const viewProductDetail = (productId: number) => {
-    navigate(`/shop/${productId}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const viewProductDetail = async (item: OrderItemResponse) => {
+    if (item.comboId) {
+      // If it's a combo, fetch and show in dialog
+      try {
+        const response = await comboService.getComboById(item.comboId);
+        setSelectedCombo(response.data);
+        setComboDialogOpen(true);
+      } catch (error) {
+        console.error("Failed to fetch combo details:", error);
+      }
+    } else if (item.productId) {
+      // If it's a product, navigate to product detail page
+      navigate(`/shop/${item.productId}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleAddComboToCart = () => {
+    // TODO: Implement add combo to cart
+    setComboDialogOpen(false);
   };
 
   const getStatusStep = (status: string): number => {
@@ -221,133 +243,157 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
                 Order Items
               </Typography>
               <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-                {order.items.map((item) => (
-                  <Box
-                    key={item.id}
-                    sx={{
-                      display: "flex",
-                      gap: 2,
-                      p: 2,
-                      border: "1px solid",
-                      borderColor: "grey.200",
-                      borderRadius: 2,
-                      "&:hover": {
-                        borderColor: "var(--color-primary)",
-                        bgcolor: "rgba(var(--color-primary-rgb), 0.04)",
-                      },
-                    }}
-                  >
-                    {item.productImageUrl ? (
-                      <img
-                        src={item.productImageUrl}
-                        alt={item.productName}
-                        style={{
-                          width: 80,
-                          height: 80,
-                          objectFit: "cover",
-                          borderRadius: 8,
-                          border: "1px solid #E5E7EB",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => viewProductDetail(item.productId)}
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          width: 80,
-                          height: 80,
-                          bgcolor: "grey.200",
-                          borderRadius: 2,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => viewProductDetail(item.productId)}
-                      >
-                        <Package size={32} color="#9CA3AF" />
-                      </Box>
-                    )}
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography
-                        variant="body1"
-                        fontWeight={600}
-                        color="var(--color-gray1)"
-                        sx={{ cursor: "pointer" }}
-                        onClick={() => viewProductDetail(item.productId)}
-                      >
-                        {item.productName}
-                      </Typography>
-                      <Typography variant="body2" color="var(--color-gray3)" sx={{ mt: 0.5 }}>
-                        {formatCurrency(item.price, "USD")} × {item.quantity}
-                      </Typography>
-                      {canReview &&
-                        (item.reviewed ? (
-                          <Button
-                            size="small"
-                            startIcon={<Eye size={16} />}
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              try {
-                                const response = await reviewService.getReviewByOrderItemId(item.id);
-                                setSelectedReview(response.data);
+                {order.items.map((item) => {
+                  const isCombo = !!item.comboId;
+                  const itemName = isCombo ? item.comboName : item.productName;
+                  const itemImage = isCombo ? item.comboImageUrl : item.productImageUrl;
+                  const hasValidId = isCombo ? !!item.comboId : !!item.productId;
+
+                  return (
+                    <Box
+                      key={item.id}
+                      sx={{
+                        display: "flex",
+                        gap: 2,
+                        p: 2,
+                        border: "1px solid",
+                        borderColor: "grey.200",
+                        borderRadius: 2,
+                        "&:hover": {
+                          borderColor: "var(--color-primary)",
+                          bgcolor: "rgba(var(--color-primary-rgb), 0.04)",
+                        },
+                      }}
+                    >
+                      {itemImage ? (
+                        <img
+                          src={itemImage}
+                          alt={itemName || "Item"}
+                          style={{
+                            width: 80,
+                            height: 80,
+                            objectFit: "cover",
+                            borderRadius: 8,
+                            border: "1px solid #E5E7EB",
+                            cursor: hasValidId ? "pointer" : "default",
+                          }}
+                          onClick={() => hasValidId && viewProductDetail(item)}
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            width: 80,
+                            height: 80,
+                            bgcolor: "grey.200",
+                            borderRadius: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: hasValidId ? "pointer" : "default",
+                          }}
+                          onClick={() => hasValidId && viewProductDetail(item)}
+                        >
+                          <Package size={32} color="#9CA3AF" />
+                        </Box>
+                      )}
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <Typography
+                            variant="body1"
+                            fontWeight={600}
+                            color="var(--color-gray1)"
+                            sx={{ cursor: hasValidId ? "pointer" : "default" }}
+                            onClick={() => hasValidId && viewProductDetail(item)}
+                          >
+                            {itemName}
+                          </Typography>
+                          {isCombo && (
+                            <Box
+                              sx={{
+                                bgcolor: "var(--color-primary)",
+                                color: "white",
+                                px: 1,
+                                py: 0.25,
+                                fontSize: "0.7rem",
+                                fontWeight: 700,
+                                borderRadius: 0.5,
+                              }}
+                            >
+                              COMBO
+                            </Box>
+                          )}
+                        </Box>
+                        <Typography variant="body2" color="var(--color-gray3)" sx={{ mt: 0.5 }}>
+                          {formatCurrency(item.price, "USD")} × {item.quantity}
+                        </Typography>
+                        {canReview &&
+                          (item.reviewed ? (
+                            <Button
+                              size="small"
+                              startIcon={<Eye size={16} />}
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                try {
+                                  const response = await reviewService.getReviewByOrderItemId(item.id);
+                                  setSelectedReview(response.data);
+                                  setSelectedItem(item);
+                                  setViewReviewDialogOpen(true);
+                                } catch (error) {
+                                  console.error("Failed to load review:", error);
+                                  showSnackbar("Failed to load review", "error");
+                                }
+                              }}
+                              sx={{
+                                mt: 1,
+                                textTransform: "none",
+                                color: "var(--color-success)",
+                                fontWeight: 600,
+                                fontSize: "0.875rem",
+                                p: 0,
+                                minWidth: "auto",
+                                "&:hover": {
+                                  bgcolor: "transparent",
+                                  textDecoration: "underline",
+                                },
+                              }}
+                            >
+                              View review
+                            </Button>
+                          ) : (
+                            <Button
+                              size="small"
+                              startIcon={<Star size={16} />}
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setSelectedItem(item);
-                                setViewReviewDialogOpen(true);
-                              } catch (error) {
-                                console.error("Failed to load review:", error);
-                                showSnackbar("Failed to load review", "error");
-                              }
-                            }}
-                            sx={{
-                              mt: 1,
-                              textTransform: "none",
-                              color: "var(--color-success)",
-                              fontWeight: 600,
-                              fontSize: "0.875rem",
-                              p: 0,
-                              minWidth: "auto",
-                              "&:hover": {
-                                bgcolor: "transparent",
-                                textDecoration: "underline",
-                              },
-                            }}
-                          >
-                            View review
-                          </Button>
-                        ) : (
-                          <Button
-                            size="small"
-                            startIcon={<Star size={16} />}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedItem(item);
-                              setReviewDialogOpen(true);
-                            }}
-                            sx={{
-                              mt: 1,
-                              textTransform: "none",
-                              color: "var(--color-primary)",
-                              fontWeight: 600,
-                              fontSize: "0.875rem",
-                              p: 0,
-                              minWidth: "auto",
-                              "&:hover": {
-                                bgcolor: "transparent",
-                                textDecoration: "underline",
-                              },
-                            }}
-                          >
-                            Write a review
-                          </Button>
-                        ))}
+                                setReviewDialogOpen(true);
+                              }}
+                              sx={{
+                                mt: 1,
+                                textTransform: "none",
+                                color: "var(--color-primary)",
+                                fontWeight: 600,
+                                fontSize: "0.875rem",
+                                p: 0,
+                                minWidth: "auto",
+                                "&:hover": {
+                                  bgcolor: "transparent",
+                                  textDecoration: "underline",
+                                },
+                              }}
+                            >
+                              Write a review
+                            </Button>
+                          ))}
+                      </Box>
+                      <Box sx={{ textAlign: "right" }}>
+                        <Typography variant="body1" fontWeight={700} color="var(--color-gray1)">
+                          {formatCurrency(item.subTotal, "USD")}
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box sx={{ textAlign: "right" }}>
-                      <Typography variant="body1" fontWeight={700} color="var(--color-gray1)">
-                        {formatCurrency(item.subTotal, "USD")}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
+                  );
+                })}
               </Box>
             </Box>
 
@@ -484,7 +530,7 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
           }}
           orderId={order.orderId}
           item={selectedItem}
-          productImage={selectedItem.productImageUrl}
+          productImage={selectedItem.productImageUrl ?? undefined}
           onSubmit={handleSubmitReview}
         />
       )}
@@ -500,7 +546,7 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
           }}
           orderId={order.orderId}
           item={selectedItem}
-          productImage={selectedItem.productImageUrl}
+          productImage={selectedItem.productImageUrl ?? undefined}
           review={selectedReview}
         />
       )}
@@ -518,6 +564,14 @@ const OrderDetailDialog: React.FC<OrderDetailDialogProps> = ({ open, order, onCl
         confirmText="Yes, Cancel Order"
         cancelText="No, Keep Order"
         type="danger"
+      />
+
+      {/* Combo Detail Dialog */}
+      <ComboDetailDialog
+        open={comboDialogOpen}
+        onClose={() => setComboDialogOpen(false)}
+        combo={selectedCombo}
+        onAddToCart={handleAddComboToCart}
       />
     </>
   );

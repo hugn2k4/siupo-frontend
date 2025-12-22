@@ -27,6 +27,8 @@ import contactVi from "../locales/vi/contact.json";
 import homeVi from "../locales/vi/home.json";
 import menuVi from "../locales/vi/menu.json";
 import productVi from "../locales/vi/product.json";
+import shopEn from "../locales/en/shop.json";
+import shopVi from "../locales/vi/shop.json";
 
 // Define resources type for type safety
 export const resources = {
@@ -43,6 +45,7 @@ export const resources = {
     menu: menuEn,
     contact: contactEn,
     chef: chefEn,
+    shop: shopEn,
   },
   vi: {
     common: commonVi,
@@ -57,6 +60,7 @@ export const resources = {
     menu: menuVi,
     contact: contactVi,
     chef: chefVi,
+    shop: shopVi,
   },
 } as const;
 
@@ -90,6 +94,7 @@ i18n
       "menu",
       "contact",
       "chef",
+      "shop",
     ],
 
     // Language detection options

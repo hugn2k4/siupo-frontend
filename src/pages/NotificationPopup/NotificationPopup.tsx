@@ -217,11 +217,11 @@ const NotificationPopup = () => {
       >
         <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Thông báo
+            Notifications
           </Typography>
           {unreadCount > 0 && (
             <Typography variant="caption" color="primary">
-              {unreadCount} thông báo chưa đọc
+              You have {unreadCount} unread {unreadCount === 1 ? "notification" : "notifications"}
             </Typography>
           )}
         </Box>

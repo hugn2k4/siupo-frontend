@@ -1,6 +1,6 @@
-import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Select, Skeleton, Typography } from "@mui/material";
+import { Alert, Box, Button, FormControl, MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import imageDefault from "../../../assets/gallery/gallery_burger.png";
 import productService from "../../../services/productService";
@@ -15,8 +15,10 @@ import LastPageOutlinedIcon from "@mui/icons-material/LastPageOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { wishlistApi } from "../../../api/wishListApi";
 import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
+import { useCurrency } from "../../../hooks/useCurrency";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import useTranslation from "../../../hooks/useTranslation";
 import cartService from "../../../services/cartService";
 
 interface ProductListProps {
@@ -24,6 +26,7 @@ interface ProductListProps {
   categoryIds: number[];
   minPrice: number;
   maxPrice: number;
+  initialProducts?: ProductResponse[];
 }
 
 const isNewProduct = (createdAt: string): boolean => {
@@ -33,11 +36,11 @@ const isNewProduct = (createdAt: string): boolean => {
   return diffInDays <= 7;
 };
 
-const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductListProps) => {
+const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initialProducts }: ProductListProps) => {
   const [sortBy, setSortBy] = useState("id,asc");
   const [showCount, setShowCount] = useState(15);
   const [currentPage, setCurrentPage] = useState(0);
-  const [products, setProducts] = useState<ProductResponse[]>([]);
+  const [products, setProducts] = useState<ProductResponse[]>(initialProducts || []);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +49,9 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
   const [isParentHovered, setIsParentHovered] = useState(false);
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const { t } = useTranslation("shop");
+  const { format } = useCurrency();
 
   const mapSortBy = (uiSort: string): string => {
     switch (uiSort) {
@@ -76,8 +82,45 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
     }
   };
 
+  // Sử dụng initialProducts khi có và chưa có filter
   useEffect(() => {
+    // Nếu có initialProducts và chưa có filter gì, dùng luôn không cần fetch
+    if (
+      isInitialLoad &&
+      initialProducts &&
+      initialProducts.length > 0 &&
+      !searchName &&
+      categoryIds.length === 0 &&
+      minPrice === 0 &&
+      maxPrice === 1000000 &&
+      currentPage === 0 &&
+      sortBy === "id,asc" &&
+      showCount === 15
+    ) {
+      setIsInitialLoad(false);
+      // Không set totalPages vì không biết tổng số, sẽ fetch khi user thao tác
+      return;
+    }
+
+    // Nếu chưa có filter gì (default state) và isInitialLoad = false, không fetch
+    if (
+      !isInitialLoad &&
+      !searchName &&
+      categoryIds.length === 0 &&
+      minPrice === 0 &&
+      maxPrice === 1000000 &&
+      currentPage === 0 &&
+      sortBy === "id,asc" &&
+      showCount === 15 &&
+      initialProducts &&
+      initialProducts.length > 0
+    ) {
+      return; // Đã có data từ initialProducts, không cần fetch
+    }
+
+    // Chỉ fetch khi có filter hoặc user thay đổi pagination/sort
     const fetchProducts = async () => {
+      setIsInitialLoad(false);
       setLoading(true);
       setError(null);
       try {
@@ -96,7 +139,6 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
           result = await productService.getProducts(currentPage, mapShowCount(showCount), mapSortBy(sortBy));
         }
 
-        // Sử dụng trực tiếp thuộc tính wishlist từ backend
         setProducts(result.products);
         setTotalPages(result.totalPages);
 
@@ -110,7 +152,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       }
     };
     fetchProducts();
-  }, [currentPage, sortBy, showCount, searchName, categoryIds, minPrice, maxPrice]);
+  }, [currentPage, sortBy, showCount, searchName, categoryIds, minPrice, maxPrice, initialProducts, isInitialLoad]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -127,11 +169,10 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       return;
     }
     try {
-      await cartService.addToCart({ productId: productId, quantity: 1 });
-      showSnackbar("Product added to cart!", "success", 3000);
-    } catch (error) {
-      console.error("Lỗi khi thêm vào giỏ hàng:", error);
-      showSnackbar("Failed to add product to cart!", "error", 3000);
+      await cartService.addToCart({ productId, quantity: 1 });
+      showSnackbar(t("product.addSuccess"), "success", 3000);
+    } catch {
+      showSnackbar(t("product.addError"), "error", 3000);
     }
   };
 
@@ -151,10 +192,10 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
     try {
       if (currentStatus) {
         await wishlistApi.removeFromWishlist(productId);
-        showSnackbar("Removed from wishlist!", "info", 2000);
+        showSnackbar(t("product.wishlistRemove"), "info", 2000);
       } else {
         await wishlistApi.addToWishlist(productId);
-        showSnackbar("Added to wishlist!", "success", 2000);
+        showSnackbar(t("product.wishlistAdd"), "success", 2000);
       }
 
       const updatedProducts = [...products];
@@ -164,7 +205,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       };
       setProducts(updatedProducts);
     } catch {
-      showSnackbar("Failed to update wishlist!", "error", 3000);
+      showSnackbar(t("product.wishlistError"), "error", 3000);
     }
   };
 
@@ -259,35 +300,33 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true, amount: 0.3 }}
-      sx={{ flex: 1, p: { xs: 2, md: 3 }, minWidth: 0 }}
+      sx={{ flex: 1, minWidth: 0 }}
     >
       {/* Sort and Show controls */}
       <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mb: 4, mt: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Typography variant="body1">Sort By:</Typography>
+          <Typography variant="body1">{t("product.sortBy")}</Typography>
           <FormControl sx={{ minWidth: 200 }}>
-            <InputLabel sx={{ display: "none" }}>Sort By</InputLabel>
             <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)} disabled={loading} sx={{ height: 35 }}>
-              <MenuItem value="id,asc">Default</MenuItem>
-              <MenuItem value="newest">Newest</MenuItem>
-              <MenuItem value="price-low">Price: Low to High</MenuItem>
-              <MenuItem value="price-high">Price: High to Low</MenuItem>
+              <MenuItem value="id,asc">{t("product.default")}</MenuItem>
+              <MenuItem value="newest">{t("product.newest")}</MenuItem>
+              <MenuItem value="price-low">{t("product.priceLow")}</MenuItem>
+              <MenuItem value="price-high">{t("product.priceHigh")}</MenuItem>
             </Select>
           </FormControl>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Typography variant="body1">Show:</Typography>
+          <Typography variant="body1">{t("product.show")}</Typography>
           <FormControl sx={{ minWidth: 200 }}>
-            <InputLabel sx={{ display: "none" }}>Show</InputLabel>
             <Select
               value={showCount}
               onChange={(e) => setShowCount(e.target.value)}
               disabled={loading}
               sx={{ height: 35 }}
             >
-              <MenuItem value={12}>12 per page</MenuItem>
-              <MenuItem value={15}>15 per page</MenuItem>
-              <MenuItem value={24}>24 per page</MenuItem>
+              <MenuItem value={12}>12 {t("product.perPage")}</MenuItem>
+              <MenuItem value={15}>15 {t("product.perPage")}</MenuItem>
+              <MenuItem value={24}>24 {t("product.perPage")}</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -332,7 +371,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       ) : products.length === 0 ? (
         <Box sx={{ textAlign: "center", py: 12, minWidth: { xs: "unset", lg: "826px" } }}>
           <Typography variant="h6" color="text.secondary">
-            Không tìm thấy sản phẩm nào
+            {t("product.notFound")}
           </Typography>
         </Box>
       ) : (
@@ -412,7 +451,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                       fontWeight: "bold",
                     }}
                   >
-                    NEW!
+                    {t("product.new")}
                   </Box>
                 )}
 
@@ -512,7 +551,7 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
                   {product.name}
                 </Typography>
                 <Typography variant="body2" color="#FF9F0D" sx={{ fontSize: 12 }}>
-                  ${product.price.toFixed(2)}
+                  {format(product.price)}
                 </Typography>
               </Box>
             </Box>
@@ -529,6 +568,8 @@ const ProductList = ({ searchName, categoryIds, minPrice, maxPrice }: ProductLis
       <LoginRequiredDialog open={showLoginDialog} onClose={() => setShowLoginDialog(false)} />
     </Box>
   );
-};
+});
+
+ProductList.displayName = "ProductList";
 
 export default ProductList;

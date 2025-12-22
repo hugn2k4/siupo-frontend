@@ -2,10 +2,13 @@ import { Box, Button, Card, CardContent, Chip, Divider, Typography } from "@mui/
 import { Clock, Package, Receipt, RotateCcw, X } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import comboService from "../../../services/comboService";
 import { EMethodPayment } from "../../../types/enums/methodPayment.enum";
 import { EOrderStatus } from "../../../types/enums/order.enum";
-import type { OrderResponse } from "../../../types/responses/order.reponse";
+import type { ComboResponse } from "../../../types/responses/combo.response";
+import type { OrderItemResponse, OrderResponse } from "../../../types/responses/order.reponse";
 import { formatCurrency } from "../../../utils/format";
+import ComboDetailDialog from "../../Shop/components/ComboDetailDialog";
 import ConfirmModal from "../../WishList/components/ConfirmModal";
 
 type OrderCardProps = {
@@ -18,10 +21,29 @@ type OrderCardProps = {
 const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, onReorder }) => {
   const navigate = useNavigate();
   const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
+  const [selectedCombo, setSelectedCombo] = useState<ComboResponse | null>(null);
+  const [comboDialogOpen, setComboDialogOpen] = useState(false);
 
-  const viewProductDetail = (productId: number) => {
-    navigate(`/shop/${productId}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const viewProductDetail = async (item: OrderItemResponse) => {
+    if (item.comboId) {
+      // If it's a combo, fetch and show in dialog
+      try {
+        const response = await comboService.getComboById(item.comboId);
+        setSelectedCombo(response.data);
+        setComboDialogOpen(true);
+      } catch (error) {
+        console.error("Failed to fetch combo details:", error);
+      }
+    } else if (item.productId) {
+      // If it's a product, navigate to product detail page
+      navigate(`/shop/${item.productId}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleAddComboToCart = () => {
+    // TODO: Implement add combo to cart
+    setComboDialogOpen(false);
   };
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -97,71 +119,95 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, on
           {/* Products Preview */}
           <Box sx={{ mb: 2 }}>
             <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-              {order.items.slice(0, 3).map((item) => (
-                <Box
-                  key={item.id}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1.5,
-                    flex: 1,
-                    minWidth: 0,
-                  }}
-                >
-                  {item.productImageUrl ? (
-                    <img
-                      src={item.productImageUrl}
-                      alt={item.productName}
-                      style={{
-                        width: 56,
-                        height: 56,
-                        objectFit: "cover",
-                        borderRadius: 8,
-                        border: "1px solid #E5E7EB",
-                        flexShrink: 0,
-                        cursor: "pointer",
-                      }}
-                      onClick={() => viewProductDetail(item.productId)}
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        width: 56,
-                        height: 56,
-                        bgcolor: "grey.200",
-                        borderRadius: 2,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                        cursor: "pointer",
-                      }}
-                      onClick={() => viewProductDetail(item.productId)}
-                    >
-                      <Package size={24} color="#9CA3AF" />
+              {order.items.slice(0, 3).map((item) => {
+                const isCombo = !!item.comboId;
+                const itemName = isCombo ? item.comboName : item.productName;
+                const itemImage = isCombo ? item.comboImageUrl : item.productImageUrl;
+                const hasValidId = isCombo ? !!item.comboId : !!item.productId;
+
+                return (
+                  <Box
+                    key={item.id}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1.5,
+                      flex: 1,
+                      minWidth: 0,
+                    }}
+                  >
+                    {itemImage ? (
+                      <img
+                        src={itemImage}
+                        alt={itemName || "Item"}
+                        style={{
+                          width: 56,
+                          height: 56,
+                          objectFit: "cover",
+                          borderRadius: 8,
+                          border: "1px solid #E5E7EB",
+                          flexShrink: 0,
+                          cursor: hasValidId ? "pointer" : "default",
+                        }}
+                        onClick={() => hasValidId && viewProductDetail(item)}
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          bgcolor: "grey.200",
+                          borderRadius: 2,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                          cursor: hasValidId ? "pointer" : "default",
+                        }}
+                        onClick={() => hasValidId && viewProductDetail(item)}
+                      >
+                        <Package size={24} color="#9CA3AF" />
+                      </Box>
+                    )}
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          fontWeight={500}
+                          color="var(--color-gray1)"
+                          sx={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            cursor: hasValidId ? "pointer" : "default",
+                          }}
+                          onClick={() => hasValidId && viewProductDetail(item)}
+                        >
+                          {itemName}
+                        </Typography>
+                        {isCombo && (
+                          <Box
+                            sx={{
+                              bgcolor: "var(--color-primary)",
+                              color: "white",
+                              px: 0.5,
+                              py: 0.25,
+                              fontSize: "0.625rem",
+                              fontWeight: 700,
+                              borderRadius: 0.5,
+                            }}
+                          >
+                            COMBO
+                          </Box>
+                        )}
+                      </Box>
+                      <Typography variant="caption" color="var(--color-gray3)">
+                        x{item.quantity}
+                      </Typography>
                     </Box>
-                  )}
-                  <Box sx={{ minWidth: 0, flex: 1 }}>
-                    <Typography
-                      variant="body2"
-                      fontWeight={500}
-                      color="var(--color-gray1)"
-                      sx={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => viewProductDetail(item.productId)}
-                    >
-                      {item.productName}
-                    </Typography>
-                    <Typography variant="caption" color="var(--color-gray3)">
-                      x{item.quantity}
-                    </Typography>
                   </Box>
-                </Box>
-              ))}
+                );
+              })}
             </Box>
             {order.items.length > 3 && (
               <Typography variant="caption" color="var(--color-gray3)">
@@ -279,6 +325,13 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetail, onCancel, on
         confirmText="Yes, Cancel Order"
         cancelText="No, Keep Order"
         type="danger"
+      />
+
+      <ComboDetailDialog
+        open={comboDialogOpen}
+        onClose={() => setComboDialogOpen(false)}
+        combo={selectedCombo}
+        onAddToCart={handleAddComboToCart}
       />
     </>
   );

@@ -1,6 +1,7 @@
 import { Box, Container, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ShiningStarsIcon from "../../../assets/icons/shining_stars.svg";
 import SparkleIcon from "../../../assets/icons/sparkle.svg";
 import DefaultHero from "../../../assets/images/image_hero.png";
@@ -20,6 +21,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
   // Lấy banner từ API
   const heroImage = banners[0]?.url || DefaultHero;
   const heroImageMobile = banners[1]?.url || DefaultHeroMobile;
+  const navigate = useNavigate();
   return (
     <section className="w-full min-h-[90vh] flex flex-col relative overflow-hidden">
       {/* Right side: Hero Image - positioned absolutely to reach screen edge */}
@@ -177,6 +179,7 @@ const Hero = ({ banners, loading }: HeroProps) => {
                   colorScheme="lightGreen"
                   onMouseEnter={() => setHoveredPlace(true)}
                   onMouseLeave={() => setHoveredPlace(false)}
+                  onClick={() => navigate("/shop")}
                   sx={{ width: { xs: "100%", sm: "auto" } }}
                 >
                   {t("hero.placeOrder")}

@@ -143,6 +143,22 @@ const ROUTES_META: Record<string, RouteMeta> = {
       { label: "Contact", labelKey: "navigation.contact" },
     ],
   },
+  "/vouchers": {
+    title: "Vouchers",
+    titleKey: "navigation.vouchers",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Vouchers", labelKey: "navigation.vouchers" },
+    ],
+  },
+  "/order-at-table": {
+    title: "Order at Table",
+    titleKey: "Order At Table",
+    breadcrumb: [
+      { label: "Home", labelKey: "navigation.home", path: "/" },
+      { label: "Order at Table", labelKey: "Order At Table" },
+    ],
+  },
 };
 
 export default ROUTES_META;

@@ -1,5 +1,6 @@
-import { Box, Chip, CircularProgress, Container, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Chip, Container, Tab, Tabs, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import LoadingPageSpinner from "../../components/common/LoadingSpinner";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import orderService from "../../services/orderService";
 import { EOrderStatus, type OrderStatus } from "../../types/enums/order.enum";
@@ -100,18 +101,7 @@ const MyOrdersPage: React.FC = () => {
   const stats = getOrderStats();
 
   if (loading) {
-    return (
-      <Box
-        sx={{
-          minHeight: "60vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <CircularProgress sx={{ color: "var(--color-primary)" }} />
-      </Box>
-    );
+    return <LoadingPageSpinner />;
   }
 
   return (

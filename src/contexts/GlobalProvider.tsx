@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useState } from "react";
+import { authService } from "../services/authService";
 import { GlobalContext, type GlobalState } from "./GlobalContext";
 
 export const GlobalProvider = ({ children }: { children: ReactNode }) => {
@@ -33,9 +34,12 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    setState({ user: null, accessToken: null, isLogin: false });
-    localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
+    try {
+      authService.logout();
+      setState({ user: null, accessToken: null, isLogin: false });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
   return <GlobalContext.Provider value={{ ...state, setGlobal, logout }}>{children}</GlobalContext.Provider>;
 };

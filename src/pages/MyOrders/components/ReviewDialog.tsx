@@ -144,7 +144,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onClose, orderId, ite
             {productImage ? (
               <img
                 src={productImage}
-                alt={item.productName}
+                alt={item.productName ?? undefined}
                 style={{
                   width: 80,
                   height: 80,

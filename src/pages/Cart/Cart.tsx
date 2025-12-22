@@ -1,8 +1,9 @@
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { Box, Checkbox, CircularProgress, Container, Divider, Stack, Typography } from "@mui/material";
+import { Box, Checkbox, Container, Divider, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
+import LoadingPageSpinner from "../../components/common/LoadingSpinner";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useTranslation } from "../../hooks/useTranslation";
 import cartService from "../../services/cartService";
@@ -114,11 +115,6 @@ const Cart: React.FC = () => {
     }
   };
 
-  const handleApplyCoupon = (code: string) => {
-    console.log("Applying coupon:", code);
-    // Implement coupon logic here
-  };
-
   const handleCheckout = () => {
     const selectedCartItems = cartItems.filter((item) => selectedItems.has(item.id));
 
@@ -130,7 +126,10 @@ const Cart: React.FC = () => {
   };
 
   const selectedCartItems = cartItems.filter((item) => selectedItems.has(item.id));
-  const subtotal = selectedCartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = selectedCartItems.reduce((sum, item) => {
+    const itemPrice = item.product ? item.product.price : item.combo ? item.combo.basePrice : 0;
+    return sum + itemPrice * item.quantity;
+  }, 0);
   const shipping = selectedItems.size > 0 ? 2 : 0;
   const total = subtotal + shipping;
   const isAllSelected = cartItems.length > 0 && selectedItems.size === cartItems.length;
@@ -138,9 +137,7 @@ const Cart: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px" }}>
-          <CircularProgress sx={{ color: "var(--color-primary)" }} />
-        </Box>
+        <LoadingPageSpinner />
       ) : cartItems.length === 0 ? (
         <Box
           sx={{
@@ -338,7 +335,7 @@ const Cart: React.FC = () => {
           {/* Coupon and Summary */}
           <Stack direction={{ xs: "column", lg: "row" }} spacing={3} sx={{ mt: 3 }}>
             <Box sx={{ flex: 1 }}>
-              <CouponSection onApplyCoupon={handleApplyCoupon} />
+              <CouponSection orderAmount={subtotal} />
             </Box>
             <Box sx={{ flex: 1, maxWidth: { lg: 420 } }}>
               <OrderSummary

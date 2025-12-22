@@ -1,3 +1,5 @@
+import type { ImageResponse } from "./image.response";
+
 export interface UserResponse {
   id: number;
   fullName: string;
@@ -6,4 +8,5 @@ export interface UserResponse {
   role: string;
   dateOfBirth?: string;
   gender?: string;
+  avatar?: ImageResponse;
 }

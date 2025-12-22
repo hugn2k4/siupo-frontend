@@ -41,11 +41,11 @@ const PlaceTableForGuest: React.FC = () => {
   }, [location.state, preOrderItems]);
 
   const handleAddMoreDishes = () => {
-    navigate("/orderattable", { state: { fromBooking: true } });
+    navigate("/order-at-table", { state: { fromBooking: true } });
   };
 
   const handleEditPreOrder = () => {
-    navigate("/orderattable", { state: { fromBooking: true } });
+    navigate("/order-at-table", { state: { fromBooking: true } });
   };
 
   const handleClearPreOrder = () => {

@@ -1,0 +1,58 @@
+{
+  "combo": {
+    "add": "Thêm",
+    "addError": "Lỗi khi thêm combo vào giỏ hàng!",
+    "addSuccess": "Đã thêm combo vào giỏ hàng!",
+    "addToCartWithPrice": "Thêm vào giỏ hàng - {{price}}",
+    "defaultDesc": "Combo đầy đủ dinh dưỡng, hương vị tuyệt hảo.",
+    "detail": "Chi tiết",
+    "emptySubtitle": "Vui lòng quay lại sau nhé!",
+    "emptyTitle": "Hiện chưa có combo nào.",
+    "hot": "HOT",
+    "includes": "Bao gồm ({{count}} món):",
+    "noDescription": "Thưởng thức combo tuyệt hảo với sự kết hợp hoàn hảo của các món ăn đặc sắc.",
+    "others": "món khác...",
+    "promoPrice": "Giá ưu đãi",
+    "quantity": "Số lượng:",
+    "save": "Tiết kiệm",
+    "special": "COMBO ĐẶC BIỆT"
+  },
+  "filter": {
+    "all": "Tất cả",
+    "any": "Bất kỳ",
+    "category": "Danh mục",
+    "combos": "Combo",
+    "from": "Từ",
+    "latest": "Sản phẩm mới nhất",
+    "noTags": "Không có thẻ nào",
+    "price": "Lọc theo giá",
+    "products": "Món lẻ",
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "tags": "Thẻ sản phẩm",
+    "to": "Đến",
+    "types": "Loại thực đơn"
+  },
+  "page": {
+    "allProducts": "Thực Đơn Sản Phẩm",
+    "errorSubtitle": "Vui lòng làm mới trang hoặc quay lại sau.",
+    "errorTitle": "Không thể tải dữ liệu cửa hàng",
+    "filterMobile": "Bộ lọc",
+    "hotCombos": "Combo Hot & Đặc Biệt!"
+  },
+  "product": {
+    "addError": "Lỗi khi thêm vào giỏ hàng!",
+    "addSuccess": "Đã thêm sản phẩm vào giỏ hàng!",
+    "default": "Mặc định",
+    "new": "MỚI!",
+    "newest": "Mới nhất",
+    "notFound": "Không tìm thấy sản phẩm nào",
+    "perPage": "mỗi trang",
+    "priceHigh": "Giá: Cao đến Thấp",
+    "priceLow": "Giá: Thấp đến Cao",
+    "show": "Hiển thị:",
+    "sortBy": "Sắp xếp:",
+    "wishlistAdd": "Đã thêm vào yêu thích!",
+    "wishlistError": "Cập nhật yêu thích thất bại!",
+    "wishlistRemove": "Đã xóa khỏi yêu thích!"
+  }
+}

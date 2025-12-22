@@ -57,7 +57,7 @@ const ViewReviewDialog: React.FC<ViewReviewDialogProps> = ({ open, onClose, orde
             {productImage ? (
               <img
                 src={productImage}
-                alt={item.productName}
+                alt={item.productName ?? undefined}
                 style={{
                   width: 80,
                   height: 80,

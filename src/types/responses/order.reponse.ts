@@ -3,14 +3,18 @@ import type { OrderStatus } from "../enums/order.enum";
 
 export type OrderItemResponse = {
   id: number;
-  productId: number;
-  productName: string;
+  productId?: number | null;
+  productName?: string | null;
+  comboId?: number | null;
+  comboName?: string | null;
   quantity: number;
   price: number;
   subTotal: number;
-  productImageUrl: string;
+  productImageUrl?: string | null;
+  comboImageUrl?: string | null;
   note?: string;
   reviewed?: boolean;
+  productCategoryName?: string | null;
 };
 
 export type OrderResponse = {
@@ -19,6 +23,9 @@ export type OrderResponse = {
   totalPrice: number;
   shippingFee: number;
   vat: number;
+  discountAmount?: number; // Thêm field discount từ voucher
+  voucherCode?: string; // Thêm field voucher code
+  finalAmount?: number; // Thêm field final amount sau discount
   items: OrderItemResponse[];
   paymentMethod: MethodPayment;
   payUrl?: string;

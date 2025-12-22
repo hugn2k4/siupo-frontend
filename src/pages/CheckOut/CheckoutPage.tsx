@@ -8,6 +8,7 @@ import orderService from "../../services/orderService";
 import { EMethodPayment, type MethodPayment } from "../../types/enums/methodPayment.enum";
 import type { Address } from "../../types/models/address";
 import type { CartItem } from "../../types/models/cartItem";
+import type { OrderItem } from "../../types/models/orderItem";
 import type { CreateOrderRequest } from "../../types/requests/order.request";
 import AddressList from "./Components/AddressList";
 import OrderSummary from "./Components/OrderSummary";
@@ -19,6 +20,8 @@ const CheckoutPage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [appliedVoucher, setAppliedVoucher] = useState<string>("");
+  const [voucherDiscount, setVoucherDiscount] = useState<number>(0);
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const location = useLocation();
@@ -38,26 +41,28 @@ const CheckoutPage: React.FC = () => {
   }, [location.state, navigate]);
 
   // Tính toán subtotal từ cart items
-  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((sum, item) => {
+    const itemPrice = item.product ? item.product.price : item.combo ? item.combo.basePrice : 0;
+    return sum + itemPrice * item.quantity;
+  }, 0);
 
   // Các thông số tính toán
   const shipping = selectedPaymentMethod === EMethodPayment.COD ? 2 : 0;
-  const discount = 0; // TODO: Tính từ voucher/coupon
+  const discount = voucherDiscount; // Discount từ voucher
   const vatRate = 0.1; // 10% VAT
   const vat = (subtotal - discount) * vatRate;
 
   // Tính total
   const finalTotal = subtotal - discount + vat + shipping;
 
-  // Dữ liệu đơn hàng
-  const orderData = {
-    items: cartItems,
-    subtotal,
-    shipping,
-    discount,
-    vat,
-    total: finalTotal,
-  };
+  // Convert CartItem to OrderItem format for display
+  const orderItems: OrderItem[] = cartItems.map((item) => ({
+    id: item.id,
+    product: item.product,
+    combo: item.combo,
+    quantity: item.quantity,
+    totalPrice: item.totalPrice,
+  }));
 
   const handleBackToCart = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -80,10 +85,20 @@ const CheckoutPage: React.FC = () => {
     }
 
     setLoading(true);
+
+    // Convert CartItem to request format with proper product/combo structure
+    const requestItems: OrderItem[] = cartItems.map((item) => ({
+      id: item.id,
+      product: item.product,
+      combo: item.combo,
+      quantity: item.quantity,
+    }));
+
     const request: CreateOrderRequest = {
-      items: orderData.items,
+      items: requestItems,
       shippingAddress: selectedAddress,
       paymentMethod: selectedPaymentMethod,
+      voucherCode: appliedVoucher || undefined, // Gửi voucher code nếu có
     };
 
     try {
@@ -122,6 +137,16 @@ const CheckoutPage: React.FC = () => {
     setSelectedPaymentMethod(method);
   };
 
+  const handleVoucherApply = (voucherCode: string, discountAmount: number) => {
+    setAppliedVoucher(voucherCode);
+    setVoucherDiscount(discountAmount);
+  };
+
+  const handleRemoveVoucher = () => {
+    setAppliedVoucher("");
+    setVoucherDiscount(0);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -130,7 +155,14 @@ const CheckoutPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Address selector / add-new flow */}
             <AddressList onSelect={(a) => setSelectedAddress(a)} />
-            {/* Form voucher */ <Voucher title="Discount Code" />}
+            {/* Form voucher */}
+            <Voucher
+              title="Discount Code"
+              orderAmount={subtotal}
+              appliedVoucher={appliedVoucher}
+              onVoucherApply={handleVoucherApply}
+              onRemoveVoucher={handleRemoveVoucher}
+            />
 
             {/* Phương thức thanh toán */}
             <PaymentMethod selectedMethod={selectedPaymentMethod} onMethodChange={handlePaymentMethodChange} />
@@ -164,11 +196,11 @@ const CheckoutPage: React.FC = () => {
             <div className="sticky top-8">
               {/* Sử dụng component OrderSummary */}
               <OrderSummary
-                items={orderData.items}
-                subtotal={orderData.subtotal}
-                shipping={orderData.shipping}
-                discount={orderData.discount}
-                vat={orderData.vat}
+                items={orderItems}
+                subtotal={subtotal}
+                shipping={shipping}
+                discount={discount}
+                vat={vat}
                 total={finalTotal}
                 selectedPaymentMethod={selectedPaymentMethod}
                 onProceedToPayment={handleProceedToPayment}

@@ -1,8 +1,10 @@
+import type { Combo } from "./combo";
 import type { Product } from "./product";
 
 export type OrderItem = {
   id: number;
-  product: Product;
+  product?: Product | null;
+  combo?: Combo | null;
   quantity: number;
-  totalPice: number;
+  totalPrice?: number;
 };

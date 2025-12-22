@@ -1,8 +1,8 @@
 // import React, { useState } from "react";
 // import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useBanners } from "../../../hooks/useBanners";
 import defaultPlacetable from "../../../assets/images/image_place_table.png";
+import { useBanners } from "../../../hooks/useBanners";
 const HeroSection: React.FC = () => {
   // const [guests, setGuests] = useState("2");
   // const [branch, setBranch] = useState("");
@@ -28,8 +28,8 @@ const HeroSection: React.FC = () => {
       }}
     >
       <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4">
-        <h1 className="text-4xl md:text-5xl font-bold text-center mb-2">Đặt bàn ngay hôm nay —</h1>
-        <h2 className="text-3xl md:text-4xl font-semibold text-center mb-8">Trải nghiệm ẩm thực đẳng cấp!</h2>
+        <h1 className="text-4xl md:text-5xl font-bold text-center mb-2">Book Your Table Today</h1>
+        <h2 className="text-3xl md:text-4xl font-semibold text-center mb-8">Experience Culinary Excellence!</h2>
         {/* <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="flex items-center border border-gray-300 rounded-md px-4 py-2 bg-white">

@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { Copy, Gift, Percent, Tag, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import voucherApi from "../../api/voucherApi";
+import LoadingPageSpinner from "../../components/common/LoadingSpinner";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import type { VoucherResponse } from "../../types/responses/voucher.response";
 
@@ -66,15 +67,7 @@ const VouchersPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Typography variant="h4" align="center">
-          Loading vouchers...
-        </Typography>
-      </Container>
-    );
-  }
+  if (loading) return <LoadingPageSpinner />;
 
   return (
     <Box sx={{ bgcolor: "#F9F9F9", minHeight: "100vh", py: 6 }}>

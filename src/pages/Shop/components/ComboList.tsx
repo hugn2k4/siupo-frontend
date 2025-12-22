@@ -6,11 +6,12 @@ import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import imageDefault from "../../../assets/gallery/gallery_burger.png";
 import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
+import { useCurrency } from "../../../hooks/useCurrency";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import { useTranslation } from "../../../hooks/useTranslation";
 import cartService from "../../../services/cartService";
 import type { ComboResponse } from "../../../types/responses/combo.response";
-import { formatCurrency } from "../../../utils/format";
 import ComboDetailDialog from "./ComboDetailDialog";
 
 const fallbackImage = imageDefault;
@@ -25,6 +26,8 @@ const ComboList = ({ combos }: ComboListProps) => {
   const { showSnackbar } = useSnackbar();
   const { isLogin } = useGlobal();
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const { t } = useTranslation("shop");
+  const { format } = useCurrency();
 
   const handleAddToCart = async (combo: ComboResponse) => {
     if (!isLogin) {
@@ -53,8 +56,8 @@ const ComboList = ({ combos }: ComboListProps) => {
   if (!combos || combos.length === 0) {
     return (
       <Box textAlign="center" py={8} color="text.secondary">
-        <Typography variant="h6">Hiện chưa có combo nào.</Typography>
-        <Typography variant="body2">Vui lòng quay lại sau nhé!</Typography>
+        <Typography variant="h6">{t("combo.emptyTitle")}</Typography>
+        <Typography variant="body2">{t("combo.emptySubtitle")}</Typography>
       </Box>
     );
   }
@@ -159,7 +162,7 @@ const ComboList = ({ combos }: ComboListProps) => {
                   variant="caption"
                   sx={{ color: "rgba(255,255,255,0.9)", fontWeight: 600, mb: 0.5, display: "block" }}
                 >
-                  Giá ưu đãi
+                  {t("combo.promoPrice")}
                 </Typography>
                 <Stack direction="row" alignItems="center" spacing={1.5}>
                   <Typography
@@ -168,7 +171,7 @@ const ComboList = ({ combos }: ComboListProps) => {
                     color="white"
                     sx={{ textShadow: "0 2px 10px rgba(0,0,0,0.3)" }}
                   >
-                    {formatCurrency(combo.basePrice, "VND")}
+                    {format(combo.basePrice)}
                   </Typography>
                   {combo.originalPrice > combo.basePrice && (
                     <Typography
@@ -179,7 +182,7 @@ const ComboList = ({ combos }: ComboListProps) => {
                         fontWeight: 500,
                       }}
                     >
-                      {formatCurrency(combo.originalPrice, "VND")}
+                      {format(combo.originalPrice)}
                     </Typography>
                   )}
                 </Stack>
@@ -253,7 +256,7 @@ const ComboList = ({ combos }: ComboListProps) => {
                   color="text.secondary"
                   sx={{ pl: 3.5, fontStyle: "italic", fontSize: "0.7rem" }}
                 >
-                  + {combo.items.length - 3} món khác...
+                  + {combo.items.length - 3} {t("combo.others")}
                 </Typography>
               )}
             </Stack>
@@ -280,7 +283,7 @@ const ComboList = ({ combos }: ComboListProps) => {
                   },
                 }}
               >
-                Chi tiết
+                {t("combo.detail")}
               </Button>
               <Button
                 fullWidth
@@ -303,7 +306,7 @@ const ComboList = ({ combos }: ComboListProps) => {
                   },
                 }}
               >
-                Thêm
+                {t("combo.add")}
               </Button>
             </Stack>
           </Box>

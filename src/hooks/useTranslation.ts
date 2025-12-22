@@ -25,7 +25,8 @@ export type Namespace =
   | "about"
   | "menu"
   | "contact"
-  | "chef";
+  | "chef"
+  | "shop";
 
 export function useTranslation(namespace: Namespace = "common") {
   return useI18nTranslation(namespace);

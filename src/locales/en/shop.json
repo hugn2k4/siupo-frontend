@@ -1,0 +1,58 @@
+{
+  "combo": {
+    "add": "Add",
+    "addError": "Failed to add combo to cart!",
+    "addSuccess": "Combo added to cart!",
+    "addToCartWithPrice": "Add to Cart - {{price}}",
+    "defaultDesc": "Nutritious combo with excellent flavor.",
+    "detail": "Detail",
+    "emptySubtitle": "Please come back later!",
+    "emptyTitle": "No combos available yet.",
+    "hot": "HOT",
+    "includes": "Includes ({{count}} items):",
+    "noDescription": "Enjoy a perfect combo with a wonderful combination of signature dishes.",
+    "others": "other items...",
+    "promoPrice": "Special Price",
+    "quantity": "Quantity:",
+    "save": "Save",
+    "special": "SPECIAL COMBO"
+  },
+  "filter": {
+    "all": "All",
+    "any": "Any",
+    "category": "Category",
+    "combos": "Combos",
+    "from": "From",
+    "latest": "Latest Products",
+    "noTags": "No tags available",
+    "price": "Filter By Price",
+    "products": "Products",
+    "searchPlaceholder": "Search Product...",
+    "tags": "Product Tags",
+    "to": "To",
+    "types": "Menu Types"
+  },
+  "page": {
+    "allProducts": "All Products Menu",
+    "errorSubtitle": "Please refresh the page or try again later.",
+    "errorTitle": "Failed to load shop data",
+    "filterMobile": "Filters",
+    "hotCombos": "Hot Combos & Specials!"
+  },
+  "product": {
+    "addError": "Failed to add product to cart!",
+    "addSuccess": "Product added to cart!",
+    "default": "Default",
+    "new": "NEW!",
+    "newest": "Newest",
+    "notFound": "No products found",
+    "perPage": "per page",
+    "priceHigh": "Price: High to Low",
+    "priceLow": "Price: Low to High",
+    "show": "Show:",
+    "sortBy": "Sort By:",
+    "wishlistAdd": "Added to wishlist!",
+    "wishlistError": "Failed to update wishlist!",
+    "wishlistRemove": "Removed from wishlist!"
+  }
+}

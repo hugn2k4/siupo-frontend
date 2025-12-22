@@ -16,8 +16,11 @@ import {
 import { motion } from "framer-motion";
 import { memo, useEffect, useRef, useState } from "react";
 import type { TagResponse } from "../../../api/tagApi";
+import { useCurrency } from "../../../hooks/useCurrency";
+import useTranslation from "../../../hooks/useTranslation";
 import type { CategoryResponse } from "../../../types/responses/category.response";
 import type { ProductWithRatingResponse } from "../../../types/responses/product.response";
+import { EXCHANGE_RATE_USD_TO_VND } from "../../../utils/format";
 interface FilterSidebarProps {
   onFilterChange: (filters: {
     searchName: string | null;
@@ -32,27 +35,40 @@ interface FilterSidebarProps {
 }
 
 const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }: FilterSidebarProps) => {
+  const { t, i18n } = useTranslation("shop");
+  const { format } = useCurrency();
+  const isVi = i18n.language.startsWith("vi");
+
   const [searchName, setSearchName] = useState<string | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-  const [priceRange, setPriceRange] = useState<number[]>([0, 200]);
+  const maxSlider = isVi ? 5000000 : 200;
+  const [priceRange, setPriceRange] = useState<number[]>([0, maxSlider]);
   const [viewMode, setViewMode] = useState<"all" | "products" | "combos">("all");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-
   const prevFilterKey = useRef<string>("");
   const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${priceRange[0]}|${priceRange[1]}|${viewMode}`;
+  const EXCHANGE_RATE = EXCHANGE_RATE_USD_TO_VND;
+
+  useEffect(() => {
+    setPriceRange([0, isVi ? 5000000 : 200]);
+  }, [isVi]);
 
   useEffect(() => {
     if (currentFilterKey !== prevFilterKey.current) {
       prevFilterKey.current = currentFilterKey;
+
+      const finalMinPrice = isVi ? priceRange[0] / EXCHANGE_RATE : priceRange[0];
+      const finalMaxPrice = isVi ? priceRange[1] / EXCHANGE_RATE : priceRange[1];
+
       onFilterChange({
         searchName,
         categoryIds: selectedCategories,
-        minPrice: priceRange[0],
-        maxPrice: priceRange[1],
+        minPrice: finalMinPrice,
+        maxPrice: finalMaxPrice,
         viewMode,
       });
     }
-  }, [currentFilterKey, onFilterChange, searchName, selectedCategories, priceRange, viewMode]);
+  }, [currentFilterKey, onFilterChange, searchName, selectedCategories, priceRange, viewMode, isVi, EXCHANGE_RATE]);
 
   const handleSearch = () => {
     onFilterChange({
@@ -101,7 +117,7 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
           fullWidth
           variant="outlined"
           size="small"
-          placeholder="Search Product"
+          placeholder={t("filter.searchPlaceholder")}
           value={searchName || ""}
           onChange={(e) => setSearchName(e.target.value || null)}
           onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -130,7 +146,7 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
       {/* Menu Type Filter */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, fontSize: "1.1rem", color: "#333" }}>
-          Types
+          {t("filter.types")}
         </Typography>
         <RadioGroup
           value={viewMode}
@@ -142,17 +158,17 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
           <FormControlLabel
             value="all"
             control={<Radio size="small" sx={{ color: "#FF9F0D", "&.Mui-checked": { color: "#FF9F0D" } }} />}
-            label={<Typography variant="body2">All</Typography>}
+            label={<Typography variant="body2">{t("filter.all")}</Typography>}
           />
           <FormControlLabel
             value="combos"
             control={<Radio size="small" sx={{ color: "#FF9F0D", "&.Mui-checked": { color: "#FF9F0D" } }} />}
-            label={<Typography variant="body2">Combos</Typography>}
+            label={<Typography variant="body2">{t("filter.combos")}</Typography>}
           />
           <FormControlLabel
             value="products"
             control={<Radio size="small" sx={{ color: "#FF9F0D", "&.Mui-checked": { color: "#FF9F0D" } }} />}
-            label={<Typography variant="body2">Products</Typography>}
+            label={<Typography variant="body2">{t("filter.products")}</Typography>}
           />
         </RadioGroup>
       </Box>
@@ -168,7 +184,7 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
             fontSize: "14pt",
           }}
         >
-          Category
+          {t("filter.category")}
         </Typography>
         <FormGroup
           sx={{
@@ -247,14 +263,16 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
             mb: 2,
           }}
         >
-          Filter By Price
+          {t("filter.price")}
         </Typography>
         <Slider
           value={priceRange}
           onChange={handlePriceChange}
           valueLabelDisplay="auto"
           min={0}
-          max={200}
+          max={isVi ? 5000000 : 200}
+          step={isVi ? 50000 : 1}
+          valueLabelFormat={(value) => (isVi ? `${(value / 1000000).toFixed(1)}M` : `$${value}`)}
           sx={{
             color: "#FF9F0D",
             height: 4,
@@ -277,12 +295,15 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
         />
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Typography variant="body2" color="text.secondary">
-            From: <span style={{ color: "#1A1A1A", fontWeight: 600 }}>${priceRange[0]}</span>
+            {t("filter.from")}:{" "}
+            <span style={{ color: "#1A1A1A", fontWeight: 600 }}>
+              {format(isVi ? priceRange[0] / 25400 : priceRange[0])}
+            </span>
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            To:{" "}
+            {t("filter.to")}:{" "}
             <span style={{ color: "#1A1A1A", fontWeight: 600 }}>
-              ${priceRange[1] === 1000000 ? "Any" : priceRange[1]}
+              {format(isVi ? priceRange[1] / 25400 : priceRange[1])}
             </span>
           </Typography>
         </Box>
@@ -300,7 +321,7 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
             pl: 0,
           }}
         >
-          Latest Products
+          {t("filter.latest")}
         </Typography>
 
         {latestProducts.map((item) => (
@@ -344,7 +365,7 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
                   mb: 0.2,
                 }}
               >
-                ${item.price.toFixed(2)}
+                {format(item.price)}
               </Typography>
               <Rating
                 name={`rating-${item.id}`}
@@ -374,11 +395,11 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
             mb: 2,
           }}
         >
-          Product Tags
+          {t("filter.tags")}
         </Typography>
         {tags.length === 0 ? (
           <Typography variant="body2" color="text.secondary" sx={{ py: 1 }}>
-            No tags available
+            {t("filter.noTags")}
           </Typography>
         ) : (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>

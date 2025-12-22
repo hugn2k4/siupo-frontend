@@ -14,8 +14,9 @@ import {
   useTheme,
 } from "@mui/material";
 import { motion } from "framer-motion";
+import { useCurrency } from "../../../hooks/useCurrency";
+import useTranslation from "../../../hooks/useTranslation";
 import type { ComboResponse } from "../../../types/responses/combo.response";
-import { formatCurrency } from "../../../utils/format";
 
 interface ComboDetailDialogProps {
   open: boolean;
@@ -27,6 +28,8 @@ interface ComboDetailDialogProps {
 const ComboDetailDialog = ({ open, onClose, combo, onAddToCart }: ComboDetailDialogProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { t } = useTranslation("shop");
+  const { format } = useCurrency();
 
   if (!combo) return null;
 
@@ -121,7 +124,7 @@ const ComboDetailDialog = ({ open, onClose, combo, onAddToCart }: ComboDetailDia
           }}
         >
           <Typography variant="overline" sx={{ color: "#FF9F0D", fontWeight: 700, letterSpacing: 1.5, mb: 1 }}>
-            COMBO SPECIAL
+            {t("combo.special")}
           </Typography>
 
           <Typography
@@ -146,7 +149,7 @@ const ComboDetailDialog = ({ open, onClose, combo, onAddToCart }: ComboDetailDia
                   fontWeight: 800,
                 }}
               >
-                {formatCurrency(combo.basePrice, "VND")}
+                {format(combo.basePrice)}
               </Typography>
               {combo.originalPrice > combo.basePrice && (
                 <Typography
@@ -157,7 +160,7 @@ const ComboDetailDialog = ({ open, onClose, combo, onAddToCart }: ComboDetailDia
                     fontWeight: 500,
                   }}
                 >
-                  {formatCurrency(combo.originalPrice, "VND")}
+                  {format(combo.originalPrice)}
                 </Typography>
               )}
             </Stack>
@@ -174,19 +177,19 @@ const ComboDetailDialog = ({ open, onClose, combo, onAddToCart }: ComboDetailDia
                   fontWeight: 700,
                 }}
               >
-                Tiết kiệm {formatCurrency(combo.originalPrice - combo.basePrice, "VND")}
+                {t("combo.save")} {format(combo.originalPrice - combo.basePrice)}
               </Box>
             )}
           </Box>
 
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4, lineHeight: 1.6 }}>
-            {combo.description || "Thưởng thức combo tuyệt hảo với sự kết hợp hoàn hảo của các món ăn đặc sắc."}
+            {combo.description || t("combo.noDescription")}
           </Typography>
 
           <Divider sx={{ mb: 3, borderStyle: "dashed" }} />
 
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 2, fontSize: "1.1rem" }}>
-            Bao gồm ({combo.items.length} món):
+            {t("combo.includes", { count: combo.items.length })}
           </Typography>
 
           <Box
@@ -253,7 +256,8 @@ const ComboDetailDialog = ({ open, onClose, combo, onAddToCart }: ComboDetailDia
                         {item.productName}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        Số lượng: <span style={{ color: "#FF9F0D", fontWeight: 700 }}>x{item.quantity}</span>
+                        {t("combo.quantity")}{" "}
+                        <span style={{ color: "#FF9F0D", fontWeight: 700 }}>x{item.quantity}</span>
                       </Typography>
                     </Box>
                   </Box>
@@ -283,7 +287,7 @@ const ComboDetailDialog = ({ open, onClose, combo, onAddToCart }: ComboDetailDia
               },
             }}
           >
-            Thêm vào giỏ hàng - {formatCurrency(combo.basePrice, "VND")}
+            {t("combo.addToCartWithPrice", { price: format(combo.basePrice) })}
           </Button>
         </DialogContent>
       </Box>

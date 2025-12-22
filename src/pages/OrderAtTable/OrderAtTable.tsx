@@ -1,15 +1,14 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import preOrderPayment from "../../api/preOrderPayment";
 import { useGlobal } from "../../hooks/useGlobal";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import preOrderPayment from "../../api/preOrderPayment";
-import FoodItemCard from "./components/FoodItemCard";
-import ComboCard from "./components/ComboCard";
-import OrderSummary from "./components/OrderSummary";
-import type { ProductResponse } from "../../types/responses/product.response";
-import type { Combo } from "../../types/models/combo";
-import productService from "../../services/productService";
 import comboService from "../../services/comboService";
-import { useEffect } from "react";
+import productService from "../../services/productService";
+import type { Combo } from "../../types/models/combo";
+import type { ProductResponse } from "../../types/responses/product.response";
+import ComboCard from "./components/ComboCard";
+import FoodItemCard from "./components/FoodItemCard";
+import OrderSummary from "./components/OrderSummary";
 
 const CART_STORAGE_KEY = "order_at_table_cart_v1";
 const USD_TO_VND_RATE = 25141;
@@ -269,7 +268,7 @@ const OrderAtTable: React.FC = () => {
           </svg>
           <input
             type="text"
-            placeholder="Tìm kiếm món ăn..."
+            placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"

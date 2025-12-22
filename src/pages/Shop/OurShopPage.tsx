@@ -1,8 +1,10 @@
 // src/pages/OurShopPage.tsx
 import FilterListIcon from "@mui/icons-material/FilterList";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import { Box, CircularProgress, Drawer, IconButton, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Drawer, IconButton, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import LoadingPageSpinner from "../../components/common/LoadingSpinner";
+import useTranslation from "../../hooks/useTranslation";
 import pageService from "../../services/pageService";
 import type { ShopInitialDataResponse } from "../../types/responses/shop.response";
 import ComboList from "./components/ComboList";
@@ -21,6 +23,7 @@ function OurShopPage() {
   const [initialData, setInitialData] = useState<ShopInitialDataResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation("shop");
 
   const [filters, setFilters] = useState<FilterState>({
     searchName: null,
@@ -79,23 +82,17 @@ function OurShopPage() {
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
   // Loading state
-  if (loading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
-        <CircularProgress sx={{ color: "#FF9F0D" }} size={60} />
-      </Box>
-    );
-  }
+  if (loading) return <LoadingPageSpinner />;
 
   // Error state
   if (error || !initialData) {
     return (
       <Box sx={{ textAlign: "center", py: 8 }}>
         <Typography variant="h6" color="error" mb={2}>
-          {error || "Failed to load shop data"}
+          {t("page.errorTitle")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Please refresh the page or try again later.
+          {t("page.errorSubtitle")}
         </Typography>
       </Box>
     );
@@ -143,7 +140,7 @@ function OurShopPage() {
                 <Stack direction="row" alignItems="center" spacing={1.5} mb={4}>
                   <LocalFireDepartmentIcon sx={{ color: "#FF9F0D", fontSize: 32 }} />
                   <Typography variant="h4" fontWeight={800} color="#1A1A1A">
-                    Hot Combos & Specials!
+                    {t("page.hotCombos")}
                   </Typography>
                 </Stack>
                 <ComboList combos={initialData.combos} />
@@ -154,7 +151,7 @@ function OurShopPage() {
             {(filters.viewMode === "all" || filters.viewMode === "products") && (
               <Box>
                 <Typography variant="h4" fontWeight={800} color="#1A1A1A" mb={4}>
-                  All Products Menu
+                  {t("page.allProducts")}
                 </Typography>
                 <ProductList {...productListProps} />
               </Box>

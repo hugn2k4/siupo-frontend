@@ -1,4 +1,4 @@
-import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Select, Skeleton, Typography } from "@mui/material";
+import { Alert, Box, Button, FormControl, MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { memo, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,8 +15,10 @@ import LastPageOutlinedIcon from "@mui/icons-material/LastPageOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { wishlistApi } from "../../../api/wishListApi";
 import LoginRequiredDialog from "../../../components/common/LoginRequiredDialog";
+import { useCurrency } from "../../../hooks/useCurrency";
 import { useGlobal } from "../../../hooks/useGlobal";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import useTranslation from "../../../hooks/useTranslation";
 import cartService from "../../../services/cartService";
 
 interface ProductListProps {
@@ -48,6 +50,8 @@ const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initial
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const { t } = useTranslation("shop");
+  const { format } = useCurrency();
 
   const mapSortBy = (uiSort: string): string => {
     switch (uiSort) {
@@ -165,11 +169,10 @@ const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initial
       return;
     }
     try {
-      await cartService.addToCart({ productId: productId, quantity: 1 });
-      showSnackbar("Product added to cart!", "success", 3000);
-    } catch (error) {
-      console.error("Lỗi khi thêm vào giỏ hàng:", error);
-      showSnackbar("Failed to add product to cart!", "error", 3000);
+      await cartService.addToCart({ productId, quantity: 1 });
+      showSnackbar(t("product.addSuccess"), "success", 3000);
+    } catch {
+      showSnackbar(t("product.addError"), "error", 3000);
     }
   };
 
@@ -189,10 +192,10 @@ const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initial
     try {
       if (currentStatus) {
         await wishlistApi.removeFromWishlist(productId);
-        showSnackbar("Removed from wishlist!", "info", 2000);
+        showSnackbar(t("product.wishlistRemove"), "info", 2000);
       } else {
         await wishlistApi.addToWishlist(productId);
-        showSnackbar("Added to wishlist!", "success", 2000);
+        showSnackbar(t("product.wishlistAdd"), "success", 2000);
       }
 
       const updatedProducts = [...products];
@@ -202,7 +205,7 @@ const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initial
       };
       setProducts(updatedProducts);
     } catch {
-      showSnackbar("Failed to update wishlist!", "error", 3000);
+      showSnackbar(t("product.wishlistError"), "error", 3000);
     }
   };
 
@@ -302,30 +305,28 @@ const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initial
       {/* Sort and Show controls */}
       <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, mb: 4, mt: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Typography variant="body1">Sort By:</Typography>
+          <Typography variant="body1">{t("product.sortBy")}</Typography>
           <FormControl sx={{ minWidth: 200 }}>
-            <InputLabel sx={{ display: "none" }}>Sort By</InputLabel>
             <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)} disabled={loading} sx={{ height: 35 }}>
-              <MenuItem value="id,asc">Default</MenuItem>
-              <MenuItem value="newest">Newest</MenuItem>
-              <MenuItem value="price-low">Price: Low to High</MenuItem>
-              <MenuItem value="price-high">Price: High to Low</MenuItem>
+              <MenuItem value="id,asc">{t("product.default")}</MenuItem>
+              <MenuItem value="newest">{t("product.newest")}</MenuItem>
+              <MenuItem value="price-low">{t("product.priceLow")}</MenuItem>
+              <MenuItem value="price-high">{t("product.priceHigh")}</MenuItem>
             </Select>
           </FormControl>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Typography variant="body1">Show:</Typography>
+          <Typography variant="body1">{t("product.show")}</Typography>
           <FormControl sx={{ minWidth: 200 }}>
-            <InputLabel sx={{ display: "none" }}>Show</InputLabel>
             <Select
               value={showCount}
               onChange={(e) => setShowCount(e.target.value)}
               disabled={loading}
               sx={{ height: 35 }}
             >
-              <MenuItem value={12}>12 per page</MenuItem>
-              <MenuItem value={15}>15 per page</MenuItem>
-              <MenuItem value={24}>24 per page</MenuItem>
+              <MenuItem value={12}>12 {t("product.perPage")}</MenuItem>
+              <MenuItem value={15}>15 {t("product.perPage")}</MenuItem>
+              <MenuItem value={24}>24 {t("product.perPage")}</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -370,7 +371,7 @@ const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initial
       ) : products.length === 0 ? (
         <Box sx={{ textAlign: "center", py: 12, minWidth: { xs: "unset", lg: "826px" } }}>
           <Typography variant="h6" color="text.secondary">
-            Không tìm thấy sản phẩm nào
+            {t("product.notFound")}
           </Typography>
         </Box>
       ) : (
@@ -450,7 +451,7 @@ const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initial
                       fontWeight: "bold",
                     }}
                   >
-                    NEW!
+                    {t("product.new")}
                   </Box>
                 )}
 
@@ -550,7 +551,7 @@ const ProductList = memo(({ searchName, categoryIds, minPrice, maxPrice, initial
                   {product.name}
                 </Typography>
                 <Typography variant="body2" color="#FF9F0D" sx={{ fontSize: 12 }}>
-                  ${product.price.toFixed(2)}
+                  {format(product.price)}
                 </Typography>
               </Box>
             </Box>

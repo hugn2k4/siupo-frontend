@@ -1,8 +1,9 @@
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { Box, Checkbox, CircularProgress, Container, Divider, Stack, Typography } from "@mui/material";
+import { Box, Checkbox, Container, Divider, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MyButton from "../../components/common/Button";
+import LoadingPageSpinner from "../../components/common/LoadingSpinner";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useTranslation } from "../../hooks/useTranslation";
 import cartService from "../../services/cartService";
@@ -136,9 +137,7 @@ const Cart: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px" }}>
-          <CircularProgress sx={{ color: "var(--color-primary)" }} />
-        </Box>
+        <LoadingPageSpinner />
       ) : cartItems.length === 0 ? (
         <Box
           sx={{

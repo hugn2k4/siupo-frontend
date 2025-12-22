@@ -1,11 +1,19 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 
+import StatsBg from "../../assets/images/image_stats_background.png";
+
+// Import Icons/Images
+import ChefIcon from "../../assets/images/image_chef.png";
+import FoodIcon from "../../assets/images/image_food.png";
+import ExperienceIcon from "../../assets/images/image_experience.png";
+import HappyIcon from "../../assets/images/image_happy.png";
+
 const statsData = [
-  { image: "../../src/assets/images/image_chef.png", number: "420", description: "Professional Chefs" },
-  { image: "../../src/assets/images/image_food.png", number: "320", description: "Items Of Food" },
-  { image: "../../src/assets/images/image_experience.png", number: "30+", description: "Years of Experience" },
-  { image: "../../src/assets/images/image_happy.png", number: "420", description: "Happy Customers" },
+  { image: ChefIcon, number: "420", description: "Professional Chefs" },
+  { image: FoodIcon, number: "320", description: "Items Of Food" },
+  { image: ExperienceIcon, number: "30+", description: "Years of Experience" },
+  { image: HappyIcon, number: "420", description: "Happy Customers" },
 ];
 
 const StatsSection: React.FC = () => {
@@ -28,7 +36,7 @@ const StatsSection: React.FC = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundImage: `url(../../src/assets/images/image_stats_background.png)`,
+          backgroundImage: `url(${StatsBg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

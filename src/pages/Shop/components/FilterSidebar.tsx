@@ -1,3 +1,5 @@
+// src/components/FilterSidebar.tsx
+
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
@@ -309,7 +311,6 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
         </Box>
       </Box>
 
-      {/* Latest Products */}
       <Box sx={{ mb: 2, p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"
@@ -383,7 +384,7 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
         ))}
       </Box>
 
-      {/* Product Tags */}
+      {/* Product Tags – giữ nguyên 100% */}
       <Box sx={{ p: 0, bgcolor: "#fff" }}>
         <Typography
           variant="h6"

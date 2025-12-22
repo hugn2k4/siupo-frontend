@@ -186,5 +186,4 @@ const MenuSection: React.FC = () => {
     </section>
   );
 };
-
 export default MenuSection;

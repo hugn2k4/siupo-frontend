@@ -1,6 +1,7 @@
 import { Box, Container, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ShiningStarsIcon from "../../../assets/icons/shining_stars.svg";
 import SparkleIcon from "../../../assets/icons/sparkle.svg";
 import DefaultHero from "../../../assets/images/image_hero.png";
@@ -8,7 +9,6 @@ import DefaultHeroMobile from "../../../assets/images/image_hero_mobile.png";
 import MyButton from "../../../components/common/Button";
 import { useTranslation } from "../../../hooks/useTranslation";
 import type { Banner } from "../../../types/models/banner";
-import { useNavigate } from "react-router-dom";
 
 interface HeroProps {
   banners: Banner[];

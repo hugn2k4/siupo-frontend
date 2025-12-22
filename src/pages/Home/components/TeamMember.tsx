@@ -63,5 +63,4 @@ const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
     </section>
   );
 };
-
 export default TeamSection;

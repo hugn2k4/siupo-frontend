@@ -60,6 +60,7 @@ const MenuSection: React.FC = () => {
         const response = await productApi.searchProducts(
           null, // name
           [activeCategoryId], // categoryIds
+          null,
           null, // minPrice
           null, // maxPrice
           0, // page (0-based)

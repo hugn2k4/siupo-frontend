@@ -97,6 +97,7 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
         const response = await productApi.searchProducts(
           null, // name
           [section.categoryId], // categoryIds
+          null,
           null, // minPrice
           null, // maxPrice
           0, // page

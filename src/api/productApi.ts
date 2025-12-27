@@ -13,6 +13,7 @@ const productApi = {
   searchProducts: (
     name: string | null,
     categoryIds: number[] | null,
+    tagIds: number[] | null,
     minPrice: number | null,
     maxPrice: number | null,
     page: number,
@@ -24,6 +25,7 @@ const productApi = {
         params: {
           name: name || undefined,
           categoryIds: categoryIds?.length ? categoryIds.join(",") : undefined,
+          tagIds: tagIds?.length ? tagIds.join(",") : undefined,
           minPrice: minPrice ?? undefined,
           maxPrice: maxPrice ?? undefined,
           page,

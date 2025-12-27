@@ -27,6 +27,7 @@ interface FilterSidebarProps {
   onFilterChange: (filters: {
     searchName: string | null;
     categoryIds: number[];
+    tagIds: number[];
     minPrice: number;
     maxPrice: number;
     viewMode: "all" | "products" | "combos";
@@ -46,9 +47,9 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
   const maxSlider = isVi ? 5000000 : 200;
   const [priceRange, setPriceRange] = useState<number[]>([0, maxSlider]);
   const [viewMode, setViewMode] = useState<"all" | "products" | "combos">("all");
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   const prevFilterKey = useRef<string>("");
-  const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${priceRange[0]}|${priceRange[1]}|${viewMode}`;
+  const currentFilterKey = `${searchName || ""}|${selectedCategories.join(",")}|${selectedTagIds.join(",")}|${priceRange[0]}|${priceRange[1]}|${viewMode}`;
   const EXCHANGE_RATE = EXCHANGE_RATE_USD_TO_VND;
 
   useEffect(() => {
@@ -65,17 +66,29 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
       onFilterChange({
         searchName,
         categoryIds: selectedCategories,
+        tagIds: selectedTagIds,
         minPrice: finalMinPrice,
         maxPrice: finalMaxPrice,
         viewMode,
       });
     }
-  }, [currentFilterKey, onFilterChange, searchName, selectedCategories, priceRange, viewMode, isVi, EXCHANGE_RATE]);
+  }, [
+    currentFilterKey,
+    onFilterChange,
+    searchName,
+    selectedCategories,
+    selectedTagIds,
+    priceRange,
+    viewMode,
+    isVi,
+    EXCHANGE_RATE,
+  ]);
 
   const handleSearch = () => {
     onFilterChange({
       searchName,
       categoryIds: selectedCategories,
+      tagIds: selectedTagIds,
       minPrice: priceRange[0],
       maxPrice: priceRange[1],
       viewMode,
@@ -92,8 +105,8 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
     setPriceRange(newValue as number[]);
   };
 
-  const handleTagClick = (tagName: string) => {
-    setSelectedTag((prev) => (prev === tagName ? null : tagName));
+  const handleTagClick = (tagId: number) => {
+    setSelectedTagIds((prev) => (prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]));
   };
 
   return (
@@ -406,15 +419,15 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
             {tags.map((tag) => (
               <Typography
-                key={tag.name}
+                key={tag.id}
                 variant="body2"
                 sx={{
                   display: "inline-block",
                   px: 2,
                   py: 0.5,
-                  bgcolor: selectedTag === tag.name ? "#FF9F0D" : "transparent",
-                  color: selectedTag === tag.name ? "#fff" : "#4F4F4F",
-                  borderBottom: selectedTag === tag.name ? "none" : "1px solid #F2F2F2",
+                  bgcolor: selectedTagIds.includes(tag.id) ? "#FF9F0D" : "transparent",
+                  color: selectedTagIds.includes(tag.id) ? "#fff" : "#4F4F4F",
+                  borderBottom: selectedTagIds.includes(tag.id) ? "none" : "1px solid #F2F2F2",
                   borderRadius: 0,
                   cursor: "pointer",
                   fontSize: "0.9rem",
@@ -424,7 +437,7 @@ const FilterSidebar = memo(({ onFilterChange, categories, tags, latestProducts }
                     borderBottomColor: "#FF9F0D",
                   },
                 }}
-                onClick={() => handleTagClick(tag.name)}
+                onClick={() => handleTagClick(tag.id)}
               >
                 {tag.name}
               </Typography>

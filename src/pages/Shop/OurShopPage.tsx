@@ -14,6 +14,7 @@ import ProductList from "./components/ProductList";
 interface FilterState {
   searchName: string | null;
   categoryIds: number[];
+  tagIds: number[];
   minPrice: number;
   maxPrice: number;
   viewMode: "all" | "products" | "combos";
@@ -28,6 +29,7 @@ function OurShopPage() {
   const [filters, setFilters] = useState<FilterState>({
     searchName: null,
     categoryIds: [],
+    tagIds: [],
     minPrice: 0,
     maxPrice: 1000000,
     viewMode: "all",
@@ -61,16 +63,17 @@ function OurShopPage() {
     () => ({
       searchName: filters.searchName,
       categoryIds: filters.categoryIds,
+      tagIds: filters.tagIds,
       minPrice: filters.minPrice,
       maxPrice: filters.maxPrice,
       initialProducts: initialData?.products,
     }),
-    [filters.searchName, filters.categoryIds, filters.minPrice, filters.maxPrice, initialData?.products]
+    [filters.searchName, filters.categoryIds, filters.tagIds, filters.minPrice, filters.maxPrice, initialData?.products]
   );
 
   const handleFilterChange = useCallback(
     (newFilters: FilterState) => {
-      const newKey = `${newFilters.searchName || ""}|${newFilters.categoryIds.join(",")}|${newFilters.minPrice}|${newFilters.maxPrice}|${newFilters.viewMode}`;
+      const newKey = `${newFilters.searchName || ""}|${newFilters.categoryIds.join(",")}|${newFilters.tagIds.join(",")}|${newFilters.minPrice}|${newFilters.maxPrice}|${newFilters.viewMode}`;
       if (newKey === prevFiltersRef.current) return;
       prevFiltersRef.current = newKey;
       setFilters(newFilters);

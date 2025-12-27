@@ -22,7 +22,9 @@ interface OrderSummaryProps {
   onDecCombo: (id: number) => void;
   onRemoveCombo: (id: number) => void;
   onCheckout: () => void;
+  onPayLater?: () => void;
   loading?: boolean;
+  isPreOrderMode?: boolean; // true = chỉ 1 nút Xác nhận, false = 2 nút Pay with MoMo + Pay Later
 }
 
 export default function OrderSummary({
@@ -35,7 +37,9 @@ export default function OrderSummary({
   onDecCombo,
   onRemoveCombo,
   onCheckout,
+  onPayLater,
   loading,
+  isPreOrderMode = false,
 }: OrderSummaryProps) {
   const itemsTotal = items.reduce((s: number, it: OrderedProduct) => s + (it.data.price || 0) * it.quantity, 0);
   const combosTotal = combos.reduce((s: number, c: OrderedCombo) => s + (c.data.basePrice || 0) * c.quantity, 0);
@@ -89,13 +93,50 @@ export default function OrderSummary({
             <div className="font-extrabold text-lg">Total</div>
             <div className="font-extrabold text-lg">${total.toLocaleString()}</div>
           </div>
-          <button
-            onClick={onCheckout}
-            disabled={disabled}
-            className={`mt-3 w-full py-2 rounded-md font-semibold ${disabled ? "bg-gray-400 text-white" : "bg-amber-500 text-black shadow-md"}`}
-          >
-            {loading ? "Processing..." : "Pay with MoMo"}
-          </button>
+          <div className="mt-3 flex flex-col gap-2">
+            {isPreOrderMode ? (
+              // Pre-order mode: Chỉ 1 nút Xác nhận
+              <button
+                onClick={onCheckout}
+                disabled={disabled}
+                className={`w-full py-2.5 rounded-md font-semibold transition-all ${
+                  disabled
+                    ? "bg-gray-400 text-white cursor-not-allowed"
+                    : "bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:from-amber-600 hover:to-orange-700"
+                }`}
+              >
+                {loading ? "Processing..." : "Xác nhận"}
+              </button>
+            ) : (
+              // QR Code mode: 2 nút Pay with MoMo + Pay Later
+              <>
+                <button
+                  onClick={onCheckout}
+                  disabled={disabled}
+                  className={`w-full py-2.5 rounded-md font-semibold transition-all ${
+                    disabled
+                      ? "bg-gray-400 text-white cursor-not-allowed"
+                      : "bg-gradient-to-r from-pink-600 to-purple-600 text-white shadow-md hover:shadow-lg hover:from-pink-700 hover:to-purple-700"
+                  }`}
+                >
+                  {loading ? "Processing..." : "Pay with MoMo"}
+                </button>
+                {onPayLater && (
+                  <button
+                    onClick={onPayLater}
+                    disabled={disabled}
+                    className={`w-full py-2.5 rounded-md font-semibold transition-all ${
+                      disabled
+                        ? "bg-gray-400 text-white cursor-not-allowed"
+                        : "bg-amber-500 text-black shadow-md hover:bg-amber-600"
+                    }`}
+                  >
+                    Pay Later
+                  </button>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

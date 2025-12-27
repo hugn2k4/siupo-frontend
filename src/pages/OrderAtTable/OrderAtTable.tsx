@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import preOrderPayment from "../../api/preOrderPayment";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
+import { orderAtTableApi } from "../../api/orderAtTableApi";
+import { tableApi } from "../../api/tableApi";
 import { useGlobal } from "../../hooks/useGlobal";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { usePreOrder } from "../../contexts/PreOrderContext";
 import comboService from "../../services/comboService";
 import productService from "../../services/productService";
 import type { Combo } from "../../types/models/combo";
@@ -11,19 +14,33 @@ import FoodItemCard from "./components/FoodItemCard";
 import OrderSummary from "./components/OrderSummary";
 
 const CART_STORAGE_KEY = "order_at_table_cart_v1";
-const USD_TO_VND_RATE = 25141;
 
 const OrderAtTable: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const tableId = searchParams.get("tableId");
+
   const global = useGlobal();
   const isLogin = global?.isLogin ?? false;
+  const { setPreOrderItems } = usePreOrder();
+  const { showSnackbar } = useSnackbar(); // ✅ DI CHUYỂN LÊN ĐÂY
+
+  // Kiểm tra xem người dùng vào từ QR code hay từ nút chọn món trước
+  // isFromBooking: Đã đăng nhập VÀ vào từ nút "Chọn món trước" (pre-order cho booking)
+  // isFromQRCode: Quét QR code (order at table - không quan tâm login)
+  const isFromBooking = isLogin && location.state?.fromBooking === true;
+  const isFromQRCode = !!tableId && !isFromBooking;
 
   const [menu, setMenu] = useState<ProductResponse[]>([]);
   const [combos, setCombos] = useState<Combo[]>([]);
+  const [tableInfo, setTableInfo] = useState<{ id: number; tableNumber: string } | null>(null);
 
   const [selectedItems, setSelectedItems] = useState<Record<number, { data: ProductResponse; quantity: number }>>({});
   const [selectedCombos, setSelectedCombos] = useState<Record<number, { data: Combo; quantity: number }>>({});
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [cartPulse, setCartPulse] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,6 +78,27 @@ const OrderAtTable: React.FC = () => {
       mounted = false;
     };
   }, []);
+
+  // Fetch table info when tableId is available
+  useEffect(() => {
+    if (tableId) {
+      const fetchTableInfo = async () => {
+        try {
+          const response = await tableApi.getTableById(parseInt(tableId));
+          if (response.success && response.data) {
+            setTableInfo({
+              id: response.data.id,
+              tableNumber: response.data.tableNumber,
+            });
+          }
+        } catch (err) {
+          console.error("Failed to load table info", err);
+          showSnackbar("Không tìm thấy thông tin bàn", "error");
+        }
+      };
+      fetchTableInfo();
+    }
+  }, [tableId, showSnackbar]); // ✅ THÊM showSnackbar VÀO DEPENDENCY
 
   // persist cart to localStorage and restore on mount
   useEffect(() => {
@@ -150,7 +188,6 @@ const OrderAtTable: React.FC = () => {
     });
 
   const addCombo = (c: Combo) => {
-    if (!isLogin) return; // combos allowed only for logged-in pre-order flow
     setSelectedCombos((s) => ({ ...s, [c.id]: { data: c, quantity: (s[c.id]?.quantity || 0) + 1 } }));
     setCartPulse(true);
     setTimeout(() => setCartPulse(false), 300);
@@ -184,12 +221,65 @@ const OrderAtTable: React.FC = () => {
     return t1 + t2;
   }, [itemsArray, combosArray]);
 
-  const { showSnackbar } = useSnackbar();
-  const [loading, setLoading] = useState(false);
-
-  const handleCheckout = async () => {
+  // Handler cho pre-order booking (đã đăng nhập + từ nút chọn món)
+  const handleConfirmForBooking = () => {
     if (total === 0) {
       showSnackbar("Giỏ hàng trống", "error");
+      return;
+    }
+
+    // Chuyển đổi items sang format CartItem cho PreOrderContext
+    const cartItems = [
+      ...itemsArray.map((it) => ({
+        ...it.data, // Giữ nguyên toàn bộ ProductResponse
+        quantity: it.quantity,
+        note: "",
+      })),
+      ...combosArray.map((c) => ({
+        id: c.data.id,
+        name: c.data.name,
+        description: c.data.description || "",
+        price: c.data.basePrice || 0,
+        categoryId: 0, // Combo không có category
+        categoryName: "Combo",
+        imageUrls: c.data.imageUrls || [],
+        status: "AVAILABLE" as const,
+        createdAt: "",
+        updatedAt: "",
+        wishlist: false,
+        quantity: c.quantity,
+        note: "",
+        comboId: c.data.id, // Thêm field để phân biệt combo
+      })),
+    ];
+
+    // Lưu items vào PreOrderContext
+    setPreOrderItems(cartItems);
+
+    // Clear tableId nếu có (không cần cho booking)
+    sessionStorage.removeItem("selectedTableId");
+
+    // Clear cart local storage
+    localStorage.removeItem(CART_STORAGE_KEY);
+    setSelectedItems({});
+    setSelectedCombos({});
+
+    // Redirect về PlaceTableForGuest
+    navigate("/placetable", {
+      state: { hasPreOrder: true },
+      replace: true, // Replace history để không back lại được
+    });
+  };
+
+  // Handler cho Pay Later (QR code)
+  const handlePayLater = async () => {
+    if (total === 0) {
+      showSnackbar("Giỏ hàng trống", "error");
+      return;
+    }
+
+    if (!tableId) {
+      showSnackbar("Vui lòng quét mã QR trên bàn để đặt món", "error");
       return;
     }
 
@@ -199,34 +289,78 @@ const OrderAtTable: React.FC = () => {
       const items = [
         ...itemsArray.map((it) => ({
           productId: it.data.id,
-          name: it.data.name,
           quantity: it.quantity,
-          price: it.data.price,
+          note: "",
         })),
         ...combosArray.map((c) => ({
           comboId: c.data.id,
-          name: c.data.name,
           quantity: c.quantity,
-          price: c.data.basePrice,
+          note: "",
         })),
       ];
 
-      // Request body
-      const request = {
-        amount: Math.round(total * USD_TO_VND_RATE),
-        description: "Đặt bàn - Pre-order",
-        items: items,
-        customerInfo: {
-          name: global?.user?.fullName || "Khách tại bàn",
-          phone: global?.user?.phoneNumber || "",
-        },
-      };
+      // Gọi API tạo order at table với payment method COD (Pay Later)
+      const response = await orderAtTableApi.createOrder({
+        tableId: parseInt(tableId),
+        items,
+        paymentMethod: "COD",
+      });
 
-      // Gọi API tạo payment
-      const response = await preOrderPayment.createPayment(request);
+      if (response.success) {
+        showSnackbar("Đặt món thành công! Thanh toán sau khi hoàn thành.", "success");
 
-      // Response có cấu trúc: { data: { payUrl, orderId, amount } }
-      if (response.data?.payUrl) {
+        // Clear cart
+        setSelectedItems({});
+        setSelectedCombos({});
+        localStorage.removeItem(CART_STORAGE_KEY);
+      } else {
+        throw new Error(response.message || "Đặt món thất bại");
+      }
+    } catch (err) {
+      console.error("Order failed:", err);
+      const errorMessage = err instanceof Error ? err.message : "Đặt món thất bại";
+      showSnackbar(errorMessage, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handler cho Pay with MoMo (QR code)
+  const handleCheckout = async () => {
+    if (total === 0) {
+      showSnackbar("Giỏ hàng trống", "error");
+      return;
+    }
+
+    if (!tableId) {
+      showSnackbar("Vui lòng quét mã QR trên bàn để đặt món", "error");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Chuẩn bị items data
+      const items = [
+        ...itemsArray.map((it) => ({
+          productId: it.data.id,
+          quantity: it.quantity,
+          note: "",
+        })),
+        ...combosArray.map((c) => ({
+          comboId: c.data.id,
+          quantity: c.quantity,
+          note: "",
+        })),
+      ];
+
+      // Gọi API tạo order at table với payment method MOMO
+      const response = await orderAtTableApi.createOrder({
+        tableId: parseInt(tableId),
+        items,
+        paymentMethod: "MOMO",
+      });
+
+      if (response.success && response.data?.payUrl) {
         // Clear cart trước khi redirect
         setSelectedItems({});
         setSelectedCombos({});
@@ -234,12 +368,19 @@ const OrderAtTable: React.FC = () => {
 
         // Redirect to MoMo
         window.location.href = response.data.payUrl;
+      } else if (response.success && !response.data?.payUrl) {
+        // Order created successfully but no payment URL (COD)
+        showSnackbar("Đặt món thành công!", "success");
+        setSelectedItems({});
+        setSelectedCombos({});
+        localStorage.removeItem(CART_STORAGE_KEY);
       } else {
-        throw new Error("Không nhận được payment URL");
+        throw new Error(response.message || "Không nhận được payment URL");
       }
     } catch (err) {
       console.error("Payment failed:", err);
-      showSnackbar("Tạo thanh toán thất bại", "error");
+      const errorMessage = err instanceof Error ? err.message : "Tạo thanh toán thất bại";
+      showSnackbar(errorMessage, "error");
     } finally {
       setLoading(false);
     }
@@ -247,6 +388,43 @@ const OrderAtTable: React.FC = () => {
 
   return (
     <div className="px-6 py-6 md:px-10 bg-gray-50 min-h-screen">
+      {/* Table Info Banner - Chỉ hiển thị khi vào từ QR code */}
+      {isFromQRCode && tableInfo && (
+        <div className="mb-6 bg-gradient-to-r from-amber-500 to-orange-600 text-white p-4 rounded-lg shadow-lg">
+          <div className="flex items-center justify-center gap-3">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+            <div>
+              <div className="text-sm font-medium opacity-90">Đang đặt món cho</div>
+              <div className="text-2xl font-bold">{tableInfo.tableNumber}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Thông báo khi đang chọn món từ booking */}
+      {isFromBooking && (
+        <div className="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded">
+          <div className="flex items-center">
+            <svg className="w-6 h-6 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <p className="text-green-700 font-medium">Bạn đang chọn món cho đơn đặt bàn</p>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-6"></div>
 
       {/* Search and Filter Bar */}
@@ -346,8 +524,10 @@ const OrderAtTable: React.FC = () => {
               onIncCombo={incCombo}
               onDecCombo={decCombo}
               onRemoveCombo={removeCombo}
-              onCheckout={handleCheckout}
+              onCheckout={isFromBooking ? handleConfirmForBooking : handleCheckout}
+              onPayLater={!isFromBooking ? handlePayLater : undefined}
               loading={loading}
+              isPreOrderMode={isFromBooking}
             />
           </div>
         </aside>
@@ -389,9 +569,22 @@ const OrderAtTable: React.FC = () => {
               onRemoveCombo={removeCombo}
               onCheckout={() => {
                 setDrawerOpen(false);
-                handleCheckout();
+                if (isFromBooking) {
+                  handleConfirmForBooking();
+                } else {
+                  handleCheckout();
+                }
               }}
+              onPayLater={
+                !isFromBooking
+                  ? () => {
+                      setDrawerOpen(false);
+                      handlePayLater();
+                    }
+                  : undefined
+              }
               loading={loading}
+              isPreOrderMode={isFromBooking}
             />
           </div>
         </div>

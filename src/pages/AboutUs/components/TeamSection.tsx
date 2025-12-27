@@ -1,6 +1,6 @@
-import type { BannerProps } from "../../../types/props/BannerProps";
 import { Skeleton } from "@mui/material";
 import { useTranslation } from "../../../hooks/useTranslation";
+import type { BannerProps } from "../../../types/props/BannerProps";
 
 // Import 3 ảnh giống ChefPage
 import chef1 from "../../../assets/images/image_chef_1.png";
@@ -13,9 +13,10 @@ import defaultBackground from "../../../assets/images/image_about_us_6.png";
 const chefImages = [chef1, chef2, chef3];
 
 const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
-  const { t } = useTranslation("chef");
+  const { t: tChef } = useTranslation("chef");
+  const { t: tAbout } = useTranslation("about");
 
-  const allChefs = t("chefs", { returnObjects: true }) as Array<{
+  const allChefs = tChef("chefs", { returnObjects: true }) as Array<{
     name: string;
     role: string;
   }>;
@@ -36,10 +37,8 @@ const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
       ></div>
 
       <div className="max-w-6xl mx-auto px-4 text-center">
-        <h2 className="text-4xl font-bold text-white mb-4">Team Member</h2>
-        <p className="text-orange-100 max-w-2xl mx-auto">
-          Your dedication and performance have been outstanding — thank you for consistently going above and beyond.
-        </p>
+        <h2 className="text-4xl font-bold text-white mb-4">{tAbout("team.title")}</h2>
+        <p className="text-orange-100 max-w-2xl mx-auto">{tAbout("team.description")}</p>
       </div>
 
       <div className="absolute left-1/2 transform -translate-x-1/2 w-full max-w-6xl px-40 top-full -mt-54">

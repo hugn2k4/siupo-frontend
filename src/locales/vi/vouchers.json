@@ -1,0 +1,35 @@
+{
+  "errors": {
+    "failedToLoad": "Không thể tải danh sách voucher"
+  },
+  "messages": {
+    "copiedCode": "Đã sao chép mã voucher: {{code}}"
+  },
+  "types": {
+    "percentage": "Giảm Giá Theo Phần Trăm",
+    "fixedAmount": "Giảm Giá Cố Định",
+    "freeShipping": "Miễn Phí Vận Chuyển",
+    "freeShippingValue": "Miễn Phí Vận Chuyển"
+  },
+  "empty": {
+    "title": "Không có voucher nào",
+    "description": "Hãy quay lại sau để nhận khuyến mãi mới!"
+  },
+  "details": {
+    "minOrder": "Đơn tối thiểu",
+    "maxDiscount": "Giảm tối đa",
+    "validUntil": "Có hiệu lực đến",
+    "used": "Đã dùng"
+  },
+  "howToUse": {
+    "title": "Cách sử dụng voucher",
+    "steps": [
+      "Nhấp vào mã voucher để sao chép",
+      "Thêm sản phẩm vào giỏ hàng",
+      "Đến trang thanh toán",
+      "Dán mã vào phần Mã Giảm Giá",
+      "Nhấn Áp Dụng để nhận giảm giá"
+    ],
+    "note": "Chỉ có thể áp dụng một voucher cho mỗi đơn hàng"
+  }
+}

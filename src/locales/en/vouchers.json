@@ -1,0 +1,35 @@
+{
+  "errors": {
+    "failedToLoad": "Failed to load vouchers"
+  },
+  "messages": {
+    "copiedCode": "Copied voucher code: {{code}}"
+  },
+  "types": {
+    "percentage": "Percentage Discount",
+    "fixedAmount": "Fixed Amount Discount",
+    "freeShipping": "Free Shipping",
+    "freeShippingValue": "Free Shipping"
+  },
+  "empty": {
+    "title": "No vouchers available",
+    "description": "Check back soon for new promotions!"
+  },
+  "details": {
+    "minOrder": "Min order",
+    "maxDiscount": "Max discount",
+    "validUntil": "Valid until",
+    "used": "Used"
+  },
+  "howToUse": {
+    "title": "How to use vouchers",
+    "steps": [
+      "Click on voucher code to copy it",
+      "Add items to your cart",
+      "Go to checkout page",
+      "Paste code in Discount Code section",
+      "Click Apply to get your discount"
+    ],
+    "note": "Only one voucher can be applied per order"
+  }
+}

@@ -1,32 +1,20 @@
 import { Skeleton } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "../../../hooks/useTranslation";
 import type { BannerProps } from "../../../types/props/BannerProps";
 
 const TestimonialSection: React.FC<BannerProps> = ({ loading }) => {
+  const { t } = useTranslation("about");
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // 3 khách hàng với hình riêng + đánh giá chân thật
-  const testimonials = [
-    {
-      name: "Aaravh Naehia",
-      role: "Food Specialist",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-      text: "The quality of ingredients here is outstanding. Every salad feels fresh and thoughtfully prepared. This has become my go-to place for healthy, delicious meals that actually taste amazing!",
-    },
-    {
-      name: "Emma Larson",
-      role: "Fitness Coach",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
-      text: "Finally found a restaurant that truly understands healthy eating! The portions are perfect, flavors are spot on, and everything is made with real, fresh ingredients. The quinoa bowls are a must-try!",
-    },
-    {
-      name: "David Kim",
-      role: "Regular Customer",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
-      text: "I order lunch here 4–5 times a week. The grilled salmon salad is incredible — always fresh, perfectly seasoned, and delivered quickly. Hands down the best healthy food option in town!",
-    },
-  ];
+  const testimonials = t("testimonials.items", { returnObjects: true }) as Array<{
+    name: string;
+    role: string;
+    avatar: string;
+    text: string;
+  }>;
 
   const current = testimonials[currentIndex];
 
@@ -50,9 +38,9 @@ const TestimonialSection: React.FC<BannerProps> = ({ loading }) => {
     <section className="py-16 bg-white mt-60">
       <div className="text-center mb-12">
         <h3 className="text-primary mb-2 text-left pl-[30%]" style={{ fontSize: 30, fontFamily: "Great Vibes" }}>
-          Testimonials
+          {t("testimonials.subtitle")}
         </h3>
-        <h2 className="text-4xl font-bold text-gray-800 text-left pl-[30%] mb-4">What our client are saying</h2>
+        <h2 className="text-4xl font-bold text-gray-800 text-left pl-[30%] mb-4">{t("testimonials.title")}</h2>
       </div>
 
       <div className="max-w-4xl mx-auto px-4">

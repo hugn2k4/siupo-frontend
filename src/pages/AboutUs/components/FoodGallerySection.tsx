@@ -1,10 +1,10 @@
-import { Box, Skeleton, Dialog, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, Dialog, IconButton, Skeleton } from "@mui/material";
 import { useState } from "react";
 import defaultAboutUs from "../../../assets/images/image_about_us_home.png";
 import MyButton from "../../../components/common/Button";
 import { useTranslation } from "../../../hooks/useTranslation";
 import type { BannerProps } from "../../../types/props/BannerProps";
-import CloseIcon from "@mui/icons-material/Close";
 // Food Gallery Section Component
 const FoodGallerySection: React.FC<BannerProps> = ({ banners, loading }) => {
   const { t } = useTranslation("home");
@@ -34,7 +34,9 @@ const FoodGallerySection: React.FC<BannerProps> = ({ banners, loading }) => {
             <h2 className="text-4xl font-bold text-gray-800 mb-6">{t("aboutSection.title")}</h2>
             <p className="text-gray-600 mb-6 leading-relaxed">{t("aboutSection.description")}</p>
             <div className="flex items-center space-x-4 gap-4">
-              <MyButton isWatch colorScheme="orange" onClick={handleOpenVideo} />
+              <MyButton isWatch colorScheme="orange" onClick={handleOpenVideo}>
+                {t("hero.watchVideo")}{" "}
+              </MyButton>
             </div>
           </div>
         </div>

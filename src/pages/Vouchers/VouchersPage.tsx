@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import voucherApi from "../../api/voucherApi";
 import LoadingPageSpinner from "../../components/common/LoadingSpinner";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import { useTranslation } from "../../hooks/useTranslation";
 import type { VoucherResponse } from "../../types/responses/voucher.response";
 
 const VouchersPage: React.FC = () => {
+  const { t } = useTranslation("vouchers");
   const [vouchers, setVouchers] = useState<VoucherResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const { showSnackbar } = useSnackbar();
@@ -19,7 +21,7 @@ const VouchersPage: React.FC = () => {
       setVouchers(response.data || []);
     } catch (err) {
       console.error("Failed to fetch vouchers:", err);
-      showSnackbar("Failed to load vouchers", "error");
+      showSnackbar(t("errors.failedToLoad"), "error");
     } finally {
       setLoading(false);
     }
@@ -32,7 +34,7 @@ const VouchersPage: React.FC = () => {
 
   const copyVoucherCode = (code: string) => {
     navigator.clipboard.writeText(code);
-    showSnackbar(`Copied voucher code: ${code}`, "success");
+    showSnackbar(t("messages.copiedCode", { code }), "success");
   };
 
   const getVoucherIcon = (type: string) => {
@@ -49,7 +51,7 @@ const VouchersPage: React.FC = () => {
   };
 
   const getVoucherValue = (voucher: VoucherResponse) => {
-    if (voucher.type === "FREE_SHIPPING") return "Free Shipping";
+    if (voucher.type === "FREE_SHIPPING") return t("types.freeShippingValue");
     if (voucher.type === "PERCENTAGE") return `${voucher.discountValue}%`;
     return `${new Intl.NumberFormat("vi-VN").format(voucher.discountValue)}₫`;
   };
@@ -57,11 +59,11 @@ const VouchersPage: React.FC = () => {
   const getVoucherTypeLabel = (type: string) => {
     switch (type) {
       case "PERCENTAGE":
-        return "Percentage Discount";
+        return t("types.percentage");
       case "FIXED_AMOUNT":
-        return "Fixed Amount Discount";
+        return t("types.fixedAmount");
       case "FREE_SHIPPING":
-        return "Free Shipping";
+        return t("types.freeShipping");
       default:
         return type;
     }
@@ -85,10 +87,10 @@ const VouchersPage: React.FC = () => {
           >
             <Gift size={64} style={{ color: "var(--color-gray4)", marginBottom: "16px" }} />
             <Typography variant="h6" fontWeight={600} color="var(--color-gray2)" sx={{ mb: 1 }}>
-              No vouchers available
+              {t("empty.title")}
             </Typography>
             <Typography variant="body2" color="var(--color-gray3)">
-              Check back soon for new promotions!
+              {t("empty.description")}
             </Typography>
           </Paper>
         ) : (
@@ -173,17 +175,18 @@ const VouchersPage: React.FC = () => {
                     <Box sx={{ mb: 3 }}>
                       {voucher.minOrderValue && (
                         <Typography variant="body2" color="var(--color-gray3)" sx={{ mb: 0.75 }}>
-                          • Min order: <strong>{new Intl.NumberFormat("vi-VN").format(voucher.minOrderValue)}₫</strong>
+                          • {t("details.minOrder")}:{" "}
+                          <strong>{new Intl.NumberFormat("vi-VN").format(voucher.minOrderValue)}₫</strong>
                         </Typography>
                       )}
                       {voucher.maxDiscountAmount && (
                         <Typography variant="body2" color="var(--color-gray3)" sx={{ mb: 0.75 }}>
-                          • Max discount:{" "}
+                          • {t("details.maxDiscount")}:{" "}
                           <strong>{new Intl.NumberFormat("vi-VN").format(voucher.maxDiscountAmount)}₫</strong>
                         </Typography>
                       )}
                       <Typography variant="body2" color="var(--color-gray3)">
-                        • Valid until: <strong>{format(new Date(voucher.endDate), "dd MMM yyyy")}</strong>
+                        • {t("details.validUntil")}: <strong>{format(new Date(voucher.endDate), "dd MMM yyyy")}</strong>
                       </Typography>
                     </Box>
 
@@ -220,7 +223,7 @@ const VouchersPage: React.FC = () => {
                     {/* Usage Info */}
                     {voucher.usageLimit && (
                       <Typography variant="caption" color="var(--color-gray3)" sx={{ mt: 1.5, display: "block" }}>
-                        Used: {voucher.usedCount} / {voucher.usageLimit}
+                        {t("details.used")}: {voucher.usedCount} / {voucher.usageLimit}
                       </Typography>
                     )}
                   </Box>
@@ -242,16 +245,10 @@ const VouchersPage: React.FC = () => {
           }}
         >
           <Typography variant="h6" fontWeight={600} color="var(--color-gray1)" sx={{ mb: 3 }}>
-            How to use vouchers
+            {t("howToUse.title")}
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {[
-              "Click on voucher code to copy it",
-              "Add items to your cart",
-              "Go to checkout page",
-              "Paste code in Discount Code section",
-              "Click Apply to get your discount",
-            ].map((step, index) => (
+            {(t("howToUse.steps", { returnObjects: true }) as string[]).map((step, index) => (
               <Box key={index} sx={{ display: "flex", gap: 2 }}>
                 <Typography
                   variant="body2"
@@ -286,7 +283,7 @@ const VouchersPage: React.FC = () => {
             }}
           >
             <Typography variant="body2" color="var(--color-gray2)" fontWeight={500}>
-              💡 Only one voucher can be applied per order
+              💡 {t("howToUse.note")}
             </Typography>
           </Box>
         </Paper>

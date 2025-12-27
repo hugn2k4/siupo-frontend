@@ -1,12 +1,12 @@
-import { Box, Skeleton, Typography, Dialog, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close"; // ← Thêm icon đóng
+import { Box, Dialog, IconButton, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react"; // ← Thêm import này
-import CloseIcon from "@mui/icons-material/Close"; // ← Thêm icon đóng
+import { useNavigate } from "react-router-dom";
 import DefaultAboutUs from "../../../assets/images/image_about_us_home.png";
 import MyButton from "../../../components/common/Button";
 import { useTranslation } from "../../../hooks/useTranslation";
 import type { Banner } from "../../../types/models/banner";
-import { useNavigate } from "react-router-dom";
 
 interface AboutUsProps {
   banners: Banner[];
@@ -183,7 +183,7 @@ function AboutUs({ banners, loading }: AboutUsProps) {
 
               {/* Nút Watch Video - mở modal */}
               <MyButton isWatch={true} onClick={handleOpenVideo}>
-                Watch Video
+                {t("aboutSection.watchVideo") as string}
               </MyButton>
             </Box>
           </Box>

@@ -1,6 +1,8 @@
-import { Calendar, MessageSquare, ArrowRight } from "lucide-react";
+import { ArrowRight, Calendar, MessageSquare } from "lucide-react";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const LatestNewsBlog = () => {
+  const { t } = useTranslation("home");
   const blogPosts = [
     {
       id: 1,
@@ -40,13 +42,11 @@ const LatestNewsBlog = () => {
         {/* Header */}
         <div className="text-center mb-10 sm:mb-12 lg:mb-16">
           <div className="flex justify-center items-center gap-2 mb-3 sm:mb-4">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">Latest news & Blog</h1>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">{t("blog.title") as string}</h1>
             <span className="text-2xl sm:text-3xl">🌿</span>
           </div>
           <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            <br className="hidden sm:block" />
-            Varius sed pharetra dictum neque massa congue
+            {t("blog.description") as string}
           </p>
         </div>
 
@@ -90,7 +90,7 @@ const LatestNewsBlog = () => {
 
                 {/* Read More Link */}
                 <button className="flex items-center gap-2 text-gray-700 hover:text-green-600 font-medium transition-colors group/btn">
-                  <span>Read more</span>
+                  <span>{t("blog.readMore") as string}</span>
                   <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                 </button>
               </div>

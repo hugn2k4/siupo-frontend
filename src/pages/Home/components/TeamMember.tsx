@@ -1,16 +1,16 @@
-import type { BannerProps } from "../../../types/props/BannerProps";
 import { Skeleton } from "@mui/material";
-import { useTranslation } from "../../../hooks/useTranslation"; // Thêm import này
-import defaultAboutUsStaff from "../../../assets/images/image_about_us_staff.png";
 import defaultBackground from "../../../assets/images/image_about_us_6.png";
+import defaultAboutUsStaff from "../../../assets/images/image_about_us_staff.png";
 import chef1 from "../../../assets/images/image_chef_1.png";
 import chef2 from "../../../assets/images/image_chef_2.png";
 import chef3 from "../../../assets/images/image_chef_3.png";
+import { useTranslation } from "../../../hooks/useTranslation"; // Thêm import này
+import type { BannerProps } from "../../../types/props/BannerProps";
 const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
-  const { t } = useTranslation("chef"); // Dùng chung namespace "chef" như ChefPage
+  const { t } = useTranslation("home");
   const chefImages = [chef1, chef2, chef3];
-  // Lấy dữ liệu từ translation giống hệt ChefPage, chỉ lấy 3 thành viên đầu
-  const allChefs = t("chefs", { returnObjects: true }) as Array<{
+  // Lấy dữ liệu từ translation, chỉ lấy 3 thành viên đầu
+  const allChefs = t("chefSection.members", { returnObjects: true }) as Array<{
     name: string;
     role: string;
   }>;
@@ -32,10 +32,8 @@ const TeamSection: React.FC<BannerProps> = ({ banners, loading }) => {
       ></div>
 
       <div className="max-w-6xl mx-auto px-4 text-center">
-        <h2 className="text-4xl font-bold text-white mb-4">Team Member</h2>
-        <p className="text-green-100 max-w-2xl mx-auto">
-          Your dedication and performance have been outstanding — thank you for consistently going above and beyond.
-        </p>
+        <h2 className="text-4xl font-bold text-white mb-4">{t("chefSection.heading") as string}</h2>
+        <p className="text-green-100 max-w-2xl mx-auto">{t("chefSection.title") as string}</p>
       </div>
 
       {/* Grid nổi lên - giữ nguyên hoàn toàn */}

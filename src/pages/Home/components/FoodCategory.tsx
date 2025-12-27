@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import categoryApi from "../../../api/categoryApi";
-import type { CategoryResponse } from "../../../types/responses/category.response";
 import { useSnackbar } from "../../../hooks/useSnackbar";
+import { useTranslation } from "../../../hooks/useTranslation";
+import type { CategoryResponse } from "../../../types/responses/category.response";
 
 type CategoryDisplay = CategoryResponse & {
   items: number;
@@ -11,6 +12,7 @@ type CategoryDisplay = CategoryResponse & {
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?w=400";
 
 const FoodCategoryCarousel = () => {
+  const { t } = useTranslation("home");
   const [categories, setCategories] = useState<CategoryDisplay[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -82,19 +84,19 @@ const FoodCategoryCarousel = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-20 text-lg text-gray-500">Đang tải danh mục...</div>;
+    return <div className="text-center py-20 text-lg text-gray-500">{t("foodCategory.loading") as string}</div>;
   }
 
   if (categories.length === 0) {
-    return <div className="text-center py-20 text-lg text-gray-500">Không tìm thấy danh mục nào.</div>;
+    return <div className="text-center py-20 text-lg text-gray-500">{t("foodCategory.noCategories") as string}</div>;
   }
 
   return (
     <div className="bg-[#f5f5f0] py-16 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-semibold text-gray-800">Food category</h1>
-          <p className="text-gray-500 text-sm max-w-md mx-auto mt-3">Khám phá các món ăn ngon theo danh mục.</p>
+          <h1 className="text-5xl font-semibold text-gray-800">{t("foodCategory.title") as string}</h1>
+          <p className="text-gray-500 text-sm max-w-md mx-auto mt-3">{t("foodCategory.description") as string}</p>
         </div>
 
         <div className="relative px-10">

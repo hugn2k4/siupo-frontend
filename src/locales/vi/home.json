@@ -1,14 +1,4 @@
 {
-  "aboutSection": {
-    "description": "Ăn uống tốt không chỉ là để no bụng — mà là cung cấp cho cơ thể những chất dinh dưỡng cần thiết để luôn khỏe mạnh và tràn đầy năng lượng. Một chế độ ăn cân bằng gồm rau củ, ngũ cốc, protein và chất béo lành mạnh giúp bạn tận hưởng cả sức khỏe và hương vị trong khi hỗ trợ sức khỏe lâu dài.",
-    "heading": "Về Chúng Tôi",
-    "title": "Thức ăn là một phần quan trọng của chế độ ăn cân bằng"
-  },
-  "chefSection": {
-    "heading": "Đội Ngũ",
-    "title": "Gặp Gỡ Đầu Bếp Chuyên Nghiệp",
-    "viewAllChefs": "Xem Tất Cả Đầu Bếp"
-  },
   "hero": {
     "description": "Khám phá nhiều món ăn lành mạnh và ngon miệng được chế biến để nuôi dưỡng cơ thể và làm hài lòng vị giác của bạn. Từ salad tươi ngon đến các món bowl bổ dưỡng, mỗi món ăn đều được chế biến với tình yêu và nguyên liệu chất lượng, giúp bạn tận hưởng lối sống cân bằng và đầy hương vị.",
     "placeOrder": "Đặt Hàng",
@@ -17,19 +7,69 @@
     "title1": "Tận hưởng cuộc sống khỏe mạnh",
     "title2": "& Thức Ăn Ngon."
   },
-  "menuSection": {
-    "heading": "Thực Đơn",
-    "title": "Khám Phá Những Món Ăn Tuyệt Vời",
-    "viewAllMenu": "Xem Tất Cả Thực Đơn"
-  },
   "stats": {
     "happyCustomers": "Khách Hàng Hài Lòng",
     "masterChefs": "Đầu Bếp Chuyên Nghiệp",
     "popularDishes": "Món Ăn Phổ Biến",
     "yearsOfExperience": "Năm Kinh Nghiệm"
   },
+  "chefSection": {
+    "heading": "Đội Ngũ",
+    "title": "Gặp Gỡ Đầu Bếp Chuyên Nghiệp",
+    "viewAllChefs": "Xem Tất Cả Đầu Bếp",
+    "members": [
+      {
+        "name": "Lê Công Hùng",
+        "role": "Tech Lead & Architect"
+      },
+      {
+        "name": "Võ Thị Kim Anh",
+        "role": "Senior Frontend Developer"
+      },
+      {
+        "name": "Trần Nhật Minh",
+        "role": "Backend Engineering Lead"
+      }
+    ]
+  },
   "testimonials": {
     "heading": "Đánh Giá",
     "title": "Khách Hàng Nói Gì Về Chúng Tôi"
+  },
+  "whyChooseUs": {
+    "sectionTitle": "Tại sao chọn chúng tôi",
+    "heading": "Vì sao chúng tôi là lựa chọn tốt nhất?",
+    "description": "Chúng tôi tin rằng ăn uống lành mạnh nên là niềm vui chứ không phải gánh nặng. Vì vậy, chúng tôi chỉ sử dụng những nguyên liệu tươi ngon nhất và công thức nấu ăn tận tâm để tạo ra các bữa ăn vừa bổ dưỡng cho cơ thể vừa làm hài lòng vị giác của bạn—giúp bạn luôn tràn đầy năng lượng và hạnh phúc mỗi ngày.",
+    "fastDelivery": "Giao hàng nhanh chóng",
+    "service247": "Dịch vụ 24/7",
+    "freshFood": "Thực phẩm tươi ngon",
+    "qualityMaintain": "Đảm bảo chất lượng"
+  },
+  "foodCategory": {
+    "title": "Danh mục món ăn",
+    "description": "Khám phá các món ăn ngon theo danh mục.",
+    "loading": "Đang tải danh mục...",
+    "noCategories": "Không tìm thấy danh mục nào."
+  },
+  "menuSection": {
+    "heading": "Thực Đơn",
+    "title": "Thực Đơn Của Chúng Tôi",
+    "description": "Khám phá bộ sưu tập các món ăn bổ dưỡng, thơm ngon được chế biến từ những nguyên liệu hữu cơ tươi ngon nhất. Từ salad tươi mát đến các bát bowl bổ dưỡng và các lựa chọn giàu protein, mỗi món ăn được thiết kế để cung cấp năng lượng cho cơ thể và làm hài lòng vị giác của bạn—hoàn hảo cho lối sống khỏe mạnh.",
+    "viewAllMenu": "Xem Tất Cả Thực Đơn"
+  },
+  "blog": {
+    "title": "Tin tức & Blog mới nhất",
+    "description": "Khám phá những tin tức mới nhất và bài viết thú vị về ẩm thực và sức khỏe.",
+    "readMore": "Đọc thêm"
+  },
+  "aboutSection": {
+    "heading": "Về Chúng Tôi",
+    "title": "Thức ăn là một phần quan trọng của chế độ ăn cân bằng",
+    "description": "Ăn uống tốt không chỉ là để no bụng — mà là cung cấp cho cơ thể những chất dinh dưỡng cần thiết để luôn khỏe mạnh và tràn đầy năng lượng. Một chế độ ăn cân bằng gồm rau củ, ngũ cốc, protein và chất béo lành mạnh giúp bạn tận hưởng cả sức khỏe và hương vị trong khi hỗ trợ sức khỏe lâu dài.",
+    "watchVideo": "Xem Video"
+  },
+  "partners": {
+    "heading": "Đối Tác & Khách Hàng",
+    "title": "Chúng tôi hợp tác với những người tốt nhất"
   }
 }

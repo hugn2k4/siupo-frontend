@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const partners = [
   { image: "../../src/assets/images/image_partner_1.png" },
@@ -11,6 +12,7 @@ const partners = [
 ];
 
 const PartnersSection: React.FC = () => {
+  const { t } = useTranslation("home");
   return (
     <Box sx={{ mb: 0, textAlign: "center", backgroundColor: "#fff", py: 4, px: { xs: 4, sm: 8 } }}>
       <Typography
@@ -24,7 +26,7 @@ const PartnersSection: React.FC = () => {
           transition: "color 0.3s ease",
         }}
       >
-        Partners & Clients
+        {t("partners.heading") as string}
       </Typography>
       <Typography
         variant="h5"
@@ -37,7 +39,7 @@ const PartnersSection: React.FC = () => {
           transition: "color 0.3s ease",
         }}
       >
-        We work with the best people
+        {t("partners.title") as string}
       </Typography>
       <Box sx={{ display: "flex", justifyContent: "center", gap: 7 }}>
         {partners.map((partner, index) => (

@@ -13,23 +13,63 @@
     "masterChefs": "Master Chefs",
     "popularDishes": "Popular Dishes"
   },
-  "aboutSection": {
-    "heading": "About Us",
-    "title": "Food is an important part Of a balanced diet",
-    "description": "Eating well is not just about feeling full — it's about fueling your body with the right nutrients to stay strong and energized. A balanced diet of vegetables, grains, proteins, and healthy fats helps you enjoy both wellness and flavor while supporting long-term health."
-  },
-  "menuSection": {
-    "heading": "Our Menu",
-    "title": "Explore Our Delicious Dishes",
-    "viewAllMenu": "View All Menu"
-  },
   "chefSection": {
     "heading": "Our Team",
     "title": "Meet Our Master Chefs",
-    "viewAllChefs": "View All Chefs"
+    "viewAllChefs": "View All Chefs",
+    "members": [
+      {
+        "name": "Le Cong Hung",
+        "role": "Tech Lead & Architect"
+      },
+      {
+        "name": "Vo Thi Kim Anh",
+        "role": "Senior Frontend Developer"
+      },
+      {
+        "name": "Tran Nhat Minh",
+        "role": "Backend Engineering Lead"
+      }
+    ]
   },
   "testimonials": {
     "heading": "Testimonials",
     "title": "What Our Customers Say"
+  },
+  "whyChooseUs": {
+    "sectionTitle": "Why Choose us",
+    "heading": "Why We are the best?",
+    "description": "We believe healthy eating should be a joy, not a chore. That's why we use only the finest fresh ingredients and heartfelt recipes to create meals that nourish your body and delight your taste buds—so you can feel energized and happy every day.",
+    "fastDelivery": "Fast Delivery",
+    "service247": "24/7 services",
+    "freshFood": "Fresh food",
+    "qualityMaintain": "Quality maintain"
+  },
+  "foodCategory": {
+    "title": "Food category",
+    "description": "Discover delicious dishes by category.",
+    "loading": "Loading categories...",
+    "noCategories": "No categories found."
+  },
+  "menuSection": {
+    "heading": "Our Menu",
+    "title": "Our Food Menu",
+    "description": "Discover our selection of wholesome, flavorful meals crafted with the freshest organic ingredients. From vibrant salads to nourishing bowls and protein-packed options, every dish is designed to fuel your body and delight your taste buds—perfect for a healthy lifestyle.",
+    "viewAllMenu": "View All Menu"
+  },
+  "blog": {
+    "title": "Latest news & Blog",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius sed pharetra dictum neque massa congue",
+    "readMore": "Read more"
+  },
+  "aboutSection": {
+    "heading": "About Us",
+    "title": "Food is an important part Of a balanced diet",
+    "description": "Eating well is not just about feeling full — it's about fueling your body with the right nutrients to stay strong and energized. A balanced diet of vegetables, grains, proteins, and healthy fats helps you enjoy both wellness and flavor while supporting long-term health.",
+    "watchVideo": "Watch Video"
+  },
+  "partners": {
+    "heading": "Partners & Clients",
+    "title": "We work with the best people"
   }
 }

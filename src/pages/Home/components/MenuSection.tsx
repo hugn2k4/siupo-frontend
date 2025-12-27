@@ -1,6 +1,7 @@
+import { Box, CircularProgress, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, CircularProgress, Typography, Skeleton } from "@mui/material";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 // API
 import categoryApi from "../../../api/categoryApi"; // Điều chỉnh đường dẫn nếu cần
@@ -11,6 +12,7 @@ import type { CategoryResponse } from "../../../types/responses/category.respons
 import type { ProductResponse } from "../../../types/responses/product.response";
 
 const MenuSection: React.FC = () => {
+  const { t } = useTranslation("home");
   const navigate = useNavigate();
 
   // State
@@ -91,12 +93,8 @@ const MenuSection: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4">
         {/* Title & Description */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Our Food Menu</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Discover our selection of wholesome, flavorful meals crafted with the freshest organic ingredients. From
-            vibrant salads to nourishing bowls and protein-packed options, every dish is designed to fuel your body and
-            delight your taste buds—perfect for a healthy lifestyle.
-          </p>
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">{t("menuSection.title") as string}</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">{t("menuSection.description") as string}</p>
         </div>
 
         {/* Category Tabs */}
@@ -180,7 +178,7 @@ const MenuSection: React.FC = () => {
             className="bg-white text-green-primary border border-green-primary px-8 py-3 font-semibold transition-all hover:bg-green-primary hover:text-white"
             onClick={() => navigate("/menu")}
           >
-            View More Menu
+            {t("menuSection.viewAllMenu") as string}
           </button>
         </div>
       </div>

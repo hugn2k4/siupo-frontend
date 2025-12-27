@@ -1,26 +1,30 @@
-import { Truck, Clock, UtensilsCrossed, Factory } from "lucide-react";
+import { Clock, Factory, Truck, UtensilsCrossed } from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 const WhyChooseUs = () => {
+  const { t } = useTranslation("home");
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const features = [
     {
       icon: <Truck size={40} strokeWidth={1.5} />,
-      title: "Fast Delivery",
-      color: "bg-green-50",
+      title: t("whyChooseUs.fastDelivery") as string,
+      color: "bg-white",
     },
     {
       icon: <Clock size={40} strokeWidth={1.5} />,
-      title: "24/7 services",
-      color: "bg-gray-50",
+      title: t("whyChooseUs.service247") as string,
+      color: "bg-white",
     },
     {
       icon: <UtensilsCrossed size={40} strokeWidth={1.5} />,
-      title: "Fresh food",
-      color: "bg-gray-50",
+      title: t("whyChooseUs.freshFood") as string,
+      color: "bg-white",
     },
     {
       icon: <Factory size={40} strokeWidth={1.5} />,
-      title: "Quality maintain",
-      color: "bg-gray-50",
+      title: t("whyChooseUs.qualityMaintain") as string,
+      color: "bg-white",
     },
   ];
 
@@ -74,40 +78,53 @@ const WhyChooseUs = () => {
             {/* Header */}
             <div>
               <p className="text-green-700 font-semibold mb-3 flex items-center gap-2">
-                <span className="text-lg">Why Choose us</span>
+                <span className="text-lg">{t("whyChooseUs.sectionTitle") as string}</span>
                 <span className="w-12 h-[2px] bg-green-700"></span>
               </p>
-              <h2 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">Why We are the best?</h2>
+              <h2 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                {t("whyChooseUs.heading") as string}
+              </h2>
 
-              <p className="text-gray-primary leading-relaxed mb-4">
-                We believe healthy eating should be a joy, not a chore. That's why we use only the finest fresh
-                ingredients and heartfelt recipes to create meals that nourish your body and delight your taste buds—so
-                you can feel energized and happy every day.
-              </p>
+              <p className="text-gray-primary leading-relaxed mb-4">{t("whyChooseUs.description") as string}</p>
             </div>
 
             {/* Features Grid */}
             <div className="grid grid-cols-2 gap-6 pt-4">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className={`${feature.color} p-6 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden`}
-                >
-                  {/* Colored border accent */}
-                  <div
-                    className={`absolute left-0 top-0 h-full w-1 ${index === 0 ? "bg-green-primary" : "bg-transparent"} transition-all group-hover:w-1.5`}
-                  ></div>
+              {features.map((feature, index) => {
+                const isDefaultActive = index === 0 && hoveredIndex === null;
+                const isHovered = hoveredIndex === index;
+                const showGreen = isDefaultActive || isHovered;
 
-                  <div className="flex flex-col items-start gap-3">
+                return (
+                  <div
+                    key={index}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    className={`${feature.color} p-6 rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 relative overflow-hidden ${
+                      showGreen ? "border-l-4 border-green-primary" : "border-l-4 border-transparent"
+                    }`}
+                  >
+                    {/* Green background overlay that slides from left to right */}
                     <div
-                      className={`text-gray-700 group-hover:text-green-primary transition-colors ${index === 0 ? "text-green-primary" : ""}`}
-                    >
-                      {feature.icon}
+                      className={`absolute inset-0 bg-gradient-to-r from-green-50 to-green-100 transition-all duration-700 ease-out ${
+                        showGreen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+                      }`}
+                      style={{ zIndex: 0 }}
+                    ></div>
+
+                    <div className="flex flex-col items-start gap-3 relative z-10">
+                      <div
+                        className={`transition-colors duration-500 ${showGreen ? "text-green-primary" : "text-gray-700"}`}
+                      >
+                        {feature.icon}
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-800 transition-colors duration-300">
+                        {feature.title}
+                      </h3>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-800">{feature.title}</h3>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

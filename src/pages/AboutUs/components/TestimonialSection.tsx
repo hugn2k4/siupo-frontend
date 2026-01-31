@@ -2,11 +2,11 @@ import { Skeleton } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "../../../hooks/useTranslation";
-import type { BannerProps } from "../../../types/props/BannerProps";
 
-const TestimonialSection: React.FC<BannerProps> = ({ loading }) => {
+const TestimonialSection: React.FC = () => {
   const { t } = useTranslation("about");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const loading = false;
 
   // 3 khách hàng với hình riêng + đánh giá chân thật
   const testimonials = t("testimonials.items", { returnObjects: true }) as Array<{

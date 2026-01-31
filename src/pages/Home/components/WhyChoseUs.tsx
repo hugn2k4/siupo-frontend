@@ -55,15 +55,6 @@ const WhyChooseUs = () => {
                   alt="Fresh salad bowl"
                   className="w-full h-[450px] object-cover"
                 />
-
-                {/* Orange juice and vegetables decoration */}
-                <div className="absolute -top-12 -right-8 w-32 h-40">
-                  <img
-                    src="https://images.unsplash.com/photo-1primary271886742-f049cd451bba?w=200&h=200&fit=crop"
-                    alt="Fresh vegetables"
-                    className="w-full h-full object-contain drop-shadow-2xl"
-                  />
-                </div>
               </div>
 
               {/* Decorative green leaf */}

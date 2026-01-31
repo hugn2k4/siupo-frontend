@@ -37,14 +37,15 @@ const FoodCategoryCarousel = () => {
           }));
 
           setCategories(processedCategories);
+          setLoading(false); // Only stop loading on success
         } else {
           showSnackbar("Không tải được danh mục: " + res.message, "error");
+          // Keep loading = true to show skeleton
         }
       } catch (error) {
         console.error("Lỗi tải categories:", error);
         showSnackbar("Lỗi kết nối server khi tải danh mục", "error");
-      } finally {
-        setLoading(false);
+        // Keep loading = true to show skeleton
       }
     };
 
@@ -83,12 +84,31 @@ const FoodCategoryCarousel = () => {
     setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
   };
 
-  if (loading) {
-    return <div className="text-center py-20 text-lg text-gray-500">{t("foodCategory.loading") as string}</div>;
-  }
+  if (loading || categories.length === 0) {
+    return (
+      <div className="bg-[#f5f5f0] py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-semibold text-gray-800">{t("foodCategory.title") as string}</h1>
+            <p className="text-gray-500 text-sm max-w-md mx-auto mt-3">{t("foodCategory.description") as string}</p>
+          </div>
 
-  if (categories.length === 0) {
-    return <div className="text-center py-20 text-lg text-gray-500">{t("foodCategory.noCategories") as string}</div>;
+          <div className="relative px-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div className="h-64 bg-gray-200 animate-pulse"></div>
+                  <div className="p-6 text-center">
+                    <div className="h-6 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded w-20 mx-auto animate-pulse"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

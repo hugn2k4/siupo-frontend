@@ -1,13 +1,12 @@
-import { Box, Typography, Skeleton } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useBanners } from "../../hooks/useBanners";
 import productApi from "../../api/productApi";
+import DefaultBurger from "../../assets/images/products/image_burger.png";
+import DefaultCocktail from "../../assets/images/products/image_cocktail.png";
+import DefaultCupcake from "../../assets/images/products/image_cupcake.png";
+import DefaultSalad from "../../assets/images/products/image_salad.png";
 import type { ProductResponse } from "../../types/responses/product.response";
-import DefaultSalad from "../../assets/images/image_salad.png";
-import DefaultBurger from "../../assets/images/image_burger.png";
-import DefaultCupcake from "../../assets/images/image_cupcake.png";
-import DefaultCocktail from "../../assets/images/image_cocktail.png";
 
 const MenuItem: React.FC<{ item: ProductResponse }> = ({ item }) => {
   const itemRef = useRef<HTMLDivElement>(null);
@@ -82,7 +81,7 @@ const defaultBanners = [DefaultSalad, DefaultBurger, DefaultCupcake, DefaultCock
 
 const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { banners, loading: bannersLoading } = useBanners("Menu");
+  const bannersLoading = false;
   const [products, setProducts] = useState<ProductResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -136,8 +135,8 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
   // banners[1] = image_cupcake (Dessert)
   // banners[2] = image_cocktail (Drinks)
   // banners[3] = image_burger (Main Course)
-  const imageMapping = [0, 3, 1, 2]; // map section index → banners API index
-  const menuImage = banners[imageMapping[sectionIndex]]?.url || defaultBanners[sectionIndex];
+
+  const menuImage = defaultBanners[sectionIndex];
 
   // Component cho phần hình ảnh
   const ImageSection = () => (

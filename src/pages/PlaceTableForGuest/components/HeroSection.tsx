@@ -1,21 +1,8 @@
-// import React, { useState } from "react";
-// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import defaultPlacetable from "../../../assets/images/image_place_table.png";
-import { useBanners } from "../../../hooks/useBanners";
+import ImagePlacetable from "../../../assets/images/defaults/image_place_table.png";
 const HeroSection: React.FC = () => {
-  // const [guests, setGuests] = useState("2");
-  // const [branch, setBranch] = useState("");
-  // const [date, setDate] = useState<Date | null>(new Date());
-
-  // Chức năng tìm bàn không được triển khai - chỉ hiển thị giao diện
-  // const handleFindTable = () => {
-  //   // Không thực hiện gì - theo yêu cầu bỏ qua chức năng này
-  //   console.log("Chức năng tìm bàn chưa được triển khai");
-  // };
-  const { banners, loading } = useBanners("Place table");
-  const backgroundImage = banners[0]?.url || defaultPlacetable;
-
+  const backgroundImage = ImagePlacetable;
+  const loading = false;
   return (
     <section
       className="relative h-96 bg-cover bg-center"

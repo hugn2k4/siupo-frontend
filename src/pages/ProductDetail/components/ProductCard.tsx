@@ -1,7 +1,7 @@
 import { Heart, Share2, ShoppingBag } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import imageDefault from "../../../assets/images/image_burger.png";
+import imageDefault from "../../../assets/images/products/image_burger.png";
 
 interface ProductCardProps {
   id?: number;

@@ -1,8 +1,8 @@
 import { Box, Container } from "@mui/material";
 import React from "react";
+import PartnersSection from "../../components/shared/Partners";
 import MenuSection from "./MenuSection";
 import StatsSection from "./StatsSection";
-import PartnersSection from "./PartnersSection";
 
 const MenuPage: React.FC = () => {
   return (

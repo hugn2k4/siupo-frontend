@@ -1,4 +1,4 @@
-import { Alert, Box, Button, FormControl, MenuItem, Select, Skeleton, Typography } from "@mui/material";
+import { Box, Button, FormControl, MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { memo, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -347,7 +347,7 @@ const ProductList = memo(
         </Box>
 
         {/* Loading / Error / Empty / Products */}
-        {loading ? (
+        {loading || products.length === 0 ? (
           <Box
             sx={{
               display: "grid",
@@ -377,16 +377,6 @@ const ProductList = memo(
                 </Box>
               </Box>
             ))}
-          </Box>
-        ) : error ? (
-          <Alert severity="error" sx={{ mt: 4 }}>
-            {error}
-          </Alert>
-        ) : products.length === 0 ? (
-          <Box sx={{ textAlign: "center", py: 12, minWidth: { xs: "unset", lg: "826px" } }}>
-            <Typography variant="h6" color="text.secondary">
-              {t("product.notFound")}
-            </Typography>
           </Box>
         ) : (
           <Box

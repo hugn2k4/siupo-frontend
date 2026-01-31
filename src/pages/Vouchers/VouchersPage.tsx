@@ -1,9 +1,8 @@
-import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Container, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { Copy, Gift, Percent, Tag, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 import voucherApi from "../../api/voucherApi";
-import LoadingPageSpinner from "../../components/common/LoadingSpinner";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { useTranslation } from "../../hooks/useTranslation";
 import type { VoucherResponse } from "../../types/responses/voucher.response";
@@ -19,17 +18,15 @@ const VouchersPage: React.FC = () => {
     try {
       const response = await voucherApi.getAvailableVouchers();
       setVouchers(response.data || []);
+      setLoading(false);
     } catch (err) {
       console.error("Failed to fetch vouchers:", err);
-      showSnackbar(t("errors.failedToLoad"), "error");
-    } finally {
-      setLoading(false);
+      // Keep loading = true to show skeleton
     }
   };
 
   useEffect(() => {
     fetchVouchers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const copyVoucherCode = (code: string) => {
@@ -69,12 +66,56 @@ const VouchersPage: React.FC = () => {
     }
   };
 
-  if (loading) return <LoadingPageSpinner />;
-
   return (
     <Box sx={{ bgcolor: "#F9F9F9", minHeight: "100vh", py: 6 }}>
       <Container maxWidth="lg">
-        {vouchers.length === 0 ? (
+        {loading ? (
+          <Grid container spacing={3}>
+            {[...Array(3)].map((_, index) => (
+              <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={index}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    height: "100%",
+                    border: "1px solid var(--color-gray5)",
+                    borderRadius: 2,
+                    p: 3,
+                  }}
+                >
+                  {/* Header skeleton */}
+                  <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+                    <Skeleton variant="rectangular" width={56} height={56} sx={{ borderRadius: 2 }} />
+                    <Skeleton variant="rectangular" width={80} height={24} sx={{ borderRadius: 1 }} />
+                  </Box>
+
+                  {/* Value skeleton */}
+                  <Skeleton variant="text" width="60%" height={48} sx={{ mb: 2 }} />
+
+                  {/* Name skeleton */}
+                  <Skeleton variant="text" width="80%" height={32} sx={{ mb: 1 }} />
+
+                  {/* Description skeleton */}
+                  <Skeleton variant="text" width="100%" height={20} sx={{ mb: 1 }} />
+                  <Skeleton variant="text" width="90%" height={20} sx={{ mb: 3 }} />
+
+                  {/* Divider */}
+                  <Box sx={{ borderTop: "1px solid var(--color-gray5)", my: 2 }} />
+
+                  {/* Details skeleton */}
+                  <Skeleton variant="text" width="100%" height={20} sx={{ mb: 0.75 }} />
+                  <Skeleton variant="text" width="90%" height={20} sx={{ mb: 0.75 }} />
+                  <Skeleton variant="text" width="85%" height={20} sx={{ mb: 3 }} />
+
+                  {/* Code box skeleton */}
+                  <Skeleton variant="rectangular" height={48} sx={{ borderRadius: 1, mb: 1.5 }} />
+
+                  {/* Usage info skeleton */}
+                  <Skeleton variant="text" width="50%" height={16} />
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        ) : vouchers.length === 0 ? (
           <Paper
             elevation={0}
             sx={{
@@ -85,7 +126,16 @@ const VouchersPage: React.FC = () => {
               bgcolor: "white",
             }}
           >
-            <Gift size={64} style={{ color: "var(--color-gray4)", marginBottom: "16px" }} />
+            <Gift
+              size={64}
+              style={{
+                color: "var(--color-gray4)",
+                marginBottom: "16px",
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            />
             <Typography variant="h6" fontWeight={600} color="var(--color-gray2)" sx={{ mb: 1 }}>
               {t("empty.title")}
             </Typography>

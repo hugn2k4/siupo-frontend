@@ -1,14 +1,15 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Dialog, IconButton, Skeleton } from "@mui/material";
 import { useState } from "react";
-import defaultAboutUs from "../../../assets/images/image_about_us_home.png";
+import ImageAboutUs from "../../../assets/images/defaults/image_about_us.png";
 import MyButton from "../../../components/common/Button";
 import { useTranslation } from "../../../hooks/useTranslation";
-import type { BannerProps } from "../../../types/props/BannerProps";
+
 // Food Gallery Section Component
-const FoodGallerySection: React.FC<BannerProps> = ({ banners, loading }) => {
+const FoodGallerySection: React.FC = () => {
   const { t } = useTranslation("home");
-  const aboutUsImage = banners[0]?.url || defaultAboutUs;
+  const aboutUsImage = ImageAboutUs;
+  const loading = false;
   // State để mở/đóng modal video
   const [openVideo, setOpenVideo] = useState(false);
 

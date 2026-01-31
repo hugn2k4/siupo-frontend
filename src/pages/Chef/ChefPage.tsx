@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useTranslation } from "../../hooks/useTranslation";
 
-import chef1 from "../../assets/images/image_chef_1.png";
-import chef2 from "../../assets/images/image_chef_2.png";
-import chef3 from "../../assets/images/image_chef_3.png";
+import chef1 from "../../assets/images/chefs/image_chef_1.png";
+import chef2 from "../../assets/images/chefs/image_chef_2.png";
+import chef3 from "../../assets/images/chefs/image_chef_3.png";
 
 const chefImages = [chef1, chef2, chef3];
 

@@ -1,16 +1,16 @@
 import { Skeleton } from "@mui/material";
 import React from "react";
-import defaultFeatureImage from "../../../assets/images/image_about_us_4.png";
-import Coffee from "../../../assets/images/image_coffee.png";
-import Person from "../../../assets/images/image_person.png";
-import Student from "../../../assets/images/image_student.png";
+import Coffee from "../../../assets/icons/image_coffee.png";
+import Person from "../../../assets/icons/image_person.png";
+import Student from "../../../assets/icons/image_student.png";
+import ImageFeature from "../../../assets/images/defaults/image_about_us_feature.png";
 import { useTranslation } from "../../../hooks/useTranslation";
-import type { BannerProps } from "../../../types/props/BannerProps";
 // import AboutusClient from "../../../assets/images/AboutusClient.png";
 // Why Choose Us Section Component
-const WhyChooseUsSection: React.FC<BannerProps> = ({ banners, loading }) => {
+const WhyChooseUsSection: React.FC = () => {
   const { t } = useTranslation("about");
-  const featureImage = banners[4]?.url || defaultFeatureImage;
+  const featureImage = ImageFeature;
+  const loading = false;
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4">

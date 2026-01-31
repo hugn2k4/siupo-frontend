@@ -1,30 +1,74 @@
-import { useBanners } from "../../hooks/useBanners";
-import PartnersSection from "../Menu/PartnersSection";
-import AboutUs from "./components/AboutUs";
-import CustomerReview from "./components/CustomerReview";
-import FoodCategory from "./components/FoodCategory";
+import { Suspense, lazy, memo } from "react";
+import { ErrorBoundary } from "../../components/common/ErrorBoundary";
+import { SkeletonSection } from "../../components/common/SkeletonSection";
 import Hero from "./components/Hero";
-import LatestNewsBlog from "./components/LatestNewsBlog";
-import MenuSection from "./components/MenuSection";
-import TeamSection from "./components/TeamMember";
-import WhyChooseUs from "./components/WhyChoseUs";
-function HomePage() {
-  const { banners, loading } = useBanners("Home");
-  const { banners: aboutBanners, loading: aboutLoading } = useBanners("About us");
+const AboutUs = lazy(() => import("./components/AboutUs"));
+const FoodCategory = lazy(() => import("./components/FoodCategory"));
+const WhyChooseUs = lazy(() => import("./components/WhyChoseUs"));
+const MenuSection = lazy(() => import("./components/MenuSection"));
+const CustomerReview = lazy(() => import("./components/CustomerReview"));
+const LatestNewsBlog = lazy(() => import("./components/LatestNewsBlog"));
+const TeamSection = lazy(() => import("../../components/shared/TeamSection"));
+const Partners = lazy(() => import("../../components/shared/Partners"));
 
+function HomePage() {
   return (
     <>
-      <Hero banners={banners} loading={loading} />
-      <AboutUs banners={aboutBanners} loading={aboutLoading} />
-      <FoodCategory />
-      <WhyChooseUs />
-      <MenuSection />
-      <TeamSection banners={aboutBanners} loading={aboutLoading} />
-      <CustomerReview />
-      <LatestNewsBlog />
-      <PartnersSection />
+      {/* Hero - Load immediately (above fold) */}
+      <ErrorBoundary>
+        <Hero />
+      </ErrorBoundary>
+
+      {/* Below fold - Lazy load with suspense */}
+      <Suspense fallback={<SkeletonSection variant="grid" />}>
+        <ErrorBoundary>
+          <AboutUs />
+        </ErrorBoundary>
+      </Suspense>
+
+      <Suspense fallback={<SkeletonSection variant="gallery" />}>
+        <ErrorBoundary>
+          <FoodCategory />
+        </ErrorBoundary>
+      </Suspense>
+
+      <Suspense fallback={<SkeletonSection variant="grid" />}>
+        <ErrorBoundary>
+          <WhyChooseUs />
+        </ErrorBoundary>
+      </Suspense>
+
+      <Suspense fallback={<SkeletonSection variant="list" />}>
+        <ErrorBoundary>
+          <MenuSection />
+        </ErrorBoundary>
+      </Suspense>
+
+      <Suspense fallback={<SkeletonSection variant="grid" />}>
+        <ErrorBoundary>
+          <TeamSection />
+        </ErrorBoundary>
+      </Suspense>
+
+      <Suspense fallback={<SkeletonSection variant="list" />}>
+        <ErrorBoundary>
+          <CustomerReview />
+        </ErrorBoundary>
+      </Suspense>
+
+      <Suspense fallback={<SkeletonSection variant="grid" />}>
+        <ErrorBoundary>
+          <LatestNewsBlog />
+        </ErrorBoundary>
+      </Suspense>
+
+      <Suspense fallback={<SkeletonSection variant="gallery" />}>
+        <ErrorBoundary>
+          <Partners />
+        </ErrorBoundary>
+      </Suspense>
     </>
   );
 }
 
-export default HomePage;
+export default memo(HomePage);

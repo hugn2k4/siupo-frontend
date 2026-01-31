@@ -55,9 +55,34 @@ const ComboList = ({ combos }: ComboListProps) => {
 
   if (!combos || combos.length === 0) {
     return (
-      <Box textAlign="center" py={8} color="text.secondary">
-        <Typography variant="h6">{t("combo.emptyTitle")}</Typography>
-        <Typography variant="body2">{t("combo.emptySubtitle")}</Typography>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" },
+          gap: 2,
+          mb: 3,
+          mt: 2,
+        }}
+      >
+        {[1, 2, 3].map((i) => (
+          <Box
+            key={i}
+            sx={{
+              maxWidth: { md: 265, xs: "100%" },
+              borderRadius: 0,
+              overflow: "hidden",
+              bgcolor: "white",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
+            <Box sx={{ height: 200, bgcolor: "grey.200" }} className="animate-pulse" />
+            <Box sx={{ p: 2 }}>
+              <Box sx={{ height: 20, bgcolor: "grey.200", mb: 1, borderRadius: 1 }} className="animate-pulse" />
+              <Box sx={{ height: 16, bgcolor: "grey.200", mb: 2, borderRadius: 1 }} className="animate-pulse" />
+              <Box sx={{ height: 40, bgcolor: "grey.200", borderRadius: 1 }} className="animate-pulse" />
+            </Box>
+          </Box>
+        ))}
       </Box>
     );
   }

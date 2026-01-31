@@ -3,7 +3,6 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { Box, Drawer, IconButton, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import LoadingPageSpinner from "../../components/common/LoadingSpinner";
 import useTranslation from "../../hooks/useTranslation";
 import pageService from "../../services/pageService";
 import type { ShopInitialDataResponse } from "../../types/responses/shop.response";
@@ -22,10 +21,7 @@ interface FilterState {
 
 function OurShopPage() {
   const [initialData, setInitialData] = useState<ShopInitialDataResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation("shop");
-
   const [filters, setFilters] = useState<FilterState>({
     searchName: null,
     categoryIds: [],
@@ -42,16 +38,12 @@ function OurShopPage() {
   // Load tất cả data ban đầu 1 lần
   useEffect(() => {
     const fetchInitialData = async () => {
-      setLoading(true);
-      setError(null);
       try {
         const data = await pageService.getShopInitialData();
         setInitialData(data);
       } catch (err) {
         console.error("Failed to load shop data:", err);
-        setError("Failed to load shop data. Please try again.");
-      } finally {
-        setLoading(false);
+        // Show skeleton by keeping initialData = null
       }
     };
     fetchInitialData();
@@ -84,22 +76,14 @@ function OurShopPage() {
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
-  // Loading state
-  if (loading) return <LoadingPageSpinner />;
-
-  // Error state
-  if (error || !initialData) {
-    return (
-      <Box sx={{ textAlign: "center", py: 8 }}>
-        <Typography variant="h6" color="error" mb={2}>
-          {t("page.errorTitle")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {t("page.errorSubtitle")}
-        </Typography>
-      </Box>
-    );
-  }
+  // Prepare data - use empty arrays if loading/error to show skeletons
+  const shopData = initialData || {
+    combos: [],
+    products: [],
+    categories: [],
+    tags: [],
+    latestProducts: [],
+  };
 
   return (
     <>
@@ -146,7 +130,7 @@ function OurShopPage() {
                     {t("page.hotCombos")}
                   </Typography>
                 </Stack>
-                <ComboList combos={initialData.combos} />
+                <ComboList combos={shopData.combos} />
               </Box>
             )}
 
@@ -156,7 +140,7 @@ function OurShopPage() {
                 <Typography variant="h4" fontWeight={800} color="#1A1A1A" mb={4}>
                   {t("page.allProducts")}
                 </Typography>
-                <ProductList {...productListProps} />
+                <ProductList {...productListProps} initialProducts={shopData.products} />
               </Box>
             )}
           </Box>
@@ -166,9 +150,9 @@ function OurShopPage() {
             <Box width={280} flexShrink={0} sx={{ position: "sticky", top: 24 }}>
               <FilterSidebar
                 onFilterChange={handleFilterChange}
-                categories={initialData.categories}
-                tags={initialData.tags}
-                latestProducts={initialData.latestProducts}
+                categories={shopData.categories}
+                tags={shopData.tags}
+                latestProducts={shopData.latestProducts}
               />
             </Box>
           )}
@@ -186,9 +170,9 @@ function OurShopPage() {
         <Box sx={{ width: 320, p: 3, pt: 6 }}>
           <FilterSidebar
             onFilterChange={handleFilterChange}
-            categories={initialData.categories}
-            tags={initialData.tags}
-            latestProducts={initialData.latestProducts}
+            categories={shopData.categories}
+            tags={shopData.tags}
+            latestProducts={shopData.latestProducts}
           />
         </Box>
       </Drawer>

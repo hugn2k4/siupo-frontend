@@ -1,6 +1,6 @@
 import { Box, Breadcrumbs, Link as MuiLink, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import ImageBanner from "../../assets/images/image_banner_2.jpg";
+import ImagePageHeader from "../../assets/images/defaults/image_page_header.png";
 import { useTranslation } from "../../hooks/useTranslation";
 
 interface PageHeaderProps {
@@ -26,7 +26,7 @@ export default function PageHeader({ title, backgroundImage, breadcrumb = [] }: 
         justifyContent: "center",
         alignItems: "center",
         color: "white",
-        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${ImageBanner})`,
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : `url(${ImagePageHeader})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         textAlign: "center",

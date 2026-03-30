@@ -41,18 +41,18 @@ const TeamSection = ({
       textColor: "text-green-100",
       heading: t("chefSection.heading") as string,
       title: t("chefSection.title") as string,
-      bottomMargin: "pb-78",
-      gridMargin: "-mt-74",
-      gridPadding: "px-25",
+      bottomMargin: "pb-12 lg:pb-78",
+      gridMargin: "lg:-mt-74",
+      gridPadding: "lg:px-25",
     },
     about: {
       bgColor: "bg-primary",
       textColor: "text-orange-100",
       heading: t("team.title") as string,
       title: t("team.description") as string,
-      bottomMargin: "pb-58",
-      gridMargin: "-mt-54",
-      gridPadding: "px-40",
+      bottomMargin: "pb-12 lg:pb-58",
+      gridMargin: "lg:-mt-54",
+      gridPadding: "lg:px-40",
     },
   };
 
@@ -94,7 +94,7 @@ const TeamSection = ({
 
       {/* Team grid - overlapping design */}
       <div
-        className={`absolute left-1/2 transform -translate-x-1/2 w-full max-w-6xl ${config.gridPadding} top-full ${config.gridMargin}`}
+        className={`relative z-10 w-full max-w-6xl mx-auto px-4 mt-10 lg:absolute lg:left-1/2 lg:top-full lg:-translate-x-1/2 lg:mt-0 ${config.gridPadding} ${config.gridMargin}`}
       >
         <div
           className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${variant === "about" ? "gap-8" : "gap-6"} place-items-center`}

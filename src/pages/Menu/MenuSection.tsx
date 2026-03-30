@@ -142,6 +142,7 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
   const ImageSection = () => (
     <Box
       sx={{
+        display: { xs: "none", sm: "block" },
         flex: 1,
         pr: isImageLeft ? { sm: 4 } : 0,
         pl: !isImageLeft ? { sm: 4 } : 0,

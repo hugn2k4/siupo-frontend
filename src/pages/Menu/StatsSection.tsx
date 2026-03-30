@@ -1,6 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 
+// Import Icons/Images
+
 const statsData = [
   { image: "../../src/assets/icons/image_chef.png", number: "420", description: "Professional Chefs" },
   { image: "../../src/assets/icons/image_food.png", number: "320", description: "Items Of Food" },

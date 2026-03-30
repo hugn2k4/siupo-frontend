@@ -142,7 +142,8 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
   const ImageSection = () => (
     <Box
       sx={{
-        display: { xs: "none", sm: "block" },
+        display: { xs: "none", sm: "flex" },
+        justifyContent: isImageLeft ? "flex-start" : "flex-end",
         flex: 1,
         pr: isImageLeft ? { sm: 4 } : 0,
         pl: !isImageLeft ? { sm: 4 } : 0,
@@ -211,7 +212,12 @@ const MenuSection: React.FC<{ sectionIndex: number }> = ({ sectionIndex }) => {
 
   return (
     <Box
-      sx={{ mb: 6, display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: "center" }}
+      sx={{
+        mb: 6,
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
+        alignItems: { xs: "stretch", sm: "flex-start" },
+      }}
       ref={sectionRef}
     >
       {isImageLeft ? (

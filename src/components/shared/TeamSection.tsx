@@ -94,7 +94,7 @@ const TeamSection = ({
 
       {/* Team grid - overlapping design */}
       <div
-        className={`relative z-10 w-full max-w-6xl mx-auto px-4 mt-10 lg:absolute lg:left-1/2 lg:top-full lg:-translate-x-1/2 lg:mt-0 ${config.gridPadding} ${config.gridMargin}`}
+        className={`relative z-10 w-full max-w-6xl mx-auto px-4 mt-10 lg:absolute lg:left-1/2 lg:top-full lg:-translate-x-1/2 ${config.gridPadding} ${config.gridMargin}`}
       >
         <div
           className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${variant === "about" ? "gap-8" : "gap-6"} place-items-center`}
